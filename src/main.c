@@ -13,11 +13,21 @@ int call_open(char *str)
 {
 	int fd = open(str, O_RDONLY);
 	if (fd < 0) { /* maybe reject 0 ? */
-		perror("Error cannot open:\'"); 
-		ft_printf_fd(2, "Incorect fd for %s fd %d\n", str, fd);
-		exit(1);
+		ft_printf_fd(2, "ft_nm: Can't open %s fd %d\n", str, fd);
+		return (-1);
 	}
 	return (fd);
+}
+
+void *load_elf_info(int fd, size_t len)
+{
+	void *elf_struct = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
+	if (elf_struct == MAP_FAILED) {
+		perror("Error mmap:\'"); 
+		close(fd);
+		return (NULL);
+	}
+	return (elf_struct);
 }
 
 
@@ -30,50 +40,55 @@ int check_identification_byte(void *elf_struct, int byte, int value)
 	return (ret);
 }
 
-int header_identification_correct(void *elf_struct)
+int header_identification_correct(char *str, void *elf_struct)
 {
-	if (!check_identification_byte(elf_struct, EI_MAG0, ELFMAG0)\
-		|| !check_identification_byte(elf_struct, EI_MAG1, ELFMAG1)\
-		|| !check_identification_byte(elf_struct, EI_MAG2, ELFMAG2)\
-		|| !check_identification_byte(elf_struct, EI_MAG3, ELFMAG3)) {
+	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
+		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", str);
 		return (FALSE);
+	} else {
+		ft_printf_fd(1, "Good format: %s\n", ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
 	}
-	// ft_strncmp(((Elf64_Ehdr *) elf_struct)->e_ident, ELFMAG, SELFMAG);
 	return (TRUE);
+}
+
+
+void *file_to_elf(char *str)
+{
+	void	*elf_struct = NULL;
+	t_stat 	sb;
+	int 	fd = call_open(str);
+	
+	if (fd < 0) {
+		return (NULL);
+	}
+	
+	if (fstat(fd, &sb) == -1) {
+		perror("Error fstat:\'"); 
+		close(fd);
+		return (NULL);
+	}
+	
+	elf_struct = load_elf_info(fd, sb.st_size);
+	if (!elf_struct) { /* fd close in load ilf info is error case proc */
+		return (NULL);
+	}
+	close(fd); /* now we had data in void * we can close fd */
+	if (header_identification_correct(str, elf_struct) == FALSE) {
+		munmap(elf_struct, sb.st_size);
+		elf_struct = NULL;
+	}
+	return (elf_struct);
 }
 
 int main(int argc, char **argv)
 {
-	char *str = "a.out";
+	char *path = "a.out";
 	if (argc > 1) {
-		str = argv[1];
+		path = argv[1];
 	}
-	int fd = call_open(str);
-	if (fd < 0) {
+	void *elf_struct = file_to_elf(path); 
+	if (!elf_struct) {
 		return (1);
 	}
-	t_stat sb;
-	int ret = fstat(fd, &sb);
-	if (ret != -1 ) {
-		size_t len = sb.st_size;
-		void *elf_struct = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
-		if (elf_struct != MAP_FAILED) {
-			ft_printf_fd(1, "Mmap success\n");
-			for (int i = 0; i < 16; ++i) {
-				ft_printf_fd(1, "[%d]: |%d|\n", i, ((Elf64_Ehdr *)elf_struct)->e_ident[i]);
-			}
-			header_identification_correct(elf_struct);
-			munmap(elf_struct, len);
-		} else {
-			perror("Error fstat:\'"); 
-		}
-	} else {
-		perror("Error fstat:\'"); 
-	}
-
-
-
-
-	close(fd);
 	return (0);
 }
