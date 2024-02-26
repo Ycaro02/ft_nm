@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.def": "source.def",
+        "elf.h": "c",
+        "stat.h": "c"
+    }
+}

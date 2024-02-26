@@ -1,3 +1,33 @@
 http://www.linuxcertif.com/man/1/nm/ --> man FR nm
 https://man7.org/linux/man-pages/man5/elf.5.html  ---> elf doc
 https://en.wikipedia.org/wiki/Application_binary_interface ---> ABI
+
+Endian from --> https://helpful.knobs-dials.com/index.php/Endianness
+Endianness usually refer to byte order, because that is the most common variant programmers will ru n into. 
+When it refers to bit order, or even word order, but this is usually explicitly mentioned, or understood from context.
+Little-endian (LSB) means we start with the least significant part in the lowest address.
+Big-endian (MSB) means we start with the most significant part.
+For example, 16-bit integer 0x1234 would be stored in bytes as 0x12 0x34 (LSB) or 0x34 0x12 (MSB).
+
+
+
+Authorized func : 
+open(2) close(2) 
+mmap(2) munmap(2) 
+write(2) malloc(3) free(3) exit(3) perror(3) strerror(1)
+fstat(2) :
+fstat() is identical to stat(), except that the file to be stat-ed is specified by the file descriptor fd.
+Try to open the file, then check if correct fd and call fstat on it
+Maybe use this to check if is an object file and at the end call mmap to load file ?
+
+void *mmap(void *addr, size_t length, int prot, int flags,int fd, off_t offset);
+
+NULL for addr because we let mmap choice the best addr to return/aloc
+len = fstat(file_name).len
+prot  = PROT_READ ?? onyly read maybe
+flags  = MAP_PRIVATE ?? 
+fd = file_fd try to open and checked with fstat
+offset = 0 we want to load the entire file 
+
+
+mmap(NULL, len, prot, flags, file_fd, 0);
