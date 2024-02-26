@@ -34,10 +34,21 @@ void *load_elf_info(int fd, size_t len)
 int check_identification_byte(char c, int val1, int val2)
 {
 	int ret = (c == val1 || c == val2);
-	// if (!ret) {
-		// ft_printf_fd(2, "Index %d, not a valid value %d, expected %d\n", byte, (((Elf64_Ehdr *) elf_struct)->e_ident[byte]), value);
-	// }	
 	return (ret);
+}
+
+int exploitation_system_abi(int os_abi)
+{
+	/* 0 >= os_abi <= 3 || 0 >= os_abi <= 12 || special os case */
+	if ((os_abi >= ELFOSABI_NONE && os_abi <= ELFOSABI_GNU)\
+		|| (os_abi >= ELFOSABI_SOLARIS && os_abi <= ELFOSABI_OPENBSD)\
+		|| os_abi == ELFOSABI_ARM_AEABI\
+		|| os_abi == ELFOSABI_ARM\
+		|| os_abi == ELFOSABI_STANDALONE) {
+		return (os_abi);
+	}
+	ft_printf_fd(2, "Unknow os ABI %d\n", os_abi);
+	return (-1);
 }
 
 int header_identification_correct(char *str, void *elf_struct)
@@ -46,35 +57,34 @@ int header_identification_correct(char *str, void *elf_struct)
 	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", str);
 		return (FALSE);
-	} else {
-		ft_printf_fd(1, "Good format: %s\n", ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
 	}
 	/* get class 32 or 64 bits */
 	char c = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_CLASS];
 	int ret = check_identification_byte(c, ELFCLASS32, ELFCLASS64);
+	if (ret == 0) {
+		ft_printf_fd(2, "Invalid class found: %d\n", c);
+		return (FALSE);
+	}
+	/* get endian little or big */
 	c = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_DATA];
 	ret = check_identification_byte(c, ELFDATA2LSB, ELFDATA2MSB);
 	if (ret == 0) {
-		ft_printf_fd(2, "Invalid class fount class %d\n", c);
+		ft_printf_fd(2, "Invalid endian found: %d\n", c);
 		return (FALSE);
-
 	}
-	// int class = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_CLASS];
-	// if (class == ELFCLASSNONE || (class != ELFCLASS32 && class != ELFCLASS64)) {
-	// } else {
-	// 	ft_printf_fd(1, "Good class\n");
-	// }
-
-	// int endian = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_DATA];
-	// if (endian == ELFDATANONE || (endian != ELFDATA2LSB && endian != ELFDATA2MSB)) {
-	// 	ft_printf_fd(2, "Invalid endian fount endian %d\n", endian);
-	// 	return (FALSE);
-	// } else {
-	// 	ft_printf_fd(1, "Good endian\n");
-	// }
+	/* check version must be current version */
+	if (((Elf64_Ehdr *) elf_struct)->e_ident[EI_VERSION] != EV_CURRENT) {
+		ft_printf_fd(2, "Invalid version found: %d\n", ((Elf64_Ehdr *) elf_struct)->e_ident[EI_DATA]);
+		return (FALSE);
+	}
+	/* detect os ABI */
+	int os_abi = exploitation_system_abi(((Elf64_Ehdr *) elf_struct)->e_ident[EI_OSABI]);
+	if (os_abi == -1) {
+		return (FALSE);
+	}
+	ft_printf_fd(1, "Good format: %s\n", ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
 	return (TRUE);
 }
-
 
 void *file_to_elf(char *str)
 {
@@ -91,7 +101,6 @@ void *file_to_elf(char *str)
 		close(fd);
 		return (NULL);
 	}
-	
 	elf_struct = load_elf_info(fd, sb.st_size);
 	if (!elf_struct) { /* fd close in load_elf_info in error case */
 		return (NULL);
