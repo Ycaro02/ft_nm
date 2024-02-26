@@ -45,9 +45,9 @@ int exploitation_system_abi(int os_abi)
 int header_identification_correct(char *str, void *elf_struct)
 {
 	/* check magic number ELFMAG */
-	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
+	if (ft_strncmp(((char *) ((t_elf64 *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
         ft_printf_fd(2, "field 0 %d\n", ELF_HFIELD(elf_struct, 0));
-		ft_printf_fd(2, "ft_nm: %s: file format not recognized: %s\n", str, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
+		ft_printf_fd(2, "ft_nm: %s: file format not recognized: %s\n", str, ((char *) ((t_elf64 *) elf_struct)->e_ident));
 		return (FALSE);
 	}
 	/* get class 32 or 64 bits */
@@ -65,8 +65,8 @@ int header_identification_correct(char *str, void *elf_struct)
 		return (FALSE);
 	}
 	/* check version must be current version */
-	if (((Elf64_Ehdr *) elf_struct)->e_ident[EI_VERSION] != EV_CURRENT) {
-		ft_printf_fd(2, "Invalid version found: %d\n", ((Elf64_Ehdr *) elf_struct)->e_ident[EI_DATA]);
+	if (((t_elf64 *) elf_struct)->e_ident[EI_VERSION] != EV_CURRENT) {
+		ft_printf_fd(2, "Invalid version found: %d\n", ((t_elf64 *) elf_struct)->e_ident[EI_DATA]);
 		return (FALSE);
 	}
 	/* detect os ABI */
@@ -76,8 +76,8 @@ int header_identification_correct(char *str, void *elf_struct)
 	}
 	int abi_version = ELF_HFIELD(elf_struct, EI_ABIVERSION); /* check this ? */
 	(void)abi_version;
-	ft_printf_fd(1, GREEN"Valid elf header: %s\n"RESET, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
-	// int byte_pad = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_PAD]; /* check this ? */
+	ft_printf_fd(1, GREEN"Valid elf header: %s\n"RESET, ((char *) ((t_elf64 *) elf_struct)->e_ident));
+	// int byte_pad = ((t_elf64 *) elf_struct)->e_ident[EI_PAD]; /* check this ? */
 	
 	return (TRUE);
 }
