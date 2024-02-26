@@ -11,5 +11,6 @@ int main(int argc, char **argv)
 	if (!elf_struct) {
 		return (1);
 	}
+	ft_printf_fd(1, "class: %d\n", ELF_HFIELD(elf_struct, EI_CLASS));
 	return (0);
 }

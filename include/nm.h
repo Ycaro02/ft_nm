@@ -7,7 +7,11 @@
 # include "../libft/basic_define.h"
 #include "../libft/libft.h" 	/* libft */
 
+/* struct stat typedef */
 typedef struct stat t_stat;
+
+/* Get ELF header field */
+# define ELF_HFIELD(ptr, field)  (((Elf64_Ehdr *) ptr)->e_ident[field])
 
 
 /* parse elf_header */

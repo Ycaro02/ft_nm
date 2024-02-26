@@ -50,15 +50,15 @@ int header_identification_correct(char *str, void *elf_struct)
 		return (FALSE);
 	}
 	/* get class 32 or 64 bits */
-	char c = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_CLASS];
+	char c = ELF_HFIELD(elf_struct, EI_CLASS);
 	int ret = check_identification_byte(c, ELFCLASS32, ELFCLASS64);
 	if (ret == 0) {
 		ft_printf_fd(2, "Invalid class found: %d\n", c);
 		return (FALSE);
 	}
 	/* get endian little or big */
-	c = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_DATA];
-	ret = check_identification_byte(c, ELFDATA2LSB, ELFDATA2MSB);
+	c = ELF_HFIELD(elf_struct, EI_DATA);
+    ret = check_identification_byte(c, ELFDATA2LSB, ELFDATA2MSB);
 	if (ret == 0) {
 		ft_printf_fd(2, "Invalid endian found: %d\n", c);
 		return (FALSE);
@@ -69,11 +69,11 @@ int header_identification_correct(char *str, void *elf_struct)
 		return (FALSE);
 	}
 	/* detect os ABI */
-	int os_abi = exploitation_system_abi(((Elf64_Ehdr *) elf_struct)->e_ident[EI_OSABI]);
+	int os_abi = exploitation_system_abi(ELF_HFIELD(elf_struct, EI_OSABI));
 	if (os_abi == -1) {
 		return (FALSE);
 	}
-	int abi_version = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_ABIVERSION]; /* check this ? */
+	int abi_version = ELF_HFIELD(elf_struct, EI_ABIVERSION); /* check this ? */
 	(void)abi_version;
 	ft_printf_fd(1, GREEN"Valid elf header: %s\n"RESET, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
 	// int byte_pad = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_PAD]; /* check this ? */
