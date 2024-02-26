@@ -10,8 +10,8 @@
 /* struct stat typedef */
 typedef struct stat t_stat;
 
+/* Elf structure typedef */
 typedef Elf64_Ehdr t_elf64;
-
 typedef Elf32_Ehdr t_elf32;
 
 /* Get ELF header field */
