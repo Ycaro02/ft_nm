@@ -3,6 +3,7 @@ CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g3
 
 SRCS	=	src/main.c\
+			src/parse_elf_header.c\
 
 LIBFT	= 	libft/libft.a
 
