@@ -9,8 +9,6 @@ Little-endian (LSB) means we start with the least significant part in the lowest
 Big-endian (MSB) means we start with the most significant part.
 For example, 16-bit integer 0x1234 would be stored in bytes as 0x12 0x34 (LSB) or 0x34 0x12 (MSB).
 
-
-
 Authorized func : 
 open(2) close(2) 
 mmap(2) munmap(2) 
@@ -28,6 +26,5 @@ prot  = PROT_READ ?? onyly read maybe
 flags  = MAP_PRIVATE ?? 
 fd = file_fd try to open and checked with fstat
 offset = 0 we want to load the entire file 
-
 
 mmap(NULL, len, prot, flags, file_fd, 0);
