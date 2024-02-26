@@ -82,7 +82,11 @@ int header_identification_correct(char *str, void *elf_struct)
 	if (os_abi == -1) {
 		return (FALSE);
 	}
-	ft_printf_fd(1, "Good format: %s\n", ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
+	int abi_version = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_ABIVERSION]; /* check this ? */
+	(void)abi_version;
+	ft_printf_fd(1, GREEN"Valid elf header: %s\n"RESET, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
+	// int byte_pad = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_PAD]; /* check this ? */
+	
 	return (TRUE);
 }
 
