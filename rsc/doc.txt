@@ -28,3 +28,6 @@ fd = file_fd try to open and checked with fstat
 offset = 0 we want to load the entire file 
 
 mmap(NULL, len, prot, flags, file_fd, 0);
+
+
+readelf -a <file_name>
