@@ -39,7 +39,7 @@ __always_inline int check_range_int8_val(char c, int val1, int val2)
 	return ((c >= val1 && c <= val2));
 }
 
-__always_inline int exploitation_system_abi(unsigned char os_abi)
+__always_inline int detect_os_abi(unsigned char os_abi)
 {
 	/* 0 >= os_abi <= 3 || 0 >= os_abi <= 12 || special os case */
 	if (check_range_int8_val(os_abi, ELFOSABI_NONE, ELFOSABI_GNU)\
@@ -84,7 +84,7 @@ int header_identification_correct(char *str, void *elf_struct)
 		return (FALSE);
 	}
 	/* detect os ABI */
-	int os_abi = exploitation_system_abi(ELF_HFIELD(elf_struct, EI_OSABI));
+	int os_abi = detect_os_abi(ELF_HFIELD(elf_struct, EI_OSABI));
 	if (os_abi == -1) {
 		return (FALSE);
 	}
