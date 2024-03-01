@@ -30,20 +30,6 @@ __always_inline int check_identification_byte(char c, int val1, int val2)
 	return ((c == val1 || c == val2));
 }
 
-__always_inline int exploitation_system_abi(int os_abi)
-{
-	/* 0 >= os_abi <= 3 || 0 >= os_abi <= 12 || special os case */
-	if ((os_abi >= ELFOSABI_NONE && os_abi <= ELFOSABI_GNU)\
-		|| (os_abi >= ELFOSABI_SOLARIS && os_abi <= ELFOSABI_OPENBSD)\
-		|| os_abi == ELFOSABI_ARM_AEABI\
-		|| os_abi == ELFOSABI_ARM\
-		|| os_abi == ELFOSABI_STANDALONE) {
-		return (os_abi);
-	}
-	ft_printf_fd(2, "Unknow os ABI %d\n", os_abi);
-	return (-1);
-}
-
 
 /** @brief check if c value is between val1 and val2
  * 	@return bool 1 for true otherwise 0 
@@ -51,6 +37,19 @@ __always_inline int exploitation_system_abi(int os_abi)
 __always_inline int check_range_int8_val(char c, int val1, int val2)
 {
 	return ((c >= val1 && c <= val2));
+}
+
+__always_inline int exploitation_system_abi(unsigned char os_abi)
+{
+	/* 0 >= os_abi <= 3 || 0 >= os_abi <= 12 || special os case */
+	if (check_range_int8_val(os_abi, ELFOSABI_NONE, ELFOSABI_GNU)\
+		|| check_range_int8_val(os_abi, ELFOSABI_SOLARIS, ELFOSABI_OPENBSD)\
+		|| check_identification_byte(os_abi, ELFOSABI_ARM_AEABI, ELFOSABI_ARM)\
+		|| os_abi == ELFOSABI_STANDALONE) {
+		return (os_abi);	
+	}
+	ft_printf_fd(2, "Unknow os ABI %d\n", os_abi);
+	return (-1);
 }
 
 /**@brief Parse header identification field
@@ -68,16 +67,16 @@ int header_identification_correct(char *str, void *elf_struct)
 	/* get class 32 or 64 bits */
 	char c = ELF_HFIELD(elf_struct, EI_CLASS);
 	int ret = check_identification_byte(c, ELFCLASS32, ELFCLASS64);
-	if (ret == 0) {
+	if (ret == FALSE) {
 		ft_printf_fd(2, "Invalid class found: %d\n", c);
-		return (FALSE);
+		return (ret);
 	}
 	/* get endian little or big */
 	c = ELF_HFIELD(elf_struct, EI_DATA);
     ret = check_identification_byte(c, ELFDATA2LSB, ELFDATA2MSB);
-	if (ret == 0) {
+	if (ret == FALSE) {
 		ft_printf_fd(2, "Invalid endian found: %d\n", c);
-		return (FALSE);
+		return (ret);
 	}
 	/* check version must be current version */
 	if (((Elf64_Ehdr *) elf_struct)->e_ident[EI_VERSION] != EV_CURRENT) {
