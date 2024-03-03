@@ -20,6 +20,6 @@ int main(int argc, char **argv)
 	int8_t endian =  ELF_HFIELD(elf_struct, EI_DATA) - context.l_endian; 
 	// test_macro(elf_struct, endian);
 	test_fun(elf_struct, endian);
-
+  display_all_program_header(elf_struct, endian);
 	return (0);
 }

@@ -61,6 +61,9 @@ typedef struct s_elf {
 void    *parse_elf_header(char *str);
 void    test_fun(void *elf_struct, int8_t endian);
 
+void display_all_program_header(void *ptr, int8_t endian);
+/* program header */
+void display_program_header_info(void *elf_struct, int8_t endian);
 
 /* handle endian */
 void    reverse_bytes(uint8_t *ptr, size_t max);

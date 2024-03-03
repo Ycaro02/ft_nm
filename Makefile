@@ -5,6 +5,7 @@ CFLAGS	= -Wall -Wextra -Werror -O3 -g
 SRCS	=	src/main.c\
 			src/parse_elf_header.c\
 			src/handle_endian.c\
+			src/parse_program_header.c\
 
 LIBFT	= 	libft/libft.a
 
