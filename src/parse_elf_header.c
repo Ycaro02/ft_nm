@@ -1,5 +1,128 @@
 # include "../include/nm.h"
 
+/*Get all Elf64_Ehdr */
+
+/* Get header type  */ 
+static inline Elf64_Half get_header_type(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_type, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_type, endian));
+}
+
+/* Get machine */
+static inline Elf64_Half get_header_machine(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_machine, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_machine, endian));
+}
+
+/* Get version */
+static inline Elf64_Word get_header_version(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_version, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_version, endian));
+}
+
+/* Get addr entry point */
+static inline Elf64_Addr get_header_entry(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_entry, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_entry, endian));
+}
+
+/* Get Program header table file offset */
+static inline Elf64_Off get_header_phoff(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phoff, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_phoff, endian));
+}
+
+/* Get Section header table file offset */
+static inline Elf64_Off get_header_shoff(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shoff, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shoff, endian));
+}
+
+/* Get Processor-specific flags */
+static inline Elf64_Word get_header_flags(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_flags, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_flags, endian));
+}
+
+/* ELF header size in bytes */
+static inline Elf64_Half get_header_ehsize(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_ehsize, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_ehsize, endian));
+}
+
+/* Program header table entry size */
+static inline Elf64_Half get_header_phentsize(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phentsize, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_phentsize, endian));
+}
+
+/* Program header table entry count */
+static inline Elf64_Half get_header_phnum(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phnum, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_phnum, endian));
+}
+
+/* Section header table entry size */
+static inline Elf64_Half get_header_shentsize(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shentsize, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shentsize, endian));
+}
+
+/* Section header table entry count */
+static inline Elf64_Half get_header_shnum(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shnum, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shnum, endian));
+}
+
+/* Section header string table index */
+static inline Elf64_Half get_header_shstrndx(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shstrndx, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shstrndx, endian));
+}
+
+void test_fun(void *elf_struct, int8_t endian)
+{
+	ft_printf_fd(1, YELLOW"type:%s%s|%d| "RESET,RESET, GREEN, get_header_type(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"machine:%s%s|%d| "RESET,RESET, GREEN, get_header_machine(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"version:%s%s|%d| "RESET,RESET, GREEN, get_header_version(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"entry:%s%s|%p| "RESET,RESET, GREEN, get_header_entry(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"phoff:%s%s|%d| "RESET,RESET, GREEN, get_header_phoff(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"shoff:%s%s|%d| "RESET,RESET, GREEN, get_header_shoff(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"flags:%s%s|%d| "RESET,RESET, GREEN, get_header_flags(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"ehsize:%s%s|%d| "RESET,RESET, GREEN, get_header_ehsize(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"phentsize%s%s|%d| "RESET,RESET,GREEN, get_header_phentsize(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"phnum:%s%s|%d| "RESET,RESET, GREEN, get_header_phnum(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"shentsize%s%s|%d| "RESET,RESET,GREEN, get_header_shentsize(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"shnum:%s%s|%d| "RESET,RESET, GREEN, get_header_shnum(elf_struct, endian));
+	ft_printf_fd(1, YELLOW"shstrndx:%s%s|%d|\n"RESET,RESET, GREEN, get_header_shstrndx(elf_struct, endian));
+}
+
 static int call_open(char *str)
 {
 	int fd = open(str, O_RDONLY);
