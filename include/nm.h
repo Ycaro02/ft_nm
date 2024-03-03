@@ -34,19 +34,33 @@ typedef struct stat t_stat;
    | (((x) & 0x000000000000ff00ull) << 40)	\
    | (((x) & 0x00000000000000ffull) << 56))
 
+
+
+
 /* Start macro parse header ident */
 /* Get ELF header field */
 # define ELF_HFIELD(ptr, field)		(((Elf64_Ehdr *) ptr)->e_ident[field])
+
 /* Alias to easy call ELF Hfield ptr, class*/
 # define ELF_CLASS(ptr)				ELF_HFIELD(ptr, EI_CLASS)
+
 /* is 64 bits format */
 # define IS_ELF64(ptr)				ELF_CLASS(ptr) == ELFCLASS64
 /* if size == 2 swap 16 bits, else: if size == 4 swap 32 bit, else swap 64*/
 # define REVERSE_ENDIAN(x, size)	size == 2 ? SWAP_BYTE_16(x) : ((size == 4 ? SWAP_BYTE_32(x) : SWAP_BYTE_64(x)))
 /* if endian = 0 || size data == 1, don't revese, else call reverse endian */
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
+
+
 /* get type */
 # define ELF_TYPE(ptr, endian)		IS_ELF64(ptr) ? READ_DATA(((Elf64_Ehdr *) ptr)->e_type, endian) : READ_DATA(((Elf32_Ehdr *) ptr)->e_type, endian)
+
+static inline Elf64_Half get_header_type(void *ptr, uint8_t endian) {
+  if (IS_ELF64(ptr)) {
+    return (READ_DATA(((Elf64_Ehdr *) ptr)->e_type, endian));
+  }
+  return (READ_DATA(((Elf32_Ehdr *) ptr)->e_type, endian));
+}
 /* Get machine */
 # define ELF_MACHINE(ptr, endian)	IS_ELF64(ptr) ? READ_DATA(((Elf64_Ehdr *) ptr)->e_machine, endian) : READ_DATA(((Elf32_Ehdr *) ptr)->e_machine, endian) 
 /* Get version */
