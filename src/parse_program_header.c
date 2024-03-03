@@ -73,11 +73,6 @@ Elf64_Xword get_program_header_align(void *ptr, int8_t endian) {
     return (READ_DATA(((Elf32_Phdr *) ptr)->p_align, endian));
 }
 
-
-
-
-
-
 void display_program_header_info(void *ph_ptr, int8_t endian)
 {
 	ft_printf_fd(1, YELLOW"Ptype:%s%s|%p| "RESET,RESET, GREEN, get_program_header_type(ph_ptr, endian));

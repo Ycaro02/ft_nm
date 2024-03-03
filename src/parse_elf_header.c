@@ -106,7 +106,7 @@ static inline Elf64_Half get_header_shstrndx(void *ptr, int8_t endian) {
   return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shstrndx, endian));
 }
 
-void test_fun(void *elf_struct, int8_t endian)
+void display_elf_header(void *elf_struct, int8_t endian)
 {
 	ft_printf_fd(1, YELLOW"type:%s%s|%d| "RESET,RESET, GREEN, get_header_type(elf_struct, endian));
 	ft_printf_fd(1, YELLOW"machine:%s%s|%d| "RESET,RESET, GREEN, get_header_machine(elf_struct, endian));
