@@ -33,7 +33,7 @@ static inline int check_identification_byte(char c, int val1, int val2)
 /** @brief check if c value is between val1 and val2
  * 	@return bool 1 for true otherwise 0 
 */
-static inline int check_range_int8_val(char c, int val1, int val2)
+int check_range_int8_val(char c, int val1, int val2)
 {
 	return ((c >= val1 && c <= val2));
 }
