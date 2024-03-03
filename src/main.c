@@ -21,5 +21,6 @@ int main(int argc, char **argv)
 	// test_macro(elf_struct, endian);
 	display_elf_header(elf_struct, endian);
   display_all_program_header(elf_struct, endian);
+  display_all_section_header(elf_struct, endian);
 	return (0);
 }

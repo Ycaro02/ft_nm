@@ -244,22 +244,40 @@ void *parse_elf_header(char *str)
 	return (elf_struct);
 }
 
-uint16_t get_phdr_size(void *ptr)
+uint16_t get_structure_size(void *elf_ptr, uint16_t size64, uint16_t size32)
 {
-	if (IS_ELF64(ptr)) {
-		return (sizeof(Elf64_Phdr));
+	if (IS_ELF64(elf_ptr)) {
+		return (size64);
 	}
-	return (sizeof(Elf32_Phdr));
+	return (size32);
 }
 
-void display_all_program_header(void *ptr, int8_t endian) {
-	uint16_t	struct_size = get_phdr_size(ptr); 
+void display_all_program_header(void *ptr, int8_t endian)
+{
+	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
 	void		*p_header = ptr + get_header_phoff(ptr, endian);
 	uint16_t	max = get_header_phnum(ptr, endian);
 
+	ft_printf_fd(1, RED"Program header table\n"RESET);
+
 	for (uint16_t i = 0; i < max; ++i) {
-		ft_printf_fd(1, "Idx [%d]\n", i);
+		ft_printf_fd(1, BLUE"Idx [%d]\n"RESET, i);
 		display_program_header_info(p_header + (struct_size * i), endian);
 		ft_printf_fd(1, "\n");
 	}
 }
+
+void display_all_section_header(void *ptr, int8_t endian)
+ {
+	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	void		*p_header = ptr + get_header_shoff(ptr, endian);
+	uint16_t	max = get_header_shnum(ptr, endian);
+	ft_printf_fd(1, RED"Section header table\n"RESET);
+
+	for (uint16_t i = 0; i < max; ++i) {
+		ft_printf_fd(1, PURPLE"Idx [%d]\n"RESET, i);
+		display_section_header_info(p_header + (struct_size * i), endian);
+		ft_printf_fd(1, "\n");
+	}
+
+ }

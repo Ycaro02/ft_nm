@@ -6,6 +6,8 @@ SRCS	=	src/main.c\
 			src/parse_elf_header.c\
 			src/handle_endian.c\
 			src/parse_program_header.c\
+			src/parse_section_header.c\
+			
 
 LIBFT	= 	libft/libft.a
 
