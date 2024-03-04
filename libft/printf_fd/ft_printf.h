@@ -24,12 +24,8 @@ int		ft_putlnbr(int nbr, int fd);
 int		ft_putlstr(char *str, int fd);
 int		ft_put_i_nbr(int nbr, int fd);
 int		ft_printf_fd(int fd, const char *s, ...);
-int		ft_display(const char *s, int i, va_list params, int fd);
-int		ft_print_loop(const char *s, va_list params, int big_len, int fd);
-int		ft_continue_display(const char *s, int i, va_list params, int fd);
 void	ft_put_lx_nbr(unsigned int nbr, int *count, int fd);
 void	ft_put_bigx_nbr(unsigned int nbr, int *count, int fd);
 void	ft_put_p_nbr(unsigned long nbr, int *count, int fd);
-void	ft_check_p(unsigned long nbr, int *count, int fd);
 
 #endif

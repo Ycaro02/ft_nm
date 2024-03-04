@@ -47,14 +47,14 @@ typedef struct stat t_stat;
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
 
 typedef struct s_nm_context {
-    uint8_t flag;
-    int8_t  l_endian;
+    uint8_t flag;     /* nm flag for bonus */
+    int8_t  l_endian; /* local env endian */
 } t_nm_context;
 
 typedef struct s_elf {
-    char    *name;
-    uint8_t class;
-    uint8_t endian;
+    char    *name;  /* file name */
+    uint8_t class;  /* bool class 1 for elf64 0 for 32 */
+    uint8_t endian; /* bool endian 0 for same endian otherwise reverse */
 } t_elf;
 
 /* parse elf_header */
@@ -78,7 +78,6 @@ Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
-
 
 Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
 

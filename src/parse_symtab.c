@@ -9,7 +9,7 @@ Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol type and binding */
-unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
+static inline unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
         return ((unsigned char)(((Elf64_Sym *) ptr)->st_info));
     }
@@ -17,7 +17,7 @@ unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
 }
 
 /* Symbol visibility */
-unsigned char get_symbol_other(void *ptr, int8_t is_elf64) {
+static inline unsigned char get_symbol_other(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
         return ((unsigned char)(((Elf64_Sym *) ptr)->st_other));
     }
@@ -25,7 +25,7 @@ unsigned char get_symbol_other(void *ptr, int8_t is_elf64) {
 }
 
 /* Section index */
-Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
+static inline Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_shndx, endian));
     }
@@ -33,7 +33,7 @@ Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol value */
-Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
+static inline Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_value, endian));
     }
@@ -41,7 +41,7 @@ Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol size */
-Elf64_Xword get_symbol_size(void *ptr, int8_t endian, int8_t is_elf64) {
+static inline Elf64_Xword get_symbol_size(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_size, endian));
     }

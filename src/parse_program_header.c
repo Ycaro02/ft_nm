@@ -13,7 +13,7 @@
 // } Elf64_Phdr;
 
 /* Segment type */
-Elf64_Word get_program_header_type(void *ptr, int8_t endian) {
+static inline Elf64_Word get_program_header_type(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_type, endian));
     }
@@ -21,7 +21,7 @@ Elf64_Word get_program_header_type(void *ptr, int8_t endian) {
 }
 
 /* Segment flags */
-Elf64_Word get_program_header_flags(void *ptr, int8_t endian) {
+static inline Elf64_Word get_program_header_flags(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_flags, endian));
     }
@@ -29,28 +29,28 @@ Elf64_Word get_program_header_flags(void *ptr, int8_t endian) {
 }
 
 /* Segment file offset */
-Elf64_Off get_program_header_offset(void *ptr, int8_t endian) {
+static inline Elf64_Off get_program_header_offset(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_offset, endian));
     }
     return (READ_DATA(((Elf32_Phdr *) ptr)->p_offset, endian));
 }
 /* Segment virtual address */
-Elf64_Addr get_program_header_vaddr(void *ptr, int8_t endian) {
+static inline Elf64_Addr get_program_header_vaddr(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_vaddr, endian));
     }
     return (READ_DATA(((Elf32_Phdr *) ptr)->p_vaddr, endian));
 }
 /* Segment physical address */
-Elf64_Addr get_program_header_paddr(void *ptr, int8_t endian) {
+static inline Elf64_Addr get_program_header_paddr(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_paddr, endian));
     }
     return (READ_DATA(((Elf32_Phdr *) ptr)->p_paddr, endian));
 }
 
-Elf64_Xword get_program_header_filesz(void *ptr, int8_t endian) {
+static inline Elf64_Xword get_program_header_filesz(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_filesz, endian));
     }
@@ -58,7 +58,7 @@ Elf64_Xword get_program_header_filesz(void *ptr, int8_t endian) {
 }
 
 
-Elf64_Xword get_program_header_memsz(void *ptr, int8_t endian) {
+static inline Elf64_Xword get_program_header_memsz(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_memsz, endian));
     }
@@ -66,7 +66,7 @@ Elf64_Xword get_program_header_memsz(void *ptr, int8_t endian) {
 }
 
 
-Elf64_Xword get_program_header_align(void *ptr, int8_t endian) {
+static inline Elf64_Xword get_program_header_align(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {
         return (READ_DATA(((Elf64_Phdr *) ptr)->p_align, endian));
     }
