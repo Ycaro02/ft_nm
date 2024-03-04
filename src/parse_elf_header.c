@@ -298,6 +298,38 @@ char *get_strtab(void *ptr, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64
 	return (strtab);
 }
 
+
+void lst_name_sort(t_list *lst)
+{
+    if (!lst)
+        return ;
+    t_list *head = lst;
+    t_list *min = NULL;
+    while (lst)  {
+        if (!min)
+            min = lst;
+        char *current = ((t_list *) lst)->content;
+        char *min_file = ((t_list *) min)->content;
+        if (ft_strcmp(current, min_file) <= 0)
+            min = lst;
+        lst = lst->next;
+    }
+    t_list *tmp = head->content;
+    head->content = min->content;
+    min->content = tmp;
+    lst_name_sort(head->next);
+}
+
+int is_source_file(char *name)
+{
+	int len = ft_strlen(name);
+	if (len > 2 && name[len - 2] == '.') {
+		if (!ft_isdigit(name[len -1]))
+			return (1);
+	}
+	return (0);
+}
+
 void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 {
 	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
@@ -311,12 +343,17 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		uint32_t 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
-		ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
-		ft_lstadd_back(&name_lst, ft_lstnew(strtab + name_idx));
+		// ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
+		/* if (name && *name) */
+		if (((char *) strtab + name_idx) && *((char *) strtab + name_idx) && !is_source_file((char *)strtab + name_idx)) {
+			ft_lstadd_back(&name_lst, ft_lstnew(strtab + name_idx));
+		}
 	}
 
+	lst_name_sort(name_lst);
+
 	for (t_list *current = name_lst; current; current = current->next) {
-		ft_printf_fd(1, YELLOW"%s\n"RESET, (char *) current->content);
+		ft_printf_fd(1, "%s\n", (char *) current->content);
 	}
 	lst_clear(&name_lst, NULL);
 }

@@ -36,7 +36,7 @@ void			ft_lst_remove_if(t_list **list, void (*del)(void*), int (*condition)(void
 void 			*get_lst_index_content(t_list *lst, int index);
 
 void			lst_clear(t_list **lst, void (*del)(void*));
-
+void 			reverse_lst(t_list **lst);
 
 
  # endif /* DEFINE_LINKED_LIST_H */
