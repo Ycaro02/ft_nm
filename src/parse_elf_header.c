@@ -364,7 +364,67 @@ void insert_pad(uint8_t pad, char *c)
 	}
 }
 
-void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
+
+uint8_t get_symbole_char(uint8_t type, uint8_t bind, Elf64_Xword sh_flag)
+{
+	uint8_t c = UNDIFINED_SYM;
+
+	switch (type) {
+		case STT_NOTYPE:
+			c = UNDIFINED_SYM;
+			break;
+		case STT_OBJECT:
+			c = OBJECT_SYM;
+			break;
+		case STT_FUNC:
+			c = FUNCTION_SYM;
+			break;
+		case STT_SECTION:
+			c = SECTIONB_SYM;
+			break;
+		case STT_COMMON:
+			c = COMMON_SYM;
+			break;
+		case STT_TLS:
+			c = DATA_SYM;
+			break;
+		case STT_NUM:
+			c = NUM_SYM;
+			break;
+		case STT_GNU_IFUNC:
+			c = IFUNC_SYM;
+			break;
+		case STT_HIOS:
+			c = LOOS_SYM;
+			break;
+		case STT_LOPROC:
+		case STT_HIPROC:
+			c = LOPROC_SYM;
+			break;
+	}
+	(void)sh_flag;
+	// if (sh_flag == (SHF_ALLOC | SHF_WRITE)) {
+	// 	return ('d');
+	// }
+
+	switch (bind) {
+		case STB_GNU_UNIQUE:
+			c = 'u';
+			break;
+		case STB_LOCAL:
+			c += 32;
+			break;
+		case STB_GLOBAL:
+			break;
+		case STB_WEAK:
+			c += 32;
+			break;
+	}
+	return (c);
+}
+
+
+void display_symbol(t_nm_file *file, int16_t sizeof_Shdr, Elf64_Xword sh_flag)
 {
 	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 	char 			*strtab = get_strtab(file->ptr, sizeof_Shdr, file->endian, file->class);
@@ -387,8 +447,11 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 				return ; /* need to return return NULL or error here */
 			}
 			sym_node->sym_name = strtab + name_idx;
-			sym_node->value = get_symbol_value((file->symtab + i), file->endian, file->class);;
+			sym_node->value = get_symbol_value((file->symtab + i), file->endian, file->class);
+ 			sym_node->type =  ELF32_ST_TYPE(get_symbol_info((file->symtab + i), file->class));
+ 			sym_node->bind = ELF32_ST_BIND(get_symbol_info((file->symtab + i), file->class));
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
+
 		}
 	}
 
@@ -403,7 +466,10 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 		} else {
 			insert_pad(file->class == 1 ? 16 : 8, " "); /* replace this hardcode shit */
 		}
-		ft_printf_fd(1, " A %s\n", (char *) ((t_sym_tab *) ((t_list *) current)->content)->sym_name);
+		uint8_t symbole_char = get_symbole_char(((t_sym_tab *) ((t_list *) current)->content)->type, ((t_sym_tab *) ((t_list *) current)->content)->bind, sh_flag);
+		ft_printf_fd(1, " %c %s\n",symbole_char, (char *) ((t_sym_tab *) ((t_list *) current)->content)->sym_name);
+		// ft_printf_fd(2, YELLOW"char %c, |%u|\n"RESET, get_symbole_char(((t_sym_tab *) ((t_list *) current)->content)->type, ((t_sym_tab *) ((t_list *) current)->content)->bind, sh_flag), sh_flag);
+
 	}
 	lst_clear(&name_lst, NULL);
 }
@@ -423,6 +489,7 @@ void display_all_section_header(t_nm_file *file)
 	// 	ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
 	// }
 
+	Elf64_Xword sh_flag = 0; 
 
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Shdr * i));
@@ -433,11 +500,13 @@ void display_all_section_header(t_nm_file *file)
 				file->symtab_size = get_section_header_size(s_hptr, file->endian, file->class);
 				Elf64_Off symoffset = get_section_header_offset(s_hptr, file->endian, file->class);
 				file->symtab = file->ptr + symoffset;
+				sh_flag = get_section_header_flags(s_hptr, file->endian, file->class);
 				// ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), file->symtab);
+			
 				break;
 			}
 		}
 	}
 
-	display_symbol(file, sizeof_Shdr);
+	display_symbol(file, sizeof_Shdr, sh_flag);
  }

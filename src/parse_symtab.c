@@ -9,7 +9,7 @@ Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol type and binding */
-static inline unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
+unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
         return ((unsigned char)(((Elf64_Sym *) ptr)->st_info));
     }
@@ -25,7 +25,7 @@ static inline unsigned char get_symbol_other(void *ptr, int8_t is_elf64) {
 }
 
 /* Section index */
-static inline Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
+Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_shndx, endian));
     }
