@@ -242,7 +242,7 @@ void *parse_elf_header(char *str)
 	return (elf_struct);
 }
 
-uint16_t get_structure_size(void *elf_ptr, uint16_t size64, uint16_t size32)
+uint16_t detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32)
 {
 	return (IS_ELF64(elf_ptr) ? size64 : size32);
 	// return ((IS_ELF64(elf_ptr) * size64) + (IS_ELF64(elf_ptr) * size32)); /* branchless version */
@@ -250,7 +250,7 @@ uint16_t get_structure_size(void *elf_ptr, uint16_t size64, uint16_t size32)
 
 void display_all_program_header(t_nm_file *file)
 {
-	uint16_t	sizeof_Shdr = get_structure_size(file->ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
+	uint16_t	sizeof_Shdr = detect_struct_size(file->ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
 	void		*p_header = file->ptr + get_header_phoff(file->ptr, file->endian);
 	uint16_t	max = get_header_phnum(file->ptr, file->endian);
 
@@ -265,7 +265,7 @@ void display_all_program_header(t_nm_file *file)
 
 void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 {
-	uint16_t	sizeof_Shdr = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	sizeof_Shdr = detect_struct_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	/* section header ptr, base pointer + section header offset */
 	void		*section_header = (ptr + get_header_shoff(ptr, endian));
 	/* section_header_strtab, sectionheader[idx], section header str index */
@@ -273,7 +273,6 @@ void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 	void *shstrtab = ptr + get_section_header_offset(section_shstrtab, endian, is_elf64);
 	return (shstrtab);
 }
-
 
 char *get_strtab(void *ptr, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64)
 {
@@ -301,23 +300,30 @@ char *get_strtab(void *ptr, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64
 
 void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 {
-	Elf64_Xword 	struct_sym_size = get_structure_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
+	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 	char 			*strtab = get_strtab(file->ptr, sizeof_Shdr, file->endian, file->class);
 	if (!strtab) {
 		ft_printf_fd(1, RED"ft_nm: Error no .strtab found\n"RESET);
 		return ;
 	}
 
+	t_list *name_lst = NULL;
+
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
-		// void		*s_symptr = file->symtab + i;
 		uint32_t 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
-		ft_printf_fd(1, YELLOW"Symtab i: [%d], name idx [%d]"RESET""GREEN"|%s|\n"RESET, (i / struct_sym_size), name_idx, ((char *) strtab + name_idx));
+		ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
+		ft_lstadd_back(&name_lst, ft_lstnew(strtab + name_idx));
 	}
+
+	for (t_list *current = name_lst; current; current = current->next) {
+		ft_printf_fd(1, YELLOW"%s\n"RESET, (char *) current->content);
+	}
+	lst_clear(&name_lst, NULL);
 }
 
 void display_all_section_header(t_nm_file *file)
  {
-	uint16_t	sizeof_Shdr = get_structure_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	sizeof_Shdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = (file->ptr + get_header_shoff(file->ptr, file->endian));
 	uint16_t	max = get_header_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);

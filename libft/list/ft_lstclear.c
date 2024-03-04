@@ -12,6 +12,28 @@
 
 #include "linked_list.h"
 
+void	lst_clear(t_list **lst, void (*del)(void*))
+{
+	t_list	*tmp;
+	t_list	*current;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	current = *lst;
+	tmp = current;
+	while (tmp != NULL)
+	{
+		tmp = current->next;
+		if (del) {
+			del(current->content);
+		}
+		free(current);
+		current = tmp;
+	}
+	*lst = NULL;
+}
+
+
 void	ft_lstclear(t_list **lst, void (*del)(void*))
 {
 	t_list	*tmp;

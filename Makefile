@@ -12,6 +12,8 @@ SRCS	=	src/main.c\
 
 LIBFT	= 	libft/libft.a
 
+LIST = libft/list/linked_list.a
+
 OBJS = $(SRCS:.c=.o)
 
 RM	= rm -f
@@ -37,7 +39,7 @@ ${NAME}:	${OBJS}
 			@${MAKE_LIST}
 			@echo "\033[6;32m ----- Compiling lib done\t----- \033[0m"
 			@ echo "\033[6;36m ----- Compiling ${NAME} project  ----- \033[0m"
-			@${CC} ${CFLAGS} -o ${NAME} $(OBJS) ${LIBFT}
+			@${CC} ${CFLAGS} -o ${NAME} $(OBJS) ${LIBFT} ${LIST}
 			@echo "\033[6;32m ----- Compiling ${NAME} done     ----- \033[0m"
 
 clean:

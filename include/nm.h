@@ -9,6 +9,7 @@
 # include <stdio.h>			/* Perror */
 # include "../libft/basic_define.h" /* Color */
 # include "../libft/libft.h" 	/* libft */
+# include "../libft/list/linked_list.h" /* list */
 
 /* struct stat typedef */
 typedef struct stat t_stat;
