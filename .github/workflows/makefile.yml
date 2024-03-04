@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # - name: Install valgrind
-      # run: sudo apt update && sudo apt install valgrind -y
+    - name: Install dependencie for 32 bits compilation
+      run: sudo apt update && sudo apt install libc6-dev-i386
     
     - name: Run make
       run: make
