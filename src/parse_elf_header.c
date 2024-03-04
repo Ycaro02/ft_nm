@@ -403,6 +403,8 @@ uint8_t get_symbole_char(uint8_t type, uint8_t bind, Elf64_Xword sh_flag)
 			break;
 	}
 	(void)sh_flag;
+	/* file->ptr + secion header offset, take shndx, get_symvole_shndx
+		search in sh table if shndx < shnub s*/
 	// if (sh_flag == (SHF_ALLOC | SHF_WRITE)) {
 	// 	return ('d');
 	// }
