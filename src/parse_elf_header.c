@@ -299,19 +299,19 @@ char *get_strtab(void *ptr, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64
 	return (strtab);
 }
 
-void display_symbol(void *ptr, void *symtab, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64, Elf64_Xword section_size)
+void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 {
-	char *strtab = get_strtab(ptr, sizeof_Shdr, endian, is_elf64);
+	Elf64_Xword 	struct_sym_size = get_structure_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
+	char 			*strtab = get_strtab(file->ptr, sizeof_Shdr, file->endian, file->class);
 	if (!strtab) {
 		ft_printf_fd(1, RED"ft_nm: Error no .strtab found\n"RESET);
 		return ;
 	}
 
-	Elf64_Xword s_sym_size = get_structure_size(ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
-	for (Elf64_Xword i = 0; i < section_size; i += s_sym_size) {
-		void *s_symptr = symtab + i;
-		uint32_t name_idx = get_symbol_name(s_symptr, endian, is_elf64);
-		ft_printf_fd(1, YELLOW"Symtab i: [%d], name idx [%d]"RESET""GREEN"|%s|\n"RESET, (i / s_sym_size), name_idx, ((char *) strtab + name_idx));
+	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
+		// void		*s_symptr = file->symtab + i;
+		uint32_t 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
+		ft_printf_fd(1, YELLOW"Symtab i: [%d], name idx [%d]"RESET""GREEN"|%s|\n"RESET, (i / struct_sym_size), name_idx, ((char *) strtab + name_idx));
 	}
 }
 
@@ -346,8 +346,5 @@ void display_all_section_header(t_nm_file *file)
 		}
 	}
 
-	// display_symbol(file, sizeof_Shdr);
-
-	display_symbol(file->ptr, file->symtab, sizeof_Shdr, file->endian, file->class, file->symtab_size);
-
+	display_symbol(file, sizeof_Shdr);
  }
