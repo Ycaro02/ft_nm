@@ -350,10 +350,18 @@ uint8_t compute_hex_len(unsigned long nbr)
 	return (count);
 }
 
-/* if elf 64, 16 digit else 8 */
+/* if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if*/
 uint8_t get_zero_padding(int8_t class, uint8_t len)
 {
 	return (((class == 1 ? 16 : 8) - (len + 1)) * (len != 0));
+}
+
+void insert_pad(uint8_t pad, char c)
+{
+	while (pad > 0) {
+		ft_printf_fd(1, &c);
+		--pad;
+	}
 }
 
 void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
@@ -369,17 +377,17 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
-		Elf64_Addr sym_value = get_symbol_value((file->symtab + i), file->endian, file->class);
 		// ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
-		/* if (name && *name) */
-		if (((char *) strtab + name_idx) && *((char *) strtab + name_idx) && !is_source_file((char *)strtab + name_idx)) {
+		char 		*name = strtab + name_idx;
+		/* if (name && *name && name is not source/obj file) */
+		if (name && *name && !is_source_file(name)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
 				return ; /* need to return return NULL or error here */
 			}
 			sym_node->sym_name = strtab + name_idx;
-			sym_node->value = sym_value;
+			sym_node->value = get_symbol_value((file->symtab + i), file->endian, file->class);;
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
@@ -390,17 +398,10 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 		// ft_printf_fd(1, "%p A ", ((t_sym_tab *) ((t_list *) current)->content)->value);
 		uint8_t pad = get_zero_padding(file->class, compute_hex_len(((t_sym_tab *) ((t_list *) current)->content)->value));
 		if (pad > 0) {
-			while (pad > 0) {
-				ft_printf_fd(1, "0");
-				--pad;
-			}
+			insert_pad(pad, '0');
 			display_sym_value(((t_sym_tab *) ((t_list *) current)->content)->value, 1);
 		} else {
-			uint8_t max = file->class == 1 ? 16 : 8;
-			while (max > 0) {
-				ft_printf_fd(1, " ");
-				--max;
-			}
+			insert_pad(file->class == 1 ? 16 : 8, ' '); /* replace this hardcode shit */
 		}
 		ft_printf_fd(1, " A %s\n", (char *) ((t_sym_tab *) ((t_list *) current)->content)->sym_name);
 	}
