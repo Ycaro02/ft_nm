@@ -18,11 +18,11 @@ elf_file_diff() {
 }
 
 elf32_basic_test() {
-    NAME32="32out"
-    gcc -m32 rsc/main_32.c -o ${NAME32}
+    NAME32=${1}.out
+    gcc -m32 ${1} -o ${NAME32}
     elf_file_diff ${NAME32}
     rm ${NAME32}
 }
 
 elf_file_diff ${BIN}
-elf32_basic_test
+elf32_basic_test rsc/main_32.c
