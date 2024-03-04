@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
-	printf(YELLOW"Local endian = %d\n"RESET, context.l_endian);
+	ft_printf_fd(2, YELLOW"Local endian = %u\n"RESET, context.l_endian);
 	// ft_printf_fd(1, "class: %d\n", ELF_CLASS(elf_struct));
 	if (argc > 1) {
 		path = argv[1];
@@ -38,8 +38,8 @@ int main(int argc, char **argv)
 	/* endian bool, 0 if same endian */
 	t_nm_file *file = get_nm_file_context(context, path);
 	if (file) {
-		display_elf_header(file->ptr, file->endian);
-		display_all_program_header(file);
+		// display_elf_header(file->ptr, file->endian);
+		// display_all_program_header(file);
 		display_all_section_header(file);
 		free(file);
 	}

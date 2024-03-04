@@ -210,7 +210,7 @@ int header_identification_correct(char *str, void *elf_struct)
 	}
 	int abi_version = ELF_HFIELD(elf_struct, EI_ABIVERSION); /* check this ? */
 	(void)abi_version;
-	ft_printf_fd(1, GREEN"Valid elf header: %s\n"RESET, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
+	ft_printf_fd(2, GREEN"Valid elf header: %s\n"RESET, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
 	// int byte_pad = ((Elf64_Ehdr *) elf_struct)->e_ident[EI_PAD]; /* check this ? */
 	
 	return (TRUE);
@@ -289,7 +289,7 @@ char *get_strtab(void *ptr, uint16_t sizeof_Shdr, int8_t endian, int8_t is_elf64
 			// strtab_off = get_section_header_offset(s_hptr, endian, is_elf64);
 			uint16_t name_idx = get_section_header_name(s_hptr, endian, is_elf64);
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {
-				ft_printf_fd(1, RED"Found strtab addr: [%p], |%s|\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
+				// ft_printf_fd(1, RED"Found strtab addr: [%p], |%s|\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
 				strtab = ptr + get_section_header_offset(s_hptr, endian, is_elf64);
 				break;
 			}
@@ -356,10 +356,10 @@ uint8_t get_zero_padding(int8_t class, uint8_t len)
 	return (((class == 1 ? 16 : 8) - (len + 1)) * (len != 0));
 }
 
-void insert_pad(uint8_t pad, char c)
+void insert_pad(uint8_t pad, char *c)
 {
 	while (pad > 0) {
-		ft_printf_fd(1, &c);
+		ft_printf_fd(1, c);
 		--pad;
 	}
 }
@@ -398,10 +398,10 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 		// ft_printf_fd(1, "%p A ", ((t_sym_tab *) ((t_list *) current)->content)->value);
 		uint8_t pad = get_zero_padding(file->class, compute_hex_len(((t_sym_tab *) ((t_list *) current)->content)->value));
 		if (pad > 0) {
-			insert_pad(pad, '0');
+			insert_pad(pad, "0");
 			display_sym_value(((t_sym_tab *) ((t_list *) current)->content)->value, 1);
 		} else {
-			insert_pad(file->class == 1 ? 16 : 8, ' '); /* replace this hardcode shit */
+			insert_pad(file->class == 1 ? 16 : 8, " "); /* replace this hardcode shit */
 		}
 		ft_printf_fd(1, " A %s\n", (char *) ((t_sym_tab *) ((t_list *) current)->content)->sym_name);
 	}
@@ -415,13 +415,13 @@ void display_all_section_header(t_nm_file *file)
 	uint16_t	max = get_header_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
-	ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
+	// ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
 
-	for (uint16_t i = 0; i < max; ++i) {
-		void *header_ptr = section_header + (sizeof_Shdr * i);
-		uint16_t name_idx = get_section_header_name(header_ptr, file->endian, file->class);
-		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
-	}
+	// for (uint16_t i = 0; i < max; ++i) {
+	// 	void *header_ptr = section_header + (sizeof_Shdr * i);
+	// 	uint16_t name_idx = get_section_header_name(header_ptr, file->endian, file->class);
+	// 	ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
+	// }
 
 
 	for (uint16_t i = 0; i < max; ++i) {
@@ -433,7 +433,7 @@ void display_all_section_header(t_nm_file *file)
 				file->symtab_size = get_section_header_size(s_hptr, file->endian, file->class);
 				Elf64_Off symoffset = get_section_header_offset(s_hptr, file->endian, file->class);
 				file->symtab = file->ptr + symoffset;
-				ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), file->symtab);
+				// ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), file->symtab);
 				break;
 			}
 		}

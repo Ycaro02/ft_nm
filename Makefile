@@ -42,6 +42,9 @@ ${NAME}:	${OBJS}
 			@${CC} ${CFLAGS} -o ${NAME} $(OBJS) ${LIBFT} ${LIST}
 			@echo "\033[6;32m ----- Compiling ${NAME} done     ----- \033[0m"
 
+test : ${NAME}
+		@./${NAME} ${NAME}
+
 clean:
 			@echo "\033[6;31m ----- Cleaning  ${NAME} obj\t----- \033[0m"
 			@${RM} ${OBJS}
