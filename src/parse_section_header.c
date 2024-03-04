@@ -83,13 +83,13 @@ Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian) {
 void display_section_header_info(void *sh_ptr, int8_t endian)
 {
     ft_printf_fd(1, YELLOW"S name:%s%s|%d| "RESET,RESET, GREEN, get_section_header_name(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S type:%s%s|%p| "RESET,RESET, GREEN, get_section_header_type(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S type:%s%s|%d| "RESET,RESET, GREEN, get_section_header_type(sh_ptr, endian));
     ft_printf_fd(1, YELLOW"S flags:%s%s|%p| "RESET,RESET, GREEN, get_section_header_flags(sh_ptr, endian));
     ft_printf_fd(1, YELLOW"S addr:%s%s|%p| "RESET,RESET, GREEN, get_section_header_addr(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S offset:%s%s|%p| "RESET,RESET, GREEN, get_section_header_offset(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S size:%s%s|%p| "RESET,RESET, GREEN, get_section_header_size(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S link:%s%s|%p| "RESET,RESET, GREEN, get_section_header_link(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S info:%s%s|%p| "RESET,RESET, GREEN, get_section_header_info(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S align:%s%s|%p| "RESET,RESET, GREEN, get_section_header_addralign(sh_ptr, endian));
-    ft_printf_fd(1, YELLOW"S entsize:%s%s|%p| "RESET,RESET, GREEN, get_section_header_entsize(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S offset:%s%s|%d| "RESET,RESET, GREEN, get_section_header_offset(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S size:%s%s|%d| "RESET,RESET, GREEN, get_section_header_size(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S link:%s%s|%d| "RESET,RESET, GREEN, get_section_header_link(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S info:%s%s|%d| "RESET,RESET, GREEN, get_section_header_info(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S align:%s%s|%d| "RESET,RESET, GREEN, get_section_header_addralign(sh_ptr, endian));
+    ft_printf_fd(1, YELLOW"S entsize:%s%s|%d| "RESET,RESET, GREEN, get_section_header_entsize(sh_ptr, endian));
 }

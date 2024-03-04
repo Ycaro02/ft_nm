@@ -267,12 +267,28 @@ void display_all_program_header(void *ptr, int8_t endian)
 	}
 }
 
+Elf64_Off get_strtab_offset(void *ptr, int8_t endian, uint16_t max, uint16_t struct_size)
+{
+	for (uint16_t i = 0; i < max; ++i) {
+		if (get_section_header_type(ptr + (struct_size * i), endian) == 3) { /* 3 hardcode strtab value */
+			return (get_section_header_offset(ptr + (struct_size * i), endian));
+		}
+	}
+	return (0);
+}
+
 void display_all_section_header(void *ptr, int8_t endian)
  {
 	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*p_header = ptr + get_header_shoff(ptr, endian);
 	uint16_t	max = get_header_shnum(ptr, endian);
 	ft_printf_fd(1, RED"Section header table\n"RESET);
+
+
+	Elf64_Off strtab_off = get_strtab_offset(ptr, endian, max, struct_size);
+	ft_printf_fd(1, "Str tab off = %d\n", strtab_off);
+	char *strtab = p_header + strtab_off);
+	ft_printf_fd(1, "Str tab %s\n", strtab);
 
 	for (uint16_t i = 0; i < max; ++i) {
 		ft_printf_fd(1, PURPLE"Idx [%d]\n"RESET, i);
