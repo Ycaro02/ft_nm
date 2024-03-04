@@ -308,8 +308,8 @@ void lst_name_sort(t_list *lst)
     while (lst)  {
         if (!min)
             min = lst;
-        char *current = ((t_list *) lst)->content;
-        char *min_file = ((t_list *) min)->content;
+        char *current = ((t_sym_tab *) ((t_list *) lst)->content)->sym_name;
+        char *min_file = ((t_sym_tab *) ((t_list *) min)->content)->sym_name;
         if (ft_strcmp(current, min_file) <= 0)
             min = lst;
         lst = lst->next;
@@ -330,6 +330,32 @@ int is_source_file(char *name)
 	return (0);
 }
 
+void	display_sym_value(unsigned long nbr, int fd)
+{
+	char	*base_16;
+
+	base_16 = "0123456789abcdef";
+	if (nbr > 15)
+		display_sym_value(nbr / 16, fd);
+	ft_putchar_fd(base_16[nbr % 16], fd);
+}
+
+uint8_t compute_hex_len(unsigned long nbr)
+{
+	uint8_t count = 0;
+	while (nbr > 15) {
+		nbr /= 16;
+		count++;
+	}
+	return (count);
+}
+
+/* if elf 64, 16 digit else 8 */
+uint8_t get_zero_padding(int8_t class, uint8_t len)
+{
+	return (((class == 1 ? 16 : 8) - (len + 1)) * (len != 0));
+}
+
 void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 {
 	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
@@ -342,18 +368,41 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Shdr)
 	t_list *name_lst = NULL;
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
-		uint32_t 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
+		Elf64_Word 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
+		Elf64_Addr sym_value = get_symbol_value((file->symtab + i), file->endian, file->class);
 		// ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
 		/* if (name && *name) */
 		if (((char *) strtab + name_idx) && *((char *) strtab + name_idx) && !is_source_file((char *)strtab + name_idx)) {
-			ft_lstadd_back(&name_lst, ft_lstnew(strtab + name_idx));
+			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
+			if (!sym_node) {
+				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
+				return ; /* need to return return NULL or error here */
+			}
+			sym_node->sym_name = strtab + name_idx;
+			sym_node->value = sym_value;
+			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
 
 	lst_name_sort(name_lst);
 
 	for (t_list *current = name_lst; current; current = current->next) {
-		ft_printf_fd(1, "%s\n", (char *) current->content);
+		// ft_printf_fd(1, "%p A ", ((t_sym_tab *) ((t_list *) current)->content)->value);
+		uint8_t pad = get_zero_padding(file->class, compute_hex_len(((t_sym_tab *) ((t_list *) current)->content)->value));
+		if (pad > 0) {
+			while (pad > 0) {
+				ft_printf_fd(1, "0");
+				--pad;
+			}
+			display_sym_value(((t_sym_tab *) ((t_list *) current)->content)->value, 1);
+		} else {
+			uint8_t max = file->class == 1 ? 16 : 8;
+			while (max > 0) {
+				ft_printf_fd(1, " ");
+				--max;
+			}
+		}
+		ft_printf_fd(1, " A %s\n", (char *) ((t_sym_tab *) ((t_list *) current)->content)->sym_name);
 	}
 	lst_clear(&name_lst, NULL);
 }

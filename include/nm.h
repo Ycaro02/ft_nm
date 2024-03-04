@@ -52,6 +52,12 @@ typedef struct s_nm_context {
     int8_t  l_endian;			/* local env endian */
 } t_nm_context;
 
+
+typedef struct s_sym_tab {
+	char 		*sym_name;
+	Elf64_Addr	value;
+} t_sym_tab;
+
 typedef struct s_nm_file {
     char		*name;			/* file name */
 	void		*ptr;			/* base file ptr, mmap return */
@@ -85,7 +91,7 @@ Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64
 Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
 
 Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
-
+Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64);
 /* handle endian */
 void    reverse_bytes(uint8_t *ptr, size_t max);
 int     detect_local_endian();

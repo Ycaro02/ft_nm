@@ -33,7 +33,7 @@ static inline Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is
 }
 
 /* Symbol value */
-static inline Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
+Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_value, endian));
     }
