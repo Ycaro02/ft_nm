@@ -51,11 +51,11 @@ typedef struct s_nm_context {
     int8_t  l_endian; /* local env endian */
 } t_nm_context;
 
-typedef struct s_elf {
-    char    *name;  /* file name */
-    uint8_t class;  /* bool class 1 for elf64 0 for 32 */
-    uint8_t endian; /* bool endian 0 for same endian otherwise reverse */
-} t_elf;
+typedef struct s_nm_file {
+    char	*name;  /* file name */
+    int8_t	class;  /* bool class 1 for elf64 0 for 32 */
+    int8_t	endian; /* bool endian 0 for same endian otherwise reverse */
+} t_nm_file;
 
 /* parse elf_header */
 void    *parse_elf_header(char *str);

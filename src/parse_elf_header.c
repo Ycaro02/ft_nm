@@ -330,7 +330,6 @@ void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64)
 		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
 	}
 
-
 	void *symtab = NULL;
 	Elf64_Xword section_size = 0;
 
