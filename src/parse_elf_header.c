@@ -281,10 +281,10 @@ void display_all_program_header(void *ptr, int8_t endian)
 void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 {
 	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*p_header = (ptr + get_header_shoff(ptr, endian));
+	void		*section_header = (ptr + get_header_shoff(ptr, endian));
 	// uint16_t	max = get_header_shnum(ptr, endian);
 
-	void *section_shstrtab = p_header + (struct_size * get_header_shstrndx(ptr, endian));
+	void *section_shstrtab = section_header + (struct_size * get_header_shstrndx(ptr, endian));
 	void *shstrtab = ptr + get_section_header_offset(section_shstrtab, endian, is_elf64);
 	return (shstrtab);
 }
@@ -292,36 +292,63 @@ void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64)
  {
 	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*p_header = (ptr + get_header_shoff(ptr, endian));
+	void		*section_header = (ptr + get_header_shoff(ptr, endian));
 	uint16_t	max = get_header_shnum(ptr, endian);
 	ft_printf_fd(1, RED"Section header table\n"RESET);
 
+	char *shstrtab = get_shstrtab(ptr, endian, is_elf64);
+	for (uint16_t i = 0; i < max; ++i) {
+		void *header_ptr = section_header + (struct_size * i);
+		uint16_t name_idx = get_section_header_name(header_ptr, endian, is_elf64);
+		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
+	}
 
-	Elf64_Off strtab_off = 0;
+	char *strtab = NULL;
+
 	for (uint16_t i = 0; i < max; ++i) {
 		ft_printf_fd(1, PURPLE"Idx [%d]\n"RESET, i);
-		void *p_header_ptr = (p_header + (struct_size * i));
-		display_section_header_info(p_header_ptr, endian, is_elf64);
+		/* structure header pointer */
+		void *s_hptr = (section_header + (struct_size * i));
+		display_section_header_info(s_hptr, endian, is_elf64);
 		ft_printf_fd(1, "\n");
-		ft_printf_fd(1, "type [%d] %d\n", i, get_section_header_type(p_header_ptr, endian, is_elf64));
-		
-		if (get_section_header_type(p_header_ptr, endian, is_elf64) == 3u) { /* 3 hardcode strtab value */
-			strtab_off = get_section_header_offset(p_header_ptr, endian, is_elf64);
-			uint16_t name_idx = get_section_header_name(p_header_ptr, endian, is_elf64);
-			if (ft_strcmp(((char *) ptr + strtab_off + name_idx), ".shstrtab") == 0) {
-				ft_printf_fd(1, RED"Found addr: [%p] str_tab type = %d, |%s|\n"RESET, (ptr + strtab_off ), strtab_off, ((char *) ptr + strtab_off + name_idx));
+		ft_printf_fd(1, "type [%d] %d\n", i, get_section_header_type(s_hptr, endian, is_elf64));
+		if (get_section_header_type(s_hptr, endian, is_elf64) == 3u) { /* 3 hardcode strtab value */
+			// strtab_off = get_section_header_offset(s_hptr, endian, is_elf64);
+			uint16_t name_idx = get_section_header_name(s_hptr, endian, is_elf64);
+			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {
+				ft_printf_fd(1, RED"Found strtab addr: [%p], |%s|\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
+				strtab = shstrtab + name_idx;
 				break;
 			}
 		}
 	}
-	
-	// char *strtab =  ptr + strtab_off;
-	char *strtab = get_shstrtab(ptr, endian, is_elf64);
+
+	void *symtab = NULL;
+	Elf64_Xword section_size = 0;
 
 	for (uint16_t i = 0; i < max; ++i) {
-		void *header_ptr = p_header + (struct_size * i);
-		uint16_t name_idx = get_section_header_name(header_ptr, endian, is_elf64);
-		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(strtab + name_idx)));
+		void *s_hptr = (section_header + (struct_size * i));
+		if (get_section_header_type(s_hptr, endian, is_elf64) == 2u) { /* 2 hardcode symtab value */
+			// strtab_off = get_section_header_offset(s_hptr, endian, is_elf64);
+			uint16_t name_idx = get_section_header_name(s_hptr, endian, is_elf64);
+			if (ft_strcmp(((char *) shstrtab + name_idx), ".symtab") == 0) {
+				ft_printf_fd(1, RED"Found symtab addr: [%p], |%s|\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
+				section_size = get_section_header_size(s_hptr, endian, is_elf64);
+				symtab = shstrtab + name_idx;
+				break;
+			}
+		}
+	}
+
+	Elf64_Xword s_sym_size = get_structure_size(ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
+
+	for (Elf64_Xword i = 0; i < section_size; i += s_sym_size) {
+		void *s_symptr = symtab + i;
+		display_symbol_info(s_symptr, endian, is_elf64);
+		(void)strtab;
+		// uint32_t name_idx = get_symbol_name(s_symptr, endian, is_elf64);
+		// ft_printf_fd(1, RED"Symtab i: [%d], name idx [%d] |%s|\n"RESET, (i % s_sym_size), name_idx, ((char *) strtab + name_idx));
+		// break;
 	}
 
  }
