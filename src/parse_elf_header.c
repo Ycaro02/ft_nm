@@ -267,33 +267,61 @@ void display_all_program_header(void *ptr, int8_t endian)
 	}
 }
 
-Elf64_Off get_strtab_offset(void *ptr, int8_t endian, uint16_t max, uint16_t struct_size)
+// Elf64_Off get_strtab_offset(void *ptr, int8_t endian, uint16_t max, uint16_t struct_size)
+// {
+// 	for (uint16_t i = 0; i < max; ++i) {
+// 		ft_printf_fd(1, "Number [%d] type [%d]\n", i, get_section_header_type(ptr + (struct_size * i), endian));
+// 		if (get_section_header_type(ptr + (struct_size * i), endian) == 3) { /* 3 hardcode strtab value */
+// 			return (get_section_header_offset(ptr + (struct_size * i), endian));
+// 		}
+// 	}
+// 	return (0);
+// }
+
+void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 {
-	for (uint16_t i = 0; i < max; ++i) {
-		if (get_section_header_type(ptr + (struct_size * i), endian) == 3) { /* 3 hardcode strtab value */
-			return (get_section_header_offset(ptr + (struct_size * i), endian));
-		}
-	}
-	return (0);
+	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	void		*p_header = (ptr + get_header_shoff(ptr, endian));
+	// uint16_t	max = get_header_shnum(ptr, endian);
+
+	void *section_shstrtab = p_header + (struct_size * get_header_shstrndx(ptr, endian));
+	void *shstrtab = ptr + get_section_header_offset(section_shstrtab, endian, is_elf64);
+	return (shstrtab);
 }
 
-void display_all_section_header(void *ptr, int8_t endian)
+void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64)
  {
 	uint16_t	struct_size = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*p_header = ptr + get_header_shoff(ptr, endian);
+	void		*p_header = (ptr + get_header_shoff(ptr, endian));
 	uint16_t	max = get_header_shnum(ptr, endian);
 	ft_printf_fd(1, RED"Section header table\n"RESET);
 
 
-	Elf64_Off strtab_off = get_strtab_offset(ptr, endian, max, struct_size);
-	ft_printf_fd(1, "Str tab off = %d\n", strtab_off);
-	char *strtab = p_header + strtab_off);
-	ft_printf_fd(1, "Str tab %s\n", strtab);
-
+	Elf64_Off strtab_off = 0;
 	for (uint16_t i = 0; i < max; ++i) {
 		ft_printf_fd(1, PURPLE"Idx [%d]\n"RESET, i);
-		display_section_header_info(p_header + (struct_size * i), endian);
+		void *p_header_ptr = (p_header + (struct_size * i));
+		display_section_header_info(p_header_ptr, endian, is_elf64);
 		ft_printf_fd(1, "\n");
+		ft_printf_fd(1, "type [%d] %d\n", i, get_section_header_type(p_header_ptr, endian, is_elf64));
+		
+		if (get_section_header_type(p_header_ptr, endian, is_elf64) == 3u) { /* 3 hardcode strtab value */
+			strtab_off = get_section_header_offset(p_header_ptr, endian, is_elf64);
+			uint16_t name_idx = get_section_header_name(p_header_ptr, endian, is_elf64);
+			if (ft_strcmp(((char *) ptr + strtab_off + name_idx), ".shstrtab") == 0) {
+				ft_printf_fd(1, RED"Found addr: [%p] str_tab type = %d, |%s|\n"RESET, (ptr + strtab_off ), strtab_off, ((char *) ptr + strtab_off + name_idx));
+				break;
+			}
+		}
+	}
+	
+	// char *strtab =  ptr + strtab_off;
+	char *strtab = get_shstrtab(ptr, endian, is_elf64);
+
+	for (uint16_t i = 0; i < max; ++i) {
+		void *header_ptr = p_header + (struct_size * i);
+		uint16_t name_idx = get_section_header_name(header_ptr, endian, is_elf64);
+		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(strtab + name_idx)));
 	}
 
  }

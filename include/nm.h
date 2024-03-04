@@ -61,15 +61,16 @@ typedef struct s_elf {
 void    *parse_elf_header(char *str);
 void    display_elf_header(void *elf_struct, int8_t endian);
 
-void display_all_section_header(void *ptr, int8_t endian);
+void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64);
 void display_all_program_header(void *ptr, int8_t endian);
-void display_section_header_info(void *sh_ptr, int8_t endian);
+void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
 /* program header */
 void display_program_header_info(void *elf_struct, int8_t endian);
 
-Elf64_Word get_section_header_name(void *ptr, int8_t endian);
-Elf64_Word get_section_header_type(void *ptr, int8_t endian);
-Elf64_Off get_section_header_offset(void *ptr, int8_t endian);
+Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
 /* handle endian */
 void    reverse_bytes(uint8_t *ptr, size_t max);
 int     detect_local_endian();

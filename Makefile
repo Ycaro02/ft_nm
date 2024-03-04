@@ -1,6 +1,6 @@
 CC		= gcc
 
-CFLAGS	= -Wall -Wextra -Werror -O3 -g
+CFLAGS	= -Wall -Wextra -Werror -g
 
 SRCS	=	src/main.c\
 			src/parse_elf_header.c\

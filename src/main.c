@@ -17,10 +17,11 @@ int main(int argc, char **argv)
 	}
 	ft_printf_fd(1, "class: %d\n", ELF_CLASS(elf_struct));
 	/* endian bool, 0 if same endian */
-	int8_t endian =  ELF_HFIELD(elf_struct, EI_DATA) - context.l_endian; 
+	int8_t endian = ELF_HFIELD(elf_struct, EI_DATA) - context.l_endian; 
+	int8_t is_elf64 = IS_ELF64(elf_struct);
 	// test_macro(elf_struct, endian);
 	display_elf_header(elf_struct, endian);
-  display_all_program_header(elf_struct, endian);
-  display_all_section_header(elf_struct, endian);
+  	display_all_program_header(elf_struct, endian);
+  	display_all_section_header(elf_struct, endian, is_elf64);
 	return (0);
 }
