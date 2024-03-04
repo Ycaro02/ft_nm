@@ -1,7 +1,7 @@
 #include "../include/nm.h"
 
 /* Section name (string tbl index) */
-Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_name, endian));
     }
@@ -9,7 +9,7 @@ Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Section type */
-Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_type, endian));
     }
@@ -17,7 +17,7 @@ Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Section flags */
-Elf64_Xword get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Xword get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_flags, endian));
     }
@@ -25,7 +25,7 @@ Elf64_Xword get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64) 
 }
 
 /* Section virtual address at execution */
-Elf64_Addr get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Addr get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_addr, endian));
     }
@@ -33,7 +33,7 @@ Elf64_Addr get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Section file offset */
-Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_offset, endian));
     }
@@ -41,7 +41,7 @@ Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Section size in bytes */
-Elf64_Xword get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Xword get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_size, endian));
     }
@@ -49,7 +49,7 @@ Elf64_Xword get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Link to another section */
-Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_link, endian));
     }
@@ -57,7 +57,7 @@ Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Additional section information */
-Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_info, endian));
     }
@@ -65,7 +65,7 @@ Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Section alignment */
-Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_addralign, endian));
     }
@@ -73,7 +73,7 @@ Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf
 }
 
 /* Entry size if section holds table */
-Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64) {
+inline Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Shdr *) ptr)->sh_entsize, endian));
     }

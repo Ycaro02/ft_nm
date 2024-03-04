@@ -70,9 +70,15 @@ void display_program_header_info(void *elf_struct, int8_t endian);
 
 Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
+
 
 Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
 
