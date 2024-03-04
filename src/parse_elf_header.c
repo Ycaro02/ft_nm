@@ -248,17 +248,17 @@ uint16_t get_structure_size(void *elf_ptr, uint16_t size64, uint16_t size32)
 	// return ((IS_ELF64(elf_ptr) * size64) + (IS_ELF64(elf_ptr) * size32)); /* branchless version */
 }
 
-void display_all_program_header(void *ptr, int8_t endian)
+void display_all_program_header(t_nm_file *file)
 {
-	uint16_t	sizeof_Shdr = get_structure_size(ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
-	void		*p_header = ptr + get_header_phoff(ptr, endian);
-	uint16_t	max = get_header_phnum(ptr, endian);
+	uint16_t	sizeof_Shdr = get_structure_size(file->ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
+	void		*p_header = file->ptr + get_header_phoff(file->ptr, file->endian);
+	uint16_t	max = get_header_phnum(file->ptr, file->endian);
 
 	ft_printf_fd(1, RED"Program header table\n"RESET);
 
 	for (uint16_t i = 0; i < max; ++i) {
 		ft_printf_fd(1, BLUE"Idx [%d]\n"RESET, i);
-		display_program_header_info(p_header + (sizeof_Shdr * i), endian);
+		display_program_header_info(p_header + (sizeof_Shdr * i), file->endian);
 		ft_printf_fd(1, "\n");
 	}
 }
@@ -315,39 +315,39 @@ void display_symbol(void *ptr, void *symtab, uint16_t sizeof_Shdr, int8_t endian
 	}
 }
 
-void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64)
+void display_all_section_header(t_nm_file *file)
  {
-	uint16_t	sizeof_Shdr = get_structure_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*section_header = (ptr + get_header_shoff(ptr, endian));
-	uint16_t	max = get_header_shnum(ptr, endian);
-	char 		*shstrtab = get_shstrtab(ptr, endian, is_elf64);
+	uint16_t	sizeof_Shdr = get_structure_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	void		*section_header = (file->ptr + get_header_shoff(file->ptr, file->endian));
+	uint16_t	max = get_header_shnum(file->ptr, file->endian);
+	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
 	ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
 
 	for (uint16_t i = 0; i < max; ++i) {
 		void *header_ptr = section_header + (sizeof_Shdr * i);
-		uint16_t name_idx = get_section_header_name(header_ptr, endian, is_elf64);
+		uint16_t name_idx = get_section_header_name(header_ptr, file->endian, file->class);
 		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
 	}
 
-	void *symtab = NULL;
-	Elf64_Xword section_size = 0;
 
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Shdr * i));
-		if (get_section_header_type(s_hptr, endian, is_elf64) == 2u) { /* 2 hardcode symtab value */
-			// strtab_off = get_section_header_offset(s_hptr, endian, is_elf64);
-			uint16_t name_idx = get_section_header_name(s_hptr, endian, is_elf64);
+		if (get_section_header_type(s_hptr, file->endian, file->class) == 2u) { /* 2 hardcode symtab value */
+			// strtab_off = get_section_header_offset(s_hptr, file->endian, file->class);
+			uint16_t name_idx = get_section_header_name(s_hptr, file->endian, file->class);
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".symtab") == 0) {
-				section_size = get_section_header_size(s_hptr, endian, is_elf64);
-				Elf64_Off symoffset = get_section_header_offset(s_hptr, endian, is_elf64);
-				symtab = ptr + symoffset;
-				ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), symtab);
+				file->symtab_size = get_section_header_size(s_hptr, file->endian, file->class);
+				Elf64_Off symoffset = get_section_header_offset(s_hptr, file->endian, file->class);
+				file->symtab = file->ptr + symoffset;
+				ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), file->symtab);
 				break;
 			}
 		}
 	}
 
-	display_symbol(ptr, symtab, sizeof_Shdr, endian, is_elf64, section_size);
+	// display_symbol(file, sizeof_Shdr);
+
+	display_symbol(file->ptr, file->symtab, sizeof_Shdr, file->endian, file->class, file->symtab_size);
 
  }

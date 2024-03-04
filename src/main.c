@@ -1,14 +1,24 @@
 # include "../include/nm.h"
 
-t_nm_file *get_nm_file_context(t_nm_context c, void *elf_struct)
+t_nm_file *get_nm_file_context(t_nm_context c, char *path)
 {
 	t_nm_file *file = ft_calloc(sizeof(t_nm_file), 1);
+
 	if (!file) {
 		ft_printf_fd(2, "Alloc error get nm file\n");
 		return (NULL);
 	}
-	file->endian = ELF_HFIELD(elf_struct, EI_DATA) - c.l_endian; 
-	file->class = IS_ELF64(elf_struct);
+
+	file->ptr = parse_elf_header(path); 
+	if (!file->ptr) {
+		free(file);
+		return (NULL);
+	}
+	/* maybe just store this in flag ?? */
+	/* get bool endian */
+	file->endian = ELF_HFIELD(file->ptr, EI_DATA) - c.l_endian; 
+	/* get bool class */
+	file->class = IS_ELF64(file->ptr);
 	return (file);
 }
 
@@ -20,20 +30,17 @@ int main(int argc, char **argv)
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
 	printf(YELLOW"Local endian = %d\n"RESET, context.l_endian);
+	// ft_printf_fd(1, "class: %d\n", ELF_CLASS(elf_struct));
 	if (argc > 1) {
 		path = argv[1];
 	}
-	void *elf_struct = parse_elf_header(path); 
-	if (!elf_struct) {
-		return (1);
-	}
-	ft_printf_fd(1, "class: %d\n", ELF_CLASS(elf_struct));
+	
 	/* endian bool, 0 if same endian */
-	t_nm_file *file = get_nm_file_context(context, elf_struct);
+	t_nm_file *file = get_nm_file_context(context, path);
 	if (file) {
-		display_elf_header(elf_struct, file->endian);
-		display_all_program_header(elf_struct, file->endian);
-		display_all_section_header(elf_struct, file->endian, file->class);
+		display_elf_header(file->ptr, file->endian);
+		display_all_program_header(file);
+		display_all_section_header(file);
 		free(file);
 	}
 	// test_macro(elf_struct, endian);

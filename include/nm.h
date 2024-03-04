@@ -47,22 +47,26 @@ typedef struct stat t_stat;
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
 
 typedef struct s_nm_context {
-    uint8_t flag;     /* nm flag for bonus */
-    int8_t  l_endian; /* local env endian */
+    uint8_t flag;				/* nm flag for bonus */
+    int8_t  l_endian;			/* local env endian */
 } t_nm_context;
 
 typedef struct s_nm_file {
-    char	*name;  /* file name */
-    int8_t	class;  /* bool class 1 for elf64 0 for 32 */
-    int8_t	endian; /* bool endian 0 for same endian otherwise reverse */
+    char		*name;			/* file name */
+	void		*ptr;			/* base file ptr, mmap return */
+	void		*symtab;		/* symtab ptr*/
+	Elf64_Xword	symtab_size;	/* symtab size in bytes */
+    int8_t		class;  		/* bool class 1 for elf64 0 for 32 */
+    int8_t		endian; 		/* bool endian 0 for same endian otherwise reverse */
 } t_nm_file;
 
 /* parse elf_header */
 void    *parse_elf_header(char *str);
 void    display_elf_header(void *elf_struct, int8_t endian);
 
-void display_all_section_header(void *ptr, int8_t endian, int8_t is_elf64);
-void display_all_program_header(void *ptr, int8_t endian);
+
+void display_all_section_header(t_nm_file *file);
+void display_all_program_header(t_nm_file *file);
 void display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
 void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
 /* program header */
