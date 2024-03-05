@@ -55,5 +55,6 @@ exit_code_tester() {
 }
 
 elf_file_diff ${BIN}
+elf_file_diff libft/ft_atoi.o
 elf32_basic_test rsc/main_32.c
 exit_code_tester

@@ -351,9 +351,9 @@ uint8_t compute_hex_len(unsigned long nbr)
 }
 
 /* if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if*/
-uint8_t get_zero_padding(int8_t class, uint8_t len)
+uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
 {
-	return (((class == 1 ? 16 : 8) - (len + 1)) * (len != 0));
+	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
 }
 
 void insert_pad(uint8_t pad, char *c)
@@ -363,7 +363,6 @@ void insert_pad(uint8_t pad, char *c)
 		--pad;
 	}
 }
-
 
 uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Sshdr)
 {
@@ -449,7 +448,7 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
 	for (t_list *current = name_lst; current; current = current->next) {
 		// ft_printf_fd(1, "%p A ", ((t_sym_tab *) ((t_list *) current)->content)->value);
 		t_sym_tab *symbole = (t_sym_tab *) ((t_list *) current)->content;
-		uint8_t pad = get_zero_padding(file->class, compute_hex_len(symbole->value));
+		uint8_t pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
 		if (pad > 0) {
 			insert_pad(pad, "0");
 			display_sym_value(symbole->value, 1);
