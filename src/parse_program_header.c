@@ -1,17 +1,13 @@
 #include "../include/nm.h"
 
-// typedef struct
-// {
-//   Elf64_Word	p_type;			
-//   Elf64_Word	p_flags;		
-//   Elf64_Off	p_offset;		
-//   Elf64_Addr	p_vaddr;		
-//   Elf64_Addr	p_paddr;		
-//   Elf64_Xword	p_filesz;		/* Segment size in file */
-//   Elf64_Xword	p_memsz;		/* Segment size in memory */
-//   Elf64_Xword	p_align;		/* Segment alignment */
-// } Elf64_Phdr;
-
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//                                                                            //
+//                            Elf64_Phdr/Elf32_Phdr                           //
+//                                                                            //
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * Getter value for program header structure
+*/
 /* Segment type */
 static inline Elf64_Word get_program_header_type(void *ptr, int8_t endian) {
     if (IS_ELF64(ptr)) {

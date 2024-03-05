@@ -47,11 +47,17 @@ typedef struct stat t_stat;
 /* if endian = 0 || size data == 1, don't revese, else call reverse endian */
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
 
+/**
+ * nm execution context
+*/
 typedef struct s_nm_context {
-    uint8_t			flag;				/* nm flag for bonus */
-    int8_t			l_endian;			/* local env endian */
+    uint8_t			flag;		/* nm flag for bonus */
+    int8_t			l_endian;	/* local env endian */
 } t_nm_context;
 
+/**
+ * symbole data
+*/
 typedef struct s_sym_tab {
 	char			*sym_name;  /* symbole name */
 	Elf64_Addr		value;      /* symbole value */
@@ -60,6 +66,9 @@ typedef struct s_sym_tab {
     Elf64_Section	shndx;      /* symbole section header index */
 } t_sym_tab;
 
+/**
+ * nm file data
+*/
 typedef struct s_nm_file {
     char		    *name;			/* file name */
 	void		    *ptr;			/* base file ptr, mmap return */
@@ -68,7 +77,6 @@ typedef struct s_nm_file {
     int8_t			class;  		/* bool class 1 for elf64 0 for 32 */
     int8_t			endian; 		/* bool endian 0 for same endian otherwise reverse */
 } t_nm_file;
-
 
 enum e_symb_char {
   UNDIFINED_SYM='U', /* undefined symbole */
@@ -87,36 +95,59 @@ enum e_symb_char {
 
 
 /* parse elf_header */
-void    *parse_elf_header(char *str);
-void    display_elf_header(void *elf_struct, int8_t endian);
+void			*parse_elf_header(char *str);
+void			display_elf_header(void *elf_struct, int8_t endian);
 
 
-void display_all_section_header(t_nm_file *file);
-void display_all_program_header(t_nm_file *file);
-void display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
-void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
+
 /* program header */
-void display_program_header_info(void *elf_struct, int8_t endian);
+int8_t			display_file_symbole(t_nm_file *file);
+
+/* elf header getter */
+Elf64_Half		get_header_type(void *ptr, int8_t endian);
+Elf64_Half		get_header_machine(void *ptr, int8_t endian);
+Elf64_Word		get_header_version(void *ptr, int8_t endian);
+Elf64_Addr		get_header_entry(void *ptr, int8_t endian);
+Elf64_Off		get_header_phoff(void *ptr, int8_t endian);
+Elf64_Off		get_header_shoff(void *ptr, int8_t endian);
+Elf64_Word		get_header_flags(void *ptr, int8_t endian);
+Elf64_Half		get_header_ehsize(void *ptr, int8_t endian);
+Elf64_Half		get_header_phentsize(void *ptr, int8_t endian);
+Elf64_Half		get_header_phnum(void *ptr, int8_t endian);
+Elf64_Half		get_header_shentsize(void *ptr, int8_t endian);
+Elf64_Half		get_header_shnum(void *ptr, int8_t endian);
+Elf64_Half		get_header_shstrndx(void *ptr, int8_t endian);
+
 /* section header getter */
-Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Off get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Off		get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
+
 /* symbole getter */
-Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64);
-unsigned char get_symbol_info(void *ptr, int8_t is_elf64);
-Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64);
+uint8_t			get_symbol_info(void *ptr, int8_t is_elf64);
+Elf64_Section	get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64);
+
 /* handle endian */
-void    reverse_bytes(uint8_t *ptr, size_t max);
-int     detect_local_endian();
+void    		reverse_bytes(uint8_t *ptr, size_t max);
+int     		detect_local_endian();
+
 /* test utils */
-void    test_reverse_byte(void rev_function());
+void    		test_reverse_byte(void rev_function());
+
+/* Display data function */
+void			display_all_section_header(t_nm_file *file);
+void			display_all_program_header(t_nm_file *file);
+void			display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
+void			display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
+void			display_program_header_info(void *elf_struct, int8_t endian);
 
 # endif /* FT_NM_HEADER */

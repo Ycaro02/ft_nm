@@ -1,5 +1,13 @@
 #include "../include/nm.h"
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//                                                                            //
+//                            Elf64_Shdr/Elf32_Shdr                           //
+//                                                                            //
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * Getter value for section header table (Elf64/32_Shdr) structure array
+*/
 /* Section name (string tbl index) */
 Elf64_Word get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {

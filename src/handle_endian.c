@@ -61,8 +61,9 @@ void test_reverse_byte(void rev_function())
 
 }
 
-/* 	@ brief Simple detect endian function: https://www.embeddedsoft.net/simple-code-to-find-endianness-in-c
- *	@ return (Elf define for LSB, MSB)
+/** 
+ *  @brief Simple detect endian function: https://www.embeddedsoft.net/simple-code-to-find-endianness-in-c
+ *	@return (Elf define for LSB, MSB)
 */
 int detect_local_endian()
 {

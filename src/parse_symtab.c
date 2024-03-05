@@ -1,5 +1,13 @@
 #include "../include/nm.h"
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//                                                                            //
+//                            Elf64_Sym/Elf32_Sym							  //
+//                                                                            //
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * Getter value for symbole table (Elf64/32_sym) structure array
+*/
 /* Symbol name (string tbl index) */
 Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
@@ -9,19 +17,19 @@ Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol type and binding */
-unsigned char get_symbol_info(void *ptr, int8_t is_elf64) {
+uint8_t get_symbol_info(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
-        return ((unsigned char)(((Elf64_Sym *) ptr)->st_info));
+        return ((uint8_t)(((Elf64_Sym *) ptr)->st_info));
     }
-    return ((unsigned char)(((Elf32_Sym *) ptr)->st_info));
+    return ((uint8_t)(((Elf32_Sym *) ptr)->st_info));
 }
 
 /* Symbol visibility */
-static inline unsigned char get_symbol_other(void *ptr, int8_t is_elf64) {
+uint8_t get_symbol_other(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
-        return ((unsigned char)(((Elf64_Sym *) ptr)->st_other));
+        return ((uint8_t)(((Elf64_Sym *) ptr)->st_other));
     }
-    return ((unsigned char)(((Elf32_Sym *) ptr)->st_other));
+    return ((uint8_t)(((Elf32_Sym *) ptr)->st_other));
 }
 
 /* Section index */
@@ -41,13 +49,16 @@ Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64) {
 }
 
 /* Symbol size */
-static inline Elf64_Xword get_symbol_size(void *ptr, int8_t endian, int8_t is_elf64) {
+Elf64_Xword get_symbol_size(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_size, endian));
     }
     return (READ_DATA(((Elf32_Sym *) ptr)->st_size, endian));
 }
 
+/** 
+ * @brief disaplay symbole information with getter call
+*/
 void display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64) {
     ft_printf_fd(1, YELLOW"S name:%s%s|%d| "RESET, RESET, GREEN, get_symbol_name(sym_ptr, endian, is_elf64));
     ft_printf_fd(1, YELLOW"S info:%s%s|%d| "RESET, RESET, GREEN, get_symbol_info(sym_ptr, is_elf64));

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	if (file) {
 		// display_elf_header(file->ptr, file->endian);
 		// display_all_program_header(file);
-		display_all_section_header(file);
+		display_file_symbole(file);
 		free(file);
 	}
 	// test_macro(elf_struct, endian);

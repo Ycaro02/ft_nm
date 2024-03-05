@@ -1,9 +1,16 @@
 # include "../include/nm.h"
 
-/*Get all Elf64_Ehdr */
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//                                                                            //
+//                            Elf64_Ehdr/Elf32_Ehdr                           //
+//                                                                            //
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/**
+ * Getter value for elf header structure
+*/
 /* Get header type  */ 
-static inline Elf64_Half get_header_type(void *ptr, int8_t endian) {
+Elf64_Half get_header_type(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_type, endian));
   }
@@ -11,7 +18,7 @@ static inline Elf64_Half get_header_type(void *ptr, int8_t endian) {
 }
 
 /* Get machine */
-static inline Elf64_Half get_header_machine(void *ptr, int8_t endian) {
+Elf64_Half get_header_machine(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_machine, endian));
   }
@@ -19,7 +26,7 @@ static inline Elf64_Half get_header_machine(void *ptr, int8_t endian) {
 }
 
 /* Get version */
-static inline Elf64_Word get_header_version(void *ptr, int8_t endian) {
+Elf64_Word get_header_version(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_version, endian));
   }
@@ -27,7 +34,7 @@ static inline Elf64_Word get_header_version(void *ptr, int8_t endian) {
 }
 
 /* Get addr entry point */
-static inline Elf64_Addr get_header_entry(void *ptr, int8_t endian) {
+Elf64_Addr get_header_entry(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_entry, endian));
   }
@@ -35,7 +42,7 @@ static inline Elf64_Addr get_header_entry(void *ptr, int8_t endian) {
 }
 
 /* Get Program header table file offset */
-static inline Elf64_Off get_header_phoff(void *ptr, int8_t endian) {
+Elf64_Off get_header_phoff(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phoff, endian));
   }
@@ -43,7 +50,7 @@ static inline Elf64_Off get_header_phoff(void *ptr, int8_t endian) {
 }
 
 /* Get Section header table file offset */
-static inline Elf64_Off get_header_shoff(void *ptr, int8_t endian) {
+Elf64_Off get_header_shoff(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shoff, endian));
   }
@@ -51,7 +58,7 @@ static inline Elf64_Off get_header_shoff(void *ptr, int8_t endian) {
 }
 
 /* Get Processor-specific flags */
-static inline Elf64_Word get_header_flags(void *ptr, int8_t endian) {
+Elf64_Word get_header_flags(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_flags, endian));
   }
@@ -59,7 +66,7 @@ static inline Elf64_Word get_header_flags(void *ptr, int8_t endian) {
 }
 
 /* ELF header size in bytes */
-static inline Elf64_Half get_header_ehsize(void *ptr, int8_t endian) {
+Elf64_Half get_header_ehsize(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_ehsize, endian));
   }
@@ -67,7 +74,7 @@ static inline Elf64_Half get_header_ehsize(void *ptr, int8_t endian) {
 }
 
 /* Program header table entry size */
-static inline Elf64_Half get_header_phentsize(void *ptr, int8_t endian) {
+Elf64_Half get_header_phentsize(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phentsize, endian));
   }
@@ -75,7 +82,7 @@ static inline Elf64_Half get_header_phentsize(void *ptr, int8_t endian) {
 }
 
 /* Program header table entry count */
-static inline Elf64_Half get_header_phnum(void *ptr, int8_t endian) {
+Elf64_Half get_header_phnum(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_phnum, endian));
   }
@@ -83,7 +90,7 @@ static inline Elf64_Half get_header_phnum(void *ptr, int8_t endian) {
 }
 
 /* Section header table entry size */
-static inline Elf64_Half get_header_shentsize(void *ptr, int8_t endian) {
+Elf64_Half get_header_shentsize(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shentsize, endian));
   }
@@ -91,7 +98,7 @@ static inline Elf64_Half get_header_shentsize(void *ptr, int8_t endian) {
 }
 
 /* Section header table entry count */
-static inline Elf64_Half get_header_shnum(void *ptr, int8_t endian) {
+Elf64_Half get_header_shnum(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shnum, endian));
   }
@@ -99,7 +106,7 @@ static inline Elf64_Half get_header_shnum(void *ptr, int8_t endian) {
 }
 
 /* Section header string table index */
-static inline Elf64_Half get_header_shstrndx(void *ptr, int8_t endian) {
+Elf64_Half get_header_shstrndx(void *ptr, int8_t endian) {
   if (IS_ELF64(ptr)) {
     return (READ_DATA(((Elf64_Ehdr *) ptr)->e_shstrndx, endian));
   }
@@ -148,18 +155,18 @@ static void *load_elf_info(int fd, size_t len)
  * 	@return bool 1 for true otherwise 0 
 */
 
-static inline int check_identification_byte(char c, int val1, int val2) {
+static int check_identification_byte(char c, int val1, int val2) {
 	return ((c == val1 || c == val2));
 }
 
 /** @brief check if c value is between val1 and val2
  * 	@return bool 1 for true otherwise 0 
 */
-static inline int check_range_int8_val(char c, int val1, int val2) {
+static int check_range_int8_val(char c, int val1, int val2) {
 	return ((c >= val1 && c <= val2));
 }
 
-static inline int detect_os_abi(uint8_t os_abi)
+static int detect_os_abi(uint8_t os_abi)
 {
 	/* 0 >= os_abi <= 3 || 0 >= os_abi <= 12 || special os case */
 	if (check_range_int8_val(os_abi, ELFOSABI_NONE, ELFOSABI_GNU)\
@@ -173,10 +180,10 @@ static inline int detect_os_abi(uint8_t os_abi)
 }
 
 /**@brief Parse header identification field
- * @param	char *str, file name to check
- * 			void *elf_struct pointer on elf header struct
+ * @param str file name to check
+ * @param elf_struct pointer on elf header struct
 */
-int header_identification_correct(char *str, void *elf_struct)
+static int header_identification_correct(char *str, void *elf_struct)
 {
 	/* check magic number ELFMAG */
 	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
@@ -320,7 +327,8 @@ void lst_name_sort(t_list *lst)
     lst_name_sort(head->next);
 }
 
-int is_source_file(char *name)
+/* TOREWORK */
+int is_source_file(const char *name)
 {
 	int len = ft_strlen(name);
 	if (len > 2 && name[len - 2] == '.') {
@@ -410,28 +418,22 @@ uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Ssh
 	
 }
 
-
-void display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
+static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 {
-	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
-	char 			*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
-	if (!strtab) {
-		ft_printf_fd(1, RED"ft_nm: Error no .strtab found\n"RESET);
-		return ;
-	}
-
 	t_list *name_lst = NULL;
+	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
-		// ft_printf_fd(1, "%s\n", ((char *) strtab + name_idx));
-		char 		*name = strtab + name_idx;
-		/* if (name && *name && name is not source/obj file) */
+		const char	*name = strtab + name_idx;
 		if (name && *name && !is_source_file(name)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
-				return ; /* need to return return NULL or error here */
+				if (name_lst) {
+					lst_clear(&name_lst, free);
+				}
+				return (NULL); /* need to return return NULL or error here */
 			}
 			sym_node->sym_name = strtab + name_idx;
 			sym_node->value = get_symbol_value((file->symtab + i), file->endian, file->class);
@@ -439,14 +441,25 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
  			sym_node->bind = ELF32_ST_BIND(get_symbol_info((file->symtab + i), file->class));
 			sym_node->shndx = get_symbol_shndx((file->symtab + i), file->endian, file->class);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
-
 		}
 	}
+	return (name_lst);
+}
 
+static int8_t display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
+{
+	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
+	if (!strtab) {
+		ft_printf_fd(1, RED"ft_nm: Error no .strtab found\n"RESET);
+		return (-1);
+	}
+	t_list *name_lst = build_symbole_list(file, strtab);
+	if (!name_lst) {
+		ft_printf_fd(2, "No symbole found or malloc error\n");
+		return (-1); /* need to return value here*/
+	}
 	lst_name_sort(name_lst);
-
 	for (t_list *current = name_lst; current; current = current->next) {
-		// ft_printf_fd(1, "%p A ", ((t_sym_tab *) ((t_list *) current)->content)->value);
 		t_sym_tab *symbole = (t_sym_tab *) ((t_list *) current)->content;
 		uint8_t pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
 		if (pad > 0) {
@@ -455,31 +468,21 @@ void display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
 		} else {
 			insert_pad(file->class == 1 ? 16 : 8, " "); /* replace this hardcode shit */
 		}
-		// uint8_t symbole_char = get_symbole_char(symbole->type, symbole->bind, symbole->shndx);
 		uint8_t symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
 		ft_printf_fd(1, " %c %s\n",symbole_char, (char *) symbole->sym_name);
-		// ft_printf_fd(2, YELLOW"char %c, |%u|\n"RESET, get_symbole_char(symbole->type, symbole->bind, sh_flag), sh_flag);
-
 	}
 	lst_clear(&name_lst, NULL);
+	return (0);
+
 }
 
-void display_all_section_header(t_nm_file *file)
+int8_t display_file_symbole(t_nm_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = (file->ptr + get_header_shoff(file->ptr, file->endian));
 	uint16_t	max = get_header_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
-	// ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
-
-	// for (uint16_t i = 0; i < max; ++i) {
-	// 	void *header_ptr = section_header + (sizeof_Sshdr * i);
-	// 	uint16_t name_idx = get_section_header_name(header_ptr, file->endian, file->class);
-	// 	ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
-	// }
-
-
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
 		if (get_section_header_type(s_hptr, file->endian, file->class) == 2u) { /* 2 hardcode symtab value */
@@ -489,13 +492,26 @@ void display_all_section_header(t_nm_file *file)
 				file->symtab_size = get_section_header_size(s_hptr, file->endian, file->class);
 				Elf64_Off symoffset = get_section_header_offset(s_hptr, file->endian, file->class);
 				file->symtab = file->ptr + symoffset;
-				// sh_flag = get_section_header_flags(s_hptr, file->endian, file->class);
-				// ft_printf_fd(1, RED"Found symtab offset: [%p], |%s| symtab = |%p| \n"RESET, symoffset, ((char *) shstrtab + name_idx), file->symtab);
-			
 				break;
 			}
 		}
 	}
-
-	display_symbol(file, sizeof_Sshdr);
+	if (display_symbol(file, sizeof_Sshdr) == -1) {
+		return (-1);
+	}
+	return (0);
  }
+
+
+ void display_all_section_header(t_nm_file *file) {
+	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	max = get_header_shnum(file->ptr, file->endian);
+	void		*section_header = (file->ptr + get_header_shoff(file->ptr, file->endian));
+	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
+	ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
+	for (uint16_t i = 0; i < max; ++i) {
+		void *header_ptr = section_header + (sizeof_Sshdr * i);
+		uint16_t name_idx = get_section_header_name(header_ptr, file->endian, file->class);
+		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
+	}
+}
