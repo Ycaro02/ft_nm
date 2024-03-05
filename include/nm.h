@@ -48,25 +48,25 @@ typedef struct stat t_stat;
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
 
 typedef struct s_nm_context {
-    uint8_t flag;				/* nm flag for bonus */
-    int8_t  l_endian;			/* local env endian */
+    uint8_t			flag;				/* nm flag for bonus */
+    int8_t			l_endian;			/* local env endian */
 } t_nm_context;
 
-
 typedef struct s_sym_tab {
-	  char 		*sym_name;
-	  Elf64_Addr	value;
-    uint8_t     type;
-    uint8_t     bind;
+	char			*sym_name;  /* symbole name */
+	Elf64_Addr		value;      /* symbole value */
+    uint8_t			type;       /* symbole type, info subfield */
+    uint8_t			bind;       /* symbole bind, second info subfield */
+    Elf64_Section	shndx;      /* symbole section header index */
 } t_sym_tab;
 
 typedef struct s_nm_file {
-    char		*name;			/* file name */
-	  void		*ptr;			/* base file ptr, mmap return */
-	  void		*symtab;		/* symtab ptr*/
-    Elf64_Xword	symtab_size;	/* symtab size in bytes */
-    int8_t		class;  		/* bool class 1 for elf64 0 for 32 */
-    int8_t		endian; 		/* bool endian 0 for same endian otherwise reverse */
+    char		    *name;			/* file name */
+	void		    *ptr;			/* base file ptr, mmap return */
+	void		    *symtab;		/* symtab ptr*/
+    Elf64_Xword		symtab_size;	/* symtab size in bytes */
+    int8_t			class;  		/* bool class 1 for elf64 0 for 32 */
+    int8_t			endian; 		/* bool endian 0 for same endian otherwise reverse */
 } t_nm_file;
 
 
@@ -81,6 +81,8 @@ enum e_symb_char {
   NUM_SYM='N',      /* defined number symbole*/
   LOOS_SYM='O',     /* specific os */
   LOPROC_SYM='P',   /* specific procesor */
+  NO_BITS_SYM='B',
+  ALLOC_WRITE_SYM='D', /* if symbole section header flag alloc or write */
 };
 
 
@@ -110,6 +112,7 @@ Elf64_Word get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Word get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Addr get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64);
 unsigned char get_symbol_info(void *ptr, int8_t is_elf64);
+Elf64_Section get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 /* handle endian */
 void    reverse_bytes(uint8_t *ptr, size_t max);
 int     detect_local_endian();
