@@ -1,7 +1,6 @@
 # include "../include/nm.h"
 
-/* 	@brief reverse byte function need to be checked/optimize
-*/
+/* 	@brief reverse byte function need to be checked/optimize */
 void    reverse_bytes(uint8_t *ptr, size_t max)
 {
     uint8_t    tmp;
