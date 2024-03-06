@@ -8,6 +8,8 @@ SRCS	=	src/main.c\
 			src/parse_program_header.c\
 			src/parse_section_header.c\
 			src/parse_symtab.c\
+			src/display_symbole.c\
+			src/handle_str_table.c\
 			
 
 LIBFT	= 	libft/libft.a

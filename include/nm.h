@@ -97,8 +97,7 @@ enum e_symb_char {
 /* parse elf_header */
 void			*parse_elf_header(char *str);
 void			display_elf_header(void *elf_struct, int8_t endian);
-
-
+uint16_t 		detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32);
 
 /* program header */
 int8_t			display_file_symbole(t_nm_file *file);
@@ -139,6 +138,10 @@ Elf64_Section	get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 /* handle endian */
 void    		reverse_bytes(uint8_t *ptr, size_t max);
 int     		detect_local_endian();
+
+/* handle str table */
+char			*get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64);
+void			*get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* test utils */
 void    		test_reverse_byte(void rev_function());
