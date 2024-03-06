@@ -103,13 +103,13 @@ Elf64_Addr		get_Sym_value(void *ptr, int8_t endian, int8_t is_elf64);
 uint8_t			get_Sym_info(void *ptr, int8_t is_elf64);
 Elf64_Section	get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 
-/* handle endian */
-void    		reverse_bytes(uint8_t *ptr, size_t max);
-int     		detect_local_endian();
-
 /* handle str table */
 char			*get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64);
 void			*get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64);
+
+/* handle endian */
+void    		reverse_bytes(uint8_t *ptr, size_t max);
+int     		detect_local_endian();
 
 /* test utils */
 void    		test_reverse_byte(void rev_function());

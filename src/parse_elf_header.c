@@ -112,6 +112,10 @@ Elf64_Half get_Ehdr_shstrndx(void *ptr, int8_t endian) {
   return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shstrndx, endian));
 }
 
+
+/** @brief Display program header info
+ *  @param Shdr pointer on section header struct table
+*/
 void display_elf_header(void *elf_struct, int8_t endian)
 {
 	ft_printf_fd(1, YELLOW"type:%s%s|%d| "RESET,RESET, GREEN, get_Ehdr_type(elf_struct, endian));
@@ -129,6 +133,9 @@ void display_elf_header(void *elf_struct, int8_t endian)
 	ft_printf_fd(1, YELLOW"shstrndx:%s%s|%d|\n"RESET,RESET, GREEN, get_Ehdr_shstrndx(elf_struct, endian));
 }
 
+/** @brief Call open
+ *  @param str file name
+*/
 static int call_open(char *str)
 {
 	int fd = open(str, O_RDONLY);
@@ -139,6 +146,11 @@ static int call_open(char *str)
 	return (fd);
 }
 
+/** @brief Load elf info in memory
+ * 	@param fd file descriptor
+ * 	@param len file size
+ * 	@return pointer on elf struct or NULL in case of error
+*/
 static void *load_elf_info(int fd, size_t len)
 {
 	void *elf_struct = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);

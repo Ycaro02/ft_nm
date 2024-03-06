@@ -26,23 +26,22 @@ int main(int argc, char **argv)
 {
 	t_nm_context		context;
 	char 			    *path = "a.out";
+	int					exit_code = 0;
 	
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
 	ft_printf_fd(2, YELLOW"Local endian = %u\n"RESET, context.l_endian);
-	// ft_printf_fd(1, "class: %d\n", ELF_CLASS(elf_struct));
 	if (argc > 1) {
 		path = argv[1];
 	}
-	
 	/* endian bool, 0 if same endian */
 	t_nm_file *file = get_nm_file_context(context, path);
 	if (file) {
 		// display_elf_header(file->ptr, file->endian);
 		// display_all_program_header(file);
-		display_file_symbole(file);
+		exit_code = display_file_symbole(file);
 		free(file);
 	}
 	// test_macro(elf_struct, endian);
-	return (0);
+	return (exit_code);
 }

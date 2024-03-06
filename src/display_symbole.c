@@ -3,7 +3,7 @@
 /** @brief Get symbol name
  * 	@param symbole struct list
 */
-void lst_name_sort(t_list *lst)
+static void lst_name_sort(t_list *lst)
 {
     if (!lst)
         return ;
@@ -24,13 +24,11 @@ void lst_name_sort(t_list *lst)
     lst_name_sort(head->next);
 }
 
-/* TOREWORK */
-int is_source_file(const char *name)
+/* @brief is source file */
+static int is_source_file(uint8_t type)
 {
-	int len = ft_strlen(name);
-	if (len > 2 && name[len - 2] == '.') {
-		if (!ft_isdigit(name[len -1]))
-			return (1);
+	if (type == STT_FILE || type == STT_SECTION) {
+		return (1);
 	}
 	return (0);
 }
@@ -39,7 +37,7 @@ int is_source_file(const char *name)
   * @param nbr number to display
   * @param fd file descriptor
 */
-void	display_sym_value(unsigned long nbr, int fd)
+static void	display_sym_value(unsigned long nbr, int fd)
 {
 	char	*base_16;
 
@@ -54,7 +52,7 @@ void	display_sym_value(unsigned long nbr, int fd)
   * @param nbr number to compute
   * @return hex len
 */
-uint8_t compute_hex_len(unsigned long nbr)
+static uint8_t compute_hex_len(unsigned long nbr)
 {
 	uint8_t count = 0;
 	while (nbr > 15) {
@@ -70,7 +68,7 @@ uint8_t compute_hex_len(unsigned long nbr)
  * 	@param is_undef 1 for undef 0 otherwise
  * 	@return number of padding
 */
-uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
+static uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
 {
 	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
 }
@@ -79,7 +77,7 @@ uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
  * 	@param pad number of pad to insert
  * 	@param c char to insert
 */
-void insert_pad(uint8_t pad, char *c)
+static void insert_pad(uint8_t pad, char *c)
 {
 	while (pad > 0) {
 		ft_printf_fd(1, c);
@@ -93,7 +91,7 @@ void insert_pad(uint8_t pad, char *c)
  * 	@param sizeof_Sshdr size of section header
  * 	@return symbole char
 */
-uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Sshdr)
+static uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Sshdr)
 {
 	uint8_t c = UNDIFINED_SYM;
 	Elf64_Section shndx = symbole->shndx;
@@ -149,7 +147,8 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;
-		if (name && *name && !is_source_file(name)) {
+		uint8_t	type = ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
+		if (name && *name && !is_source_file(type)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
@@ -160,7 +159,7 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 			}
 			sym_node->sym_name = strtab + name_idx;
 			sym_node->value = get_Sym_value((file->symtab + i), file->endian, file->class);
- 			sym_node->type =  ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
+ 			sym_node->type =  type;
  			sym_node->bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
 			sym_node->shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
@@ -227,8 +226,9 @@ int8_t display_file_symbole(t_nm_file *file)
 			}
 		}
 	}
-	if (real_display_symbol(file, sizeof_Sshdr) == -1) {
-		return (-1);
-	}
-	return (0);
+	// if (real_display_symbol(file, sizeof_Sshdr) == -1) {
+	// 	return (-1);
+	// }
+	// return (0);
+	return (real_display_symbol(file, sizeof_Sshdr));
  }
