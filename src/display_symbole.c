@@ -108,15 +108,15 @@ uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Ssh
 	} else if (symbole->bind == STB_GNU_UNIQUE) {
 		c = UNDIFINED_SYM + 32;
 	} else if (shndx != SHN_UNDEF) {
-		Elf64_Half shnum = get_header_shnum(file->ptr, file->endian);
+		Elf64_Half shnum = get_Ehdr_shnum(file->ptr, file->endian);
 		if (shndx == SHN_ABS) {
 			c = 'a';
 		} else if (shndx == SHN_COMMON) {
 			c = COMMON_SYM;
 		}  else if (shndx < shnum) {
-			void *section_header_ptr = file->ptr + get_header_shoff(file->ptr, file->endian) + (sizeof_Sshdr * shndx);
-			Elf64_Word sh_type = get_section_header_type(section_header_ptr, file->endian, file->class);
-			Elf64_Xword sh_flag = get_section_header_flags(section_header_ptr, file->endian, file->class);
+			void *section_header_ptr = file->ptr + get_Ehdr_shoff(file->ptr, file->endian) + (sizeof_Sshdr * shndx);
+			Elf64_Word sh_type = get_Shdr_type(section_header_ptr, file->endian, file->class);
+			Elf64_Xword sh_flag = get_Shdr_flags(section_header_ptr, file->endian, file->class);
 
 			if (sh_type == SHT_NOBITS) {
 				c = NO_BITS_SYM; /* b */
@@ -147,7 +147,7 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
-		Elf64_Word 	name_idx = get_symbol_name((file->symtab + i), file->endian, file->class);
+		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;
 		if (name && *name && !is_source_file(name)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
@@ -159,10 +159,10 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 				return (NULL); /* need to return return NULL or error here */
 			}
 			sym_node->sym_name = strtab + name_idx;
-			sym_node->value = get_symbol_value((file->symtab + i), file->endian, file->class);
- 			sym_node->type =  ELF32_ST_TYPE(get_symbol_info((file->symtab + i), file->class));
- 			sym_node->bind = ELF32_ST_BIND(get_symbol_info((file->symtab + i), file->class));
-			sym_node->shndx = get_symbol_shndx((file->symtab + i), file->endian, file->class);
+			sym_node->value = get_Sym_value((file->symtab + i), file->endian, file->class);
+ 			sym_node->type =  ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
+ 			sym_node->bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
+			sym_node->shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
@@ -210,18 +210,18 @@ static int8_t real_display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
 int8_t display_file_symbole(t_nm_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*section_header = (file->ptr + get_header_shoff(file->ptr, file->endian));
-	uint16_t	max = get_header_shnum(file->ptr, file->endian);
+	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
+	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
-		if (get_section_header_type(s_hptr, file->endian, file->class) == 2u) { /* 2 hardcode symtab value */
-			// strtab_off = get_section_header_offset(s_hptr, file->endian, file->class);
-			uint16_t name_idx = get_section_header_name(s_hptr, file->endian, file->class);
+		if (get_Shdr_type(s_hptr, file->endian, file->class) == 2u) { /* 2 hardcode symtab value */
+			// strtab_off = get_Shdr_offset(s_hptr, file->endian, file->class);
+			uint16_t name_idx = get_Shdr_name(s_hptr, file->endian, file->class);
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".symtab") == 0) {
-				file->symtab_size = get_section_header_size(s_hptr, file->endian, file->class);
-				Elf64_Off symoffset = get_section_header_offset(s_hptr, file->endian, file->class);
+				file->symtab_size = get_Shdr_size(s_hptr, file->endian, file->class);
+				Elf64_Off symoffset = get_Shdr_offset(s_hptr, file->endian, file->class);
 				file->symtab = file->ptr + symoffset;
 				break;
 			}

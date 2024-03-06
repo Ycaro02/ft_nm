@@ -71,37 +71,37 @@ uint16_t 		detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32);
 int8_t			display_file_symbole(t_nm_file *file);
 
 /* elf header getter */
-Elf64_Half		get_header_type(void *ptr, int8_t endian);
-Elf64_Half		get_header_machine(void *ptr, int8_t endian);
-Elf64_Word		get_header_version(void *ptr, int8_t endian);
-Elf64_Addr		get_header_entry(void *ptr, int8_t endian);
-Elf64_Off		get_header_phoff(void *ptr, int8_t endian);
-Elf64_Off		get_header_shoff(void *ptr, int8_t endian);
-Elf64_Word		get_header_flags(void *ptr, int8_t endian);
-Elf64_Half		get_header_ehsize(void *ptr, int8_t endian);
-Elf64_Half		get_header_phentsize(void *ptr, int8_t endian);
-Elf64_Half		get_header_phnum(void *ptr, int8_t endian);
-Elf64_Half		get_header_shentsize(void *ptr, int8_t endian);
-Elf64_Half		get_header_shnum(void *ptr, int8_t endian);
-Elf64_Half		get_header_shstrndx(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_type(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_machine(void *ptr, int8_t endian);
+Elf64_Word		get_Ehdr_version(void *ptr, int8_t endian);
+Elf64_Addr		get_Ehdr_entry(void *ptr, int8_t endian);
+Elf64_Off		get_Ehdr_phoff(void *ptr, int8_t endian);
+Elf64_Off		get_Ehdr_shoff(void *ptr, int8_t endian);
+Elf64_Word		get_Ehdr_flags(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_ehsize(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_phentsize(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_phnum(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_shentsize(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_shnum(void *ptr, int8_t endian);
+Elf64_Half		get_Ehdr_shstrndx(void *ptr, int8_t endian);
 
 /* section header getter */
-Elf64_Word		get_section_header_name(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word		get_section_header_type(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword		get_section_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr		get_section_header_addr(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Off		get_section_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword		get_section_header_size(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word		get_section_header_link(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword		get_section_header_addralign(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword		get_section_header_entsize(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word		get_section_header_info(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_Shdr_name(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_Shdr_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_Shdr_flags(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_Shdr_addr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Off		get_Shdr_offset(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_Shdr_size(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_Shdr_link(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_Shdr_addralign(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_Shdr_info(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* symbole getter */
-Elf64_Word		get_symbol_name(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr		get_symbol_value(void *ptr, int8_t endian, int8_t is_elf64);
-uint8_t			get_symbol_info(void *ptr, int8_t is_elf64);
-Elf64_Section	get_symbol_shndx(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_Sym_name(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_Sym_value(void *ptr, int8_t endian, int8_t is_elf64);
+uint8_t			get_Sym_info(void *ptr, int8_t is_elf64);
+Elf64_Section	get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* handle endian */
 void    		reverse_bytes(uint8_t *ptr, size_t max);
