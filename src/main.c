@@ -15,7 +15,7 @@ t_nm_file *get_nm_file_context(t_nm_context c, char *path)
 		return (NULL);
 	}
 	/* maybe just store this in flag ?? */
-	/* get bool endian */
+	/* get bool endian 0 is same endian */
 	file->endian = ELF_HFIELD(file->ptr, EI_DATA) - c.l_endian; 
 	/* get bool class */
 	file->class = IS_ELF64(file->ptr);
@@ -34,7 +34,6 @@ int main(int argc, char **argv)
 	if (argc > 1) {
 		path = argv[1];
 	}
-	/* endian bool, 0 if same endian */
 	t_nm_file *file = get_nm_file_context(context, path);
 	if (file) {
 		// display_elf_header(file->ptr, file->endian);

@@ -133,6 +133,24 @@ static uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t siz
 	return (c);
 }
 
+/** @brief Fill symbole node
+ * 	@param file pointer on file struct
+ * 	@param strtab pointer on string table
+ * 	@param i symbole index in symtable
+ * 	@param name_idx symbole name index in strtab
+ * 	@param type symbole type
+ * 	@return symbole node struct
+*/
+static t_sym_tab fill_sym_node(t_nm_file *file, char *strtab, Elf64_Xword i, Elf64_Word name_idx, uint8_t type)
+{
+	t_sym_tab symbole;
+	symbole.sym_name = strtab + name_idx;
+	symbole.value = get_Sym_value((file->symtab + i), file->endian, file->class);
+	symbole.type =  type;
+	symbole.bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
+	symbole.shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
+	return (symbole);
+}
 
 /** @brief Build symbole list
  * 	@param file pointer on file struct
@@ -141,15 +159,17 @@ static uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t siz
 */
 static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 {
-	t_list *name_lst = NULL;
-	Elf64_Xword 	struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
+	t_list			*name_lst = NULL;
+	Elf64_Xword		struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;
-		uint8_t	type = ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
+		uint8_t		type = ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
+		
 		if (name && *name && !is_source_file(type)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
+		
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
 				if (name_lst) {
@@ -157,11 +177,12 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 				}
 				return (NULL); /* need to return return NULL or error here */
 			}
-			sym_node->sym_name = strtab + name_idx;
-			sym_node->value = get_Sym_value((file->symtab + i), file->endian, file->class);
- 			sym_node->type =  type;
- 			sym_node->bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
-			sym_node->shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
+			*sym_node = fill_sym_node(file, strtab, i, name_idx, type);
+			// sym_node->sym_name = strtab + name_idx;
+			// sym_node->value = get_Sym_value((file->symtab + i), file->endian, file->class);
+ 			// sym_node->type =  type;
+ 			// sym_node->bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
+			// sym_node->shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
@@ -178,12 +199,12 @@ static int8_t real_display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
 	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
 	if (!strtab) {
 		ft_printf_fd(1, RED"ft_nm: Error no .strtab found\n"RESET);
-		return (-1);
+		return (1);
 	}
 	t_list *name_lst = build_symbole_list(file, strtab);
 	if (!name_lst) {
 		ft_printf_fd(2, "No symbole found or malloc error\n");
-		return (-1); /* need to return value here*/
+		return (1); /* need to return value here*/
 	}
 	lst_name_sort(name_lst);
 	for (t_list *current = name_lst; current; current = current->next) {
