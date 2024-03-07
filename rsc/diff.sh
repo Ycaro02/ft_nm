@@ -54,7 +54,15 @@ exit_code_tester() {
     rm perm_111
 }
 
-elf_file_diff ${BIN}
-elf_file_diff libft/ft_atoi.o
+basic_diff_test() {
+	elf_file_diff ${BIN}
+	elf_file_diff rsc/libft_malloc.so
+	elf_file_diff libft/ft_atoi.o
+	elf_file_diff rsc/test_file/mandatory/test_facile
+	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
+	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
+}
+
+basic_diff_test
 elf32_basic_test rsc/main_32.c
 exit_code_tester

@@ -35,7 +35,7 @@ char *get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf6
 		/* structure header pointer */
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
 		// display_section_header_info(s_hptr, endian, is_elf64);
-		if (get_Shdr_type(s_hptr, endian, is_elf64) == 3u) { /* 3 hardcode strtab value */
+		if (get_Shdr_type(s_hptr, endian, is_elf64) == SHT_STRTAB) { /* 3 hardcode strtab value */
 			// strtab_off = get_Shdr_offset(s_hptr, endian, is_elf64);
 			uint16_t name_idx = get_Shdr_name(s_hptr, endian, is_elf64);
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {

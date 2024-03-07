@@ -209,7 +209,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 		uint8_t symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
 		ft_printf_fd(1, " %c %s\n",symbole_char, (char *) symbole->sym_name);
 	}
-	lst_clear(&name_lst, NULL);
+	lst_clear(&name_lst, free);
 	return (0);
 
 }
@@ -226,7 +226,7 @@ int8_t display_file_symbole(t_elf_file *file)
 	
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
-		if (get_Shdr_type(s_hptr, file->endian, file->class) == 2u) { /* 2 hardcode symtab value */
+		if (get_Shdr_type(s_hptr, file->endian, file->class) == SHT_SYMTAB) { /* 2 hardcode symtab value */
 			// strtab_off = get_Shdr_offset(s_hptr, file->endian, file->class);
 			uint16_t name_idx = get_Shdr_name(s_hptr, file->endian, file->class);
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".symtab") == 0) {
