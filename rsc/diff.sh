@@ -58,6 +58,7 @@ basic_diff_test() {
 	elf_file_diff ${BIN}
 	elf_file_diff rsc/libft_malloc.so
 	elf_file_diff libft/ft_atoi.o
+	elf_file_diff rsc/debug_sym.o
 	elf_file_diff rsc/test_file/mandatory/test_facile
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit

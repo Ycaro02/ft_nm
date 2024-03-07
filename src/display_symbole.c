@@ -117,8 +117,11 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 				c = ALLOC_WRITE_SYM; /* d */
 			} else if (sh_type == SHT_PROGBITS && sh_flag == (SHF_ALLOC | SHF_EXECINSTR)) {
 				c = FUNCTION_SYM; /* T */
-			} else if (sh_flag & SHF_ALLOC && !(sh_flag & SHF_WRITE) ) { /* obh sym R r*/
+			} else if (sh_flag & SHF_ALLOC && !(sh_flag & SHF_WRITE)) { /* obh sym R r*/
 				c = OBJECT_SYM;
+			}
+			else if (sh_type & SHT_GROUP) {
+				c = 'n';
 			}
 			if ((c >= 'A' && c <= 'Z') && (c != UNDIFINED_SYM && symbole->bind != STB_GLOBAL)) {
 				c += 32;

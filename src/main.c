@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
-	ft_printf_fd(2, YELLOW"Local endian = %u\n"RESET, context.l_endian);
+	// ft_printf_fd(2, YELLOW"Local endian = %u\n"RESET, context.l_endian);
 	if (argc > 1) {
 		path = argv[1];
 	}
