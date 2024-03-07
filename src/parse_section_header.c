@@ -112,7 +112,7 @@ void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class)
 /** @brief display all section header
  *	@param file pointer on file struct
 */	
- void display_all_section_header(t_nm_file *file) {
+ void display_all_section_header(t_elf_file *file) {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));

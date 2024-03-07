@@ -50,14 +50,14 @@ typedef struct s_sym_tab {
 /**
  * nm file data
 */
-typedef struct s_nm_file {
+typedef struct s_elf_file {
     char		    *name;			/* file name */
 	void		    *ptr;			/* base file ptr, mmap return */
 	void		    *symtab;		/* symtab ptr*/
     Elf64_Xword		symtab_size;	/* symtab size in bytes */
     int8_t			class;  		/* bool class 1 for elf64 0 for 32 */
     int8_t			endian; 		/* bool endian 0 for same endian otherwise reverse */
-} t_nm_file;
+} t_elf_file;
 
 /* struct stat typedef */
 typedef struct stat t_stat;
@@ -68,7 +68,7 @@ void			display_elf_header(void *elf_struct, int8_t endian);
 uint16_t 		detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32);
 
 /* program header */
-int8_t			display_file_symbole(t_nm_file *file);
+int8_t			display_file_symbole(t_elf_file *file);
 
 /* elf header getter */
 Elf64_Half		get_Ehdr_type(void *ptr, int8_t endian);
@@ -115,8 +115,8 @@ int     		detect_local_endian();
 void    		test_reverse_byte(void rev_function());
 
 /* Display data function */
-void			display_all_section_header(t_nm_file *file);
-void			display_all_program_header(t_nm_file *file);
+void			display_all_section_header(t_elf_file *file);
+void			display_all_program_header(t_elf_file *file);
 void			display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
 void			display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
 void			display_program_header_info(void *elf_struct, int8_t endian);

@@ -12,9 +12,7 @@ static void lst_name_sort(t_list *lst)
     while (lst)  {
         if (!min)
             min = lst;
-        // char *current = ;
-        // char *min_file = ;
-        if (ft_strcmp((char *)((t_sym_tab *) ((t_list *) lst)->content)->sym_name, (char *)((t_sym_tab *) ((t_list *) min)->content)->sym_name) <= 0)
+        if (ft_strcmp(((t_sym_tab *) ((t_list *) lst)->content)->sym_name, ((t_sym_tab *) ((t_list *) min)->content)->sym_name) <= 0)
             min = lst;
         lst = lst->next;
     }
@@ -27,10 +25,7 @@ static void lst_name_sort(t_list *lst)
 /* @brief is source file */
 static int is_source_file(uint8_t type)
 {
-	if (type == STT_FILE || type == STT_SECTION) {
-		return (1);
-	}
-	return (0);
+	return ((type == STT_FILE || type == STT_SECTION));
 }
 
 /** @brief Display symbole value
@@ -91,7 +86,7 @@ static void insert_pad(uint8_t pad, char *c)
  * 	@param sizeof_Sshdr size of section header
  * 	@return symbole char
 */
-static uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t sizeof_Sshdr)
+static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t sizeof_Sshdr)
 {
 	uint8_t c = UNDIFINED_SYM;
 	Elf64_Section shndx = symbole->shndx;
@@ -141,7 +136,7 @@ static uint8_t get_symbole_char(t_nm_file *file, t_sym_tab *symbole, int16_t siz
  * 	@param type symbole type
  * 	@return symbole node struct
 */
-static t_sym_tab fill_sym_node(t_nm_file *file, char *strtab, Elf64_Xword i, Elf64_Word name_idx, uint8_t type)
+static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, Elf64_Word name_idx, uint8_t type)
 {
 	t_sym_tab symbole;
 	symbole.sym_name = strtab + name_idx;
@@ -157,7 +152,7 @@ static t_sym_tab fill_sym_node(t_nm_file *file, char *strtab, Elf64_Xword i, Elf
  * 	@param strtab pointer on string table
  * 	@return list of symbole
 */
-static t_list *build_symbole_list(t_nm_file *file, char *strtab)
+static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 {
 	t_list			*name_lst = NULL;
 	Elf64_Xword		struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
@@ -178,11 +173,6 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
 				return (NULL); /* need to return return NULL or error here */
 			}
 			*sym_node = fill_sym_node(file, strtab, i, name_idx, type);
-			// sym_node->sym_name = strtab + name_idx;
-			// sym_node->value = get_Sym_value((file->symtab + i), file->endian, file->class);
- 			// sym_node->type =  type;
- 			// sym_node->bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
-			// sym_node->shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
@@ -194,7 +184,7 @@ static t_list *build_symbole_list(t_nm_file *file, char *strtab)
  * 	@param sizeof_Sshdr size of section header
  * 	@return 0 if success otherwise -1
 */
-static int8_t real_display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
+static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 {
 	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
 	if (!strtab) {
@@ -227,7 +217,7 @@ static int8_t real_display_symbol(t_nm_file *file, int16_t sizeof_Sshdr)
 /** @brief Display file symbole
  *	@param file pointer on file struct
 */
-int8_t display_file_symbole(t_nm_file *file)
+int8_t display_file_symbole(t_elf_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));

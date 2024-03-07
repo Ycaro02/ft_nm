@@ -275,7 +275,7 @@ uint16_t detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32)
 /** @brief Get section header offset
  *  @param file pointer nm_file context
 */
-void display_all_program_header(t_nm_file *file)
+void display_all_program_header(t_elf_file *file)
 {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
 	void		*p_header = file->ptr + get_Ehdr_phoff(file->ptr, file->endian);

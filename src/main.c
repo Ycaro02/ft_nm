@@ -1,8 +1,8 @@
 # include "../include/nm.h"
 
-t_nm_file *get_nm_file_context(t_nm_context c, char *path)
+t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 {
-	t_nm_file *file = ft_calloc(sizeof(t_nm_file), 1);
+	t_elf_file *file = ft_calloc(sizeof(t_elf_file), 1);
 
 	if (!file) {
 		ft_printf_fd(2, "Alloc error get nm file\n");
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	if (argc > 1) {
 		path = argv[1];
 	}
-	t_nm_file *file = get_nm_file_context(context, path);
+	t_elf_file *file = get_elf_file_context(context, path);
 	if (file) {
 		// display_elf_header(file->ptr, file->endian);
 		// display_all_program_header(file);
