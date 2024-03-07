@@ -8,7 +8,7 @@
 */
 void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 {
-	uint16_t	sizeof_Sshdr = detect_struct_size(ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	sizeof_Sshdr = detect_struct_size(is_elf64, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	/* section header ptr, base pointer + section header offset */
 	void		*section_header = (ptr + get_Ehdr_shoff(ptr, endian));
 	/* section_header_strtab, sectionheader[idx], section header str index */

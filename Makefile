@@ -4,7 +4,7 @@ CFLAGS	= -Wall -Wextra -Werror -O3 -g
 
 SRCS	=	src/main.c\
 			src/parse_elf_header.c\
-			src/handle_endian.c\
+			src/nm_utils.c\
 			src/parse_program_header.c\
 			src/parse_section_header.c\
 			src/parse_symtab.c\

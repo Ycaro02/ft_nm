@@ -1,6 +1,7 @@
 #include "../include/nm.h"
 
-/** @brief Get symbol name
+/** 
+ *	@brief Get symbol name
  * 	@param symbole struct list
 */
 static void lst_name_sort(t_list *lst)
@@ -28,9 +29,10 @@ static int is_source_file(uint8_t type)
 	return ((type == STT_FILE || type == STT_SECTION));
 }
 
-/** @brief Display symbole value
-  * @param nbr number to display
-  * @param fd file descriptor
+/** 
+ *	@brief Display symbole value
+ *	@param nbr number to display
+ *	@param fd file descriptor
 */
 static void	display_sym_value(unsigned long nbr, int fd)
 {
@@ -43,9 +45,10 @@ static void	display_sym_value(unsigned long nbr, int fd)
 }
 
 
-/** @brief Get hex len
-  * @param nbr number to compute
-  * @return hex len
+/** 
+ *	@brief Get hex len
+ *	@param nbr number to compute
+ *	@return hex len
 */
 static uint8_t compute_hex_len(unsigned long nbr)
 {
@@ -57,7 +60,8 @@ static uint8_t compute_hex_len(unsigned long nbr)
 	return (count);
 }
 
-/** @brief Get zero padding: if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if
+/** 
+ *	@brief Get zero padding: if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if
  * 	@param class 1 for 64 bits 0 for 32 bits
  * 	@param len number len
  * 	@param is_undef 1 for undef 0 otherwise
@@ -68,7 +72,8 @@ static uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
 	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
 }
 
-/** @brief Insert pad
+/** 
+ *	@brief Insert pad
  * 	@param pad number of pad to insert
  * 	@param c char to insert
 */
@@ -80,7 +85,8 @@ static void insert_pad(uint8_t pad, char *c)
 	}
 }
 
-/** @brief Get symbole char
+/** 
+ *	@brief Get symbole char
  * 	@param file pointer on file struct
  * 	@param symbole pointer on symbole struct
  * 	@param sizeof_Sshdr size of section header
@@ -102,8 +108,9 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 		c = UNDIFINED_SYM + 32;
 	} else if (shndx != SHN_UNDEF) {
 		Elf64_Half shnum = get_Ehdr_shnum(file->ptr, file->endian);
+		
 		if (shndx == SHN_ABS) {
-			c = 'a';
+			c = ABS_SYM;
 		} else if (shndx == SHN_COMMON) {
 			c = COMMON_SYM;
 		}  else if (shndx < shnum) {
@@ -121,7 +128,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 				c = OBJECT_SYM;
 			}
 			else if (sh_type & SHT_GROUP) {
-				c = 'n';
+				c = DEBUG_SYM;
 			}
 			if ((c >= 'A' && c <= 'Z') && (c != UNDIFINED_SYM && symbole->bind != STB_GLOBAL)) {
 				c += 32;
@@ -131,7 +138,8 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 	return (c);
 }
 
-/** @brief Fill symbole node
+/** 
+ *	@brief Fill symbole node
  * 	@param file pointer on file struct
  * 	@param strtab pointer on string table
  * 	@param i symbole index in symtable
@@ -150,7 +158,8 @@ static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, El
 	return (symbole);
 }
 
-/** @brief Build symbole list
+/** 
+ *	@brief Build symbole list
  * 	@param file pointer on file struct
  * 	@param strtab pointer on string table
  * 	@return list of symbole
@@ -158,7 +167,7 @@ static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, El
 static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 {
 	t_list			*name_lst = NULL;
-	Elf64_Xword		struct_sym_size = detect_struct_size(file->ptr, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
+	Elf64_Xword		struct_sym_size = detect_struct_size(file->class, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
@@ -182,7 +191,8 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 	return (name_lst);
 }
 
-/** @brief Display symbole
+/** 
+ *	@brief Display symbole
  * 	@param file pointer on file struct
  * 	@param sizeof_Sshdr size of section header
  * 	@return 0 if success otherwise -1
@@ -217,12 +227,13 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 
 }
 
-/** @brief Display file symbole
+/** 
+ *	@brief Display file symbole
  *	@param file pointer on file struct
 */
 int8_t display_file_symbole(t_elf_file *file)
  {
-	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);

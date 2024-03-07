@@ -115,8 +115,9 @@ Elf64_Half get_Ehdr_shstrndx(void *ptr, int8_t endian) {
 }
 
 
-/** @brief Display program header info
- *  @param Shdr pointer on section header struct table
+/** 
+ *	@brief Display program header info
+ *	@param Shdr pointer on section header struct table
 */
 void display_elf_header(void *elf_struct, int8_t endian)
 {
@@ -135,8 +136,9 @@ void display_elf_header(void *elf_struct, int8_t endian)
 	ft_printf_fd(1, YELLOW"shstrndx:%s%s|%d|\n"RESET,RESET, GREEN, get_Ehdr_shstrndx(elf_struct, endian));
 }
 
-/** @brief Call open
- *  @param str file name
+/** 
+ *	@brief Call open
+ *	@param str file name
 */
 static int call_open(char *str)
 {
@@ -148,10 +150,11 @@ static int call_open(char *str)
 	return (fd);
 }
 
-/** @brief Load elf info in memory
- * 	@param fd file descriptor
- * 	@param len file size
- * 	@return pointer on elf struct or NULL in case of error
+/** 
+ *	@brief Load elf info in memory
+ *	@param fd file descriptor
+ *	@param len file size
+ *	@return pointer on elf struct or NULL in case of error
 */
 static void *load_elf_info(int fd, size_t len)
 {
@@ -164,15 +167,17 @@ static void *load_elf_info(int fd, size_t len)
 	return (elf_struct);
 }
 
-/** @brief check if c value is val1 or val 2
- * 	@return bool 1 for true otherwise 0 
+/** 
+ *	@brief check if c value is val1 or val 2
+ *	@return bool 1 for true otherwise 0 
 */
 static int check_identification_byte(char c, int val1, int val2) {
 	return ((c == val1 || c == val2));
 }
 
-/** @brief check if c value is between val1 and val2
- * 	@return bool 1 for true otherwise 0 
+/** 
+ *	@brief check if c value is between val1 and val2
+ *	@return bool 1 for true otherwise 0 
 */
 static int check_range_int8_val(char c, int val1, int val2) {
 	return ((c >= val1 && c <= val2));
@@ -191,9 +196,10 @@ static int detect_os_abi(uint8_t os_abi)
 	return (-1);
 }
 
-/**@brief Parse header identification field
- * @param str file name to check
- * @param elf_struct pointer on elf header struct
+/**
+ *	@brief Parse header identification field
+ *	@param str file name to check
+ *	@param elf_struct pointer on elf header struct
 */
 static int header_identification_correct(char *str, void *elf_struct)
 {
@@ -235,6 +241,11 @@ static int header_identification_correct(char *str, void *elf_struct)
 	return (TRUE);
 }
 
+/** 
+ *	@brief Parse elf header
+ *	@param str file name
+ *	@return pointer on elf struct or NULL in case of error
+*/
 void *parse_elf_header(char *str)
 {
 	void	*elf_struct = NULL;
@@ -260,16 +271,3 @@ void *parse_elf_header(char *str)
 	}
 	return (elf_struct);
 }
-
-/** @brief Get section header offset
- *  @param elf_ptr pointer on elf struct
- *  @param size64 size of 64 bits struct
- *  @param size32 size of 32 bits struct
- *  @return accordate size
-*/
-uint16_t detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32)
-{
-	return (IS_ELF64(elf_ptr) ? size64 : size32);
-	// return ((IS_ELF64(elf_ptr) * size64) + (IS_ELF64(elf_ptr) * size32)); /* branchless version */
-}
-

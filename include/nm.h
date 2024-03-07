@@ -8,24 +8,26 @@
 # include <stdlib.h>					/* exit NULL */
 # include <stdio.h>						/* Perror */
 # include "../libft/basic_define.h" 	/* Color */
-# include "endian.h"					/* endian */
+# include "macro.h"						/* macro */
 # include "../libft/libft.h" 			/* libft */
 # include "../libft/list/linked_list.h" /* list */
 
 /* Symbole char enum */
 enum e_symb_char {
   UNDIFINED_SYM='U',				/* undefined symbole */
-  OBJECT_SYM='R',					/* data object sym like variable */
-  FUNCTION_SYM='T', 				/* function symbole */
-  SECTIONB_SYM='B', 				/* specific section data */
+  ABS_SYM='a',      				/* absolute symbole */
   COMMON_SYM='C',   				/* common/shared symbole or file name */
-  DATA_SYM='D',     				/* data object */
-  IFUNC_SYM='I',    				/* indirect function, real adress know at run time */
-  NUM_SYM='N',      				/* defined number symbole*/
-  LOOS_SYM='O',     				/* specific os */
-  LOPROC_SYM='P',   				/* specific procesor */
   NO_BITS_SYM='B',					/* No bits symbole */
   ALLOC_WRITE_SYM='D',				/* if symbole section header flag alloc or write */
+  FUNCTION_SYM='T', 				/* function symbole */
+  OBJECT_SYM='R',					/* data object sym like variable */
+  DEBUG_SYM='n',					/* debug symbole */
+//   DATA_SYM='D',     				/* data object */
+//   IFUNC_SYM='I',    				/* indirect function, real adress know at run time */
+//   LOOS_SYM='O',     				/* specific os */
+//   LOPROC_SYM='P',   				/* specific procesor */
+//   NUM_SYM='N',      				/* defined number symbole*/
+//   SECTIONB_SYM='B', 				/* specific section data */
 };
 
 /**
@@ -65,7 +67,6 @@ typedef struct stat t_stat;
 /* parse elf_header */
 void			*parse_elf_header(char *str);
 void			display_elf_header(void *elf_struct, int8_t endian);
-uint16_t 		detect_struct_size(void *elf_ptr, uint16_t size64, uint16_t size32);
 
 /* program header */
 int8_t			display_file_symbole(t_elf_file *file);
@@ -117,9 +118,9 @@ Elf64_Section	get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 char			*get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64);
 void			*get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64);
 
-/* handle endian */
-void    		reverse_bytes(uint8_t *ptr, size_t max);
+/* nm utils */
 int     		detect_local_endian();
+uint16_t 		detect_struct_size(int8_t is_elf64, uint16_t size64, uint16_t size32);
 
 /* test utils */
 void    		test_reverse_byte(void rev_function());

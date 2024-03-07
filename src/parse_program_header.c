@@ -93,7 +93,7 @@ void display_program_header_info(void *ph_ptr, int8_t endian, int8_t is_elf64)
 */
 void display_all_program_header(t_elf_file *file)
 {
-	uint16_t	sizeof_Sshdr = detect_struct_size(file->ptr, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
+	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Phdr), sizeof(Elf32_Phdr)); 
 	void		*p_header = file->ptr + get_Ehdr_phoff(file->ptr, file->endian);
 	uint16_t	max = get_Ehdr_phnum(file->ptr, file->endian);
 
