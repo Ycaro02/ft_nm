@@ -10,11 +10,23 @@ RESET="\e[0m"
 
 BIN=$1
 
+display_color_msg() {
+	COLOR=$1
+	MSG=$2
+	echo -e "${COLOR}${MSG}${RESET}"
+}
+
 elf_file_diff() {
     nm ${1} > nm_out;
     ./ft_nm ${1} > out
-    diff out nm_out && echo -e "${GREEN}Diff ${1} ok${RESET}"
-    rm nm_out out
+    diff out nm_out 
+	if [ $? -ne 0 ]; then
+		display_color_msg ${RED} "Diff ${1} failed"
+		exit 1
+	else
+		display_color_msg ${GREEN} "Diff ${1} ok"
+	fi
+	rm nm_out out
 }
 
 elf32_basic_test() {
@@ -24,8 +36,20 @@ elf32_basic_test() {
     rm ${NAME32}
 }
 
+basic_diff_test() {
+	elf_file_diff ${BIN}
+	elf_file_diff rsc/libft_malloc.so
+	elf_file_diff libft/ft_atoi.o
+	elf_file_diff rsc/debug_sym.o
+	elf_file_diff rsc/test_file/mandatory/test_facile
+	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
+	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
+	elf32_basic_test rsc/main_32.c
+}
+
 test_exit_code() {
-    nm ${1} > nm_out 2> /dev/null; echo -e "${YELLOW}${1}\tExit code:${RESET} ${GREEN}${?}${RESET}"
+    nm ${1} > nm_out 2> /dev/null; 
+	display_color_msg ${YELLOW} "${1}\nExit code:${GREEN}${?}${RESET}"
     rm nm_out
 }
 
@@ -45,25 +69,14 @@ test_perm_file() {
 
 exit_code_tester() {
     test_exit_code ${BIN}
-    test_exit_code " "
+    test_exit_code ' '
     test_exit_code dsa
     test_perm_file 000 000
-    test_perm_file 666 000
-    test_perm_file 444 666
-    test_perm_file 111 444
-    rm perm_111
-}
-
-basic_diff_test() {
-	elf_file_diff ${BIN}
-	elf_file_diff rsc/libft_malloc.so
-	elf_file_diff libft/ft_atoi.o
-	elf_file_diff rsc/debug_sym.o
-	elf_file_diff rsc/test_file/mandatory/test_facile
-	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
-	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
+    test_perm_file 111 000
+    test_perm_file 444 111
+	test_perm_file 777 444
+    rm perm_777
 }
 
 basic_diff_test
-elf32_basic_test rsc/main_32.c
 exit_code_tester
