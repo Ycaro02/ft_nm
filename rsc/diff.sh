@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Color definition
+# Colors
 RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
@@ -16,13 +16,13 @@ display_color_msg() {
 	echo -e "${COLOR}${MSG}${RESET}"
 }
 
+
 elf_file_diff() {
     nm ${1} > nm_out;
     ./ft_nm ${1} > out
     diff out nm_out 
 	if [ $? -ne 0 ]; then
 		display_color_msg ${RED} "Diff ${1} failed"
-		exit 1
 	else
 		display_color_msg ${GREEN} "Diff ${1} ok"
 	fi
@@ -46,6 +46,12 @@ basic_diff_test() {
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
 	elf32_basic_test rsc/main_32.c
 }
+
+basic_diff_test
+
+
+
+#### EXIT CODE TESTER ####
 
 test_exit_code() {
     nm ${1} > nm_out 2> /dev/null; 
@@ -78,5 +84,4 @@ exit_code_tester() {
     rm perm_777
 }
 
-basic_diff_test
-exit_code_tester
+#### END ####

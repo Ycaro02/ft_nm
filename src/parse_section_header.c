@@ -91,6 +91,10 @@ Elf64_Xword get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64)
     return (READ_DATA(((Elf32_Shdr *) ptr)->sh_entsize, endian));
 }
 
+/* @brief get section header table ptr */
+void *get_section_header(t_elf_file *file) {
+	return (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
+}
 
 /** 
  *	@brief display section header information
@@ -119,7 +123,7 @@ void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class)
  void display_all_section_header(t_elf_file *file) {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
-	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
+	void		*section_header = get_section_header(file);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
 	for (uint16_t i = 0; i < max; ++i) {

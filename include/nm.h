@@ -97,16 +97,17 @@ Elf64_Word		get_Shdr_link(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword		get_Shdr_addralign(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword		get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Word		get_Shdr_info(void *ptr, int8_t endian, int8_t is_elf64);
+void 			*get_section_header(t_elf_file *file);
 
 /* program header getter */
-Elf64_Word get_program_header_type(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Off get_program_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr get_program_header_vaddr(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Addr get_program_header_paddr(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_program_header_filesz(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_program_header_memsz(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Word get_program_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
-Elf64_Xword get_program_header_align(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_program_header_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Off		get_program_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_program_header_vaddr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr		get_program_header_paddr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_program_header_filesz(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_program_header_memsz(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word		get_program_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword		get_program_header_align(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* symbole getter */
 Elf64_Word		get_Sym_name(void *ptr, int8_t endian, int8_t is_elf64);

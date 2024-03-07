@@ -114,7 +114,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 		} else if (shndx == SHN_COMMON) {
 			c = COMMON_SYM;
 		}  else if (shndx < shnum) {
-			void *section_header_ptr = file->ptr + get_Ehdr_shoff(file->ptr, file->endian) + (sizeof_Sshdr * shndx);
+			void *section_header_ptr = get_section_header(file) + (sizeof_Sshdr * shndx);
 			Elf64_Word sh_type = get_Shdr_type(section_header_ptr, file->endian, file->class);
 			Elf64_Xword sh_flag = get_Shdr_flags(section_header_ptr, file->endian, file->class);
 
@@ -234,7 +234,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 int8_t display_file_symbole(t_elf_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
-	void		*section_header = (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
+	void		*section_header = get_section_header(file);
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
