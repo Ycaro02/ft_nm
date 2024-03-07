@@ -97,6 +97,16 @@ Elf64_Xword		get_Shdr_addralign(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Xword		get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Word		get_Shdr_info(void *ptr, int8_t endian, int8_t is_elf64);
 
+/* program header getter */
+Elf64_Word get_program_header_type(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Off get_program_header_offset(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr get_program_header_vaddr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Addr get_program_header_paddr(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_program_header_filesz(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_program_header_memsz(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Word get_program_header_flags(void *ptr, int8_t endian, int8_t is_elf64);
+Elf64_Xword get_program_header_align(void *ptr, int8_t endian, int8_t is_elf64);
+
 /* symbole getter */
 Elf64_Word		get_Sym_name(void *ptr, int8_t endian, int8_t is_elf64);
 Elf64_Addr		get_Sym_value(void *ptr, int8_t endian, int8_t is_elf64);
@@ -119,6 +129,5 @@ void			display_all_section_header(t_elf_file *file);
 void			display_all_program_header(t_elf_file *file);
 void			display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
 void			display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
-void			display_program_header_info(void *elf_struct, int8_t endian);
 
 # endif /* FT_NM_HEADER */

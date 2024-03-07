@@ -1,17 +1,20 @@
-#include <elf.h>
+#ifndef ELF_ENDIAN_H
+# define ELF_ENDIAN_H 1
+
+# include <elf.h>
 
 /* From <byteswap.h> */
 /* Swap bytes in 16-bit value.  */
-#define SWAP_BYTE_16(x)					\
+# define SWAP_BYTE_16(x)					\
   ((__uint16_t) ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8)))
 
 /* Swap bytes in 32-bit value.  */
-#define SWAP_BYTE_32(x)					\
+# define SWAP_BYTE_32(x)					\
   ((((x) & 0xff000000u) >> 24) | (((x) & 0x00ff0000u) >> 8)	\
    | (((x) & 0x0000ff00u) << 8) | (((x) & 0x000000ffu) << 24))
 
 /* Swap bytes in 64-bit value.  */
-#define SWAP_BYTE_64(x)			\
+# define SWAP_BYTE_64(x)			\
   ((((x) & 0xff00000000000000ull) >> 56)	\
    | (((x) & 0x00ff000000000000ull) >> 40)	\
    | (((x) & 0x0000ff0000000000ull) >> 24)	\
@@ -31,4 +34,6 @@
 /* if size == 2 swap 16 bits, else: if size == 4 swap 32 bit, else swap 64*/
 # define REVERSE_ENDIAN(x, size)	size == 2 ? SWAP_BYTE_16(x) : ((size == 4 ? SWAP_BYTE_32(x) : SWAP_BYTE_64(x)))
 /* if endian = 0 || size data == 1, don't revese, else call reverse endian */
-# define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data)) 
+# define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data))
+
+# endif /* !ELF_ENDIAN_H */

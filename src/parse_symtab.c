@@ -8,7 +8,8 @@
 /**
  * Getter value for symbole table (Elf64/32_sym) structure array
 */
-/* Symbol name (string tbl index) */
+
+/* @brief get Symbol name (string tbl index) */
 Elf64_Word get_Sym_name(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_name, endian));
@@ -16,7 +17,7 @@ Elf64_Word get_Sym_name(void *ptr, int8_t endian, int8_t is_elf64) {
     return (READ_DATA(((Elf32_Sym *) ptr)->st_name, endian));
 }
 
-/* Symbol type and binding */
+/* @brief get Symbol type and binding */
 uint8_t get_Sym_info(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
         return ((uint8_t)(((Elf64_Sym *) ptr)->st_info));
@@ -24,7 +25,7 @@ uint8_t get_Sym_info(void *ptr, int8_t is_elf64) {
     return ((uint8_t)(((Elf32_Sym *) ptr)->st_info));
 }
 
-/* Symbol visibility */
+/* @brief get Symbol visibility */
 uint8_t get_Sym_other(void *ptr, int8_t is_elf64) {
     if (is_elf64) {
         return ((uint8_t)(((Elf64_Sym *) ptr)->st_other));
@@ -32,7 +33,7 @@ uint8_t get_Sym_other(void *ptr, int8_t is_elf64) {
     return ((uint8_t)(((Elf32_Sym *) ptr)->st_other));
 }
 
-/* Section index */
+/* @brief get Section index */
 Elf64_Section get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_shndx, endian));
@@ -40,7 +41,7 @@ Elf64_Section get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64) {
     return (READ_DATA(((Elf32_Sym *) ptr)->st_shndx, endian));
 }
 
-/* Symbol value */
+/* @brief get Symbol value */
 Elf64_Addr get_Sym_value(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_value, endian));
@@ -48,7 +49,7 @@ Elf64_Addr get_Sym_value(void *ptr, int8_t endian, int8_t is_elf64) {
     return (READ_DATA(((Elf32_Sym *) ptr)->st_value, endian));
 }
 
-/* Symbol size */
+/* @brief get Symbol size */
 Elf64_Xword get_Sym_size(void *ptr, int8_t endian, int8_t is_elf64) {
     if (is_elf64) {
         return (READ_DATA(((Elf64_Sym *) ptr)->st_size, endian));
