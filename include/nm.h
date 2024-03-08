@@ -56,6 +56,7 @@ typedef struct s_elf_file {
     char		    *name;			/* file name */
 	void		    *ptr;			/* base file ptr, mmap return */
 	void		    *symtab;		/* symtab ptr*/
+	Elf64_Off		file_size;		/* file len */
     Elf64_Xword		symtab_size;	/* symtab size in bytes */
     int8_t			class;  		/* bool class 1 for elf64 0 for 32 */
     int8_t			endian; 		/* bool endian 0 for same endian otherwise reverse */
@@ -65,7 +66,7 @@ typedef struct s_elf_file {
 typedef struct stat t_stat;
 
 /* parse elf_header */
-void			*parse_elf_header(char *str);
+void			*parse_elf_header(char *str, Elf64_Off *len);
 void			display_elf_header(void *elf_struct, int8_t endian);
 
 /* program header */

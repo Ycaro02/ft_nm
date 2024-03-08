@@ -212,9 +212,15 @@ int8_t display_file_symbole(t_elf_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = get_section_header(file);
+	
+	if (!section_header) {
+		return (-1);
+	}
+	
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
 	
+
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
 		if (get_Shdr_type(s_hptr, file->endian, file->class) == SHT_SYMTAB) { /* 2 hardcode symtab value */

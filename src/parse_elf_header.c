@@ -147,7 +147,7 @@ static void *load_elf_info(int fd, size_t len)
 {
 	void *elf_struct = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (elf_struct == MAP_FAILED) {
-		perror("Error mmap:\'"); 
+		// perror("Error mmap:\'"); 
 		close(fd);
 		return (NULL);
 	}
@@ -233,7 +233,7 @@ static int header_identification_correct(char *str, void *elf_struct)
  *	@param str file name
  *	@return pointer on elf struct or NULL in case of error
 */
-void *parse_elf_header(char *str)
+void *parse_elf_header(char *str, Elf64_Off *len)
 {
 	void	*elf_struct = NULL;
 	t_stat 	sb;
@@ -249,6 +249,7 @@ void *parse_elf_header(char *str)
 		return (NULL);
 	}
 	elf_struct = load_elf_info(fd, sb.st_size);
+	*len = sb.st_size;
 	if (!elf_struct) { /* fd close in load_elf_info in error case */
 		return (NULL);
 	}

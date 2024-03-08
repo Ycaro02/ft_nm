@@ -93,7 +93,13 @@ Elf64_Xword get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64)
 
 /* @brief get section header table ptr */
 void *get_section_header(t_elf_file *file) {
-	return (file->ptr + get_Ehdr_shoff(file->ptr, file->endian));
+	Elf64_Off sh_off = get_Ehdr_shoff(file->ptr, file->endian);
+	if ((Elf64_Off)file->ptr + sh_off > (Elf64_Off)file->ptr + file->file_size) {
+		ft_printf_fd(2, "bfd plugin: %s: file too short\n", file->name);
+		ft_printf_fd(2, "Section header table out of file\n");
+		return (NULL);
+	}
+	return (file->ptr + sh_off);
 }
 
 /** 
@@ -124,11 +130,13 @@ void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class)
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	void		*section_header = get_section_header(file);
-	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
-	ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
-	for (uint16_t i = 0; i < max; ++i) {
-		void *header_ptr = section_header + (sizeof_Sshdr * i);
-		uint16_t name_idx = get_Shdr_name(header_ptr, file->endian, file->class);
-		ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
+	if (section_header) {
+		char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
+		ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
+		for (uint16_t i = 0; i < max; ++i) {
+			void *header_ptr = section_header + (sizeof_Sshdr * i);
+			uint16_t name_idx = get_Shdr_name(header_ptr, file->endian, file->class);
+			ft_printf_fd(1, YELLOW"|%s|\n"RESET, ((char * )(shstrtab + name_idx)));
+		}
 	}
 }

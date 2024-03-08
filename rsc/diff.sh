@@ -9,6 +9,8 @@ CYAN="\e[36m"
 RESET="\e[0m"
 
 BIN=$1
+GOOD_FILE="rsc/test_file/good_files/"
+BAD_FILE="rsc/test_file/good_files/"
 
 display_color_msg() {
 	COLOR=$1
@@ -26,6 +28,13 @@ display_double_color_msg () {
 
 elf_file_diff() {
     nm ${1} > nm_out 2> /dev/null;
+	
+	cat nm_out | grep -v "bfd plugin" > tmp_out
+	diff tmp_out nm_out > /dev/null
+	if [ $? -ne 0 ]; then
+		cat tmp_out > nm_out
+	fi
+
     ./ft_nm ${1} > out 2> /dev/null
 	
 	if [ -z "$1" ]; then
@@ -40,7 +49,7 @@ elf_file_diff() {
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
-	rm nm_out out
+	rm nm_out out tmp_out
 }
 
 multiple_file_diff() {
@@ -96,7 +105,7 @@ incorrect_error_test() {
 	# file to short in fd 1
 }
 
-GOOD_FILE="rsc/test_file/good_files/"
+
 
 basic_diff_test
 correct_error_test
@@ -105,6 +114,9 @@ multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
 multiple_file_diff ft_nm sda
 multiple_file_diff ft_nm libft/*.o
 multiple_file_diff ${GOOD_FILE}*
+multiple_file_diff ${BAD_FILE}*
+
+
 
 #### EXIT CODE TESTER ####
 test_exit_code() {

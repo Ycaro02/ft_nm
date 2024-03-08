@@ -16,7 +16,7 @@ static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 		return (NULL);
 	}
 
-	file->ptr = parse_elf_header(path); 
+	file->ptr = parse_elf_header(path, &file->file_size); 
 	if (!file->ptr) {
 		free(file);
 		return (NULL);
