@@ -1,5 +1,9 @@
 # include "../include/nm.h"
 
+static uint8_t check_end_of_file(t_elf_file *file, void *to_check) { 
+	return (to_check >= file->ptr + file->file_size);
+}
+
 static uint8_t invalid_strtab(char *strtab, void* end_of_file)
 {
 	while (strtab != end_of_file) {
@@ -65,7 +69,13 @@ char *get_strtab(t_elf_file *file, uint16_t sizeof_Sshdr, int8_t endian, int8_t 
 
 		if (get_Shdr_type(sh_ptr, endian, is_elf64) == SHT_STRTAB) {
 			uint16_t name_idx = get_Shdr_name(sh_ptr, endian, is_elf64); /* need to check idx here, get shstrtab len todo that */
-			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {
+			void *section_name = shstrtab + name_idx;
+			if (check_end_of_file(file, section_name)) {
+				ft_printf_fd(2, "Invalid section name addr\n");
+				return (NULL);
+			}
+
+			if (ft_strcmp(((char *) section_name), ".strtab") == 0) {
 				strtab = ptr + get_Shdr_offset(sh_ptr, endian, is_elf64);
 				if (invalid_strtab(strtab, file->ptr + file->file_size)) {
 					ft_printf_fd(2, "Invalid format no valid strtab\n");
