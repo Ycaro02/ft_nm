@@ -91,12 +91,27 @@ Elf64_Xword get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64)
     return (READ_DATA(((Elf32_Shdr *) ptr)->sh_entsize, endian));
 }
 
+int8_t parse_number_shnum(t_elf_file *file, void *section_header) {
+	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
+	uint16_t	shnum = get_Ehdr_shnum(file->ptr, file->endian);
+	Elf64_Off	sh_table_size = shnum * sizeof_Sshdr;
+	
+	if ((Elf64_Off)section_header + sh_table_size > (Elf64_Off)file->ptr + file->file_size) {
+		ft_printf_fd(2, "Section header table end out of file\n");
+		return (-1);
+	}
+	// ft_printf_fd(2, "Section header table end: %p, end file: %p\n", ((Elf64_Off)section_header + sh_table_size), ((Elf64_Off)file->ptr + file->file_size));
+	return (0);
+}
+
 /* @brief get section header table ptr */
 void *get_section_header(t_elf_file *file) {
 	Elf64_Off sh_off = get_Ehdr_shoff(file->ptr, file->endian);
 	if ((Elf64_Off)file->ptr + sh_off > (Elf64_Off)file->ptr + file->file_size) {
-		// ft_printf_fd(2, "bfd plugin: %s: file too short\n", file->name);
-		ft_printf_fd(2, "Section header table out of file\n");
+		ft_printf_fd(2, "Section header table start out of file\n");
+		return (NULL);
+	}
+	if (parse_number_shnum(file, file->ptr + sh_off) == -1) {
 		return (NULL);
 	}
 	return (file->ptr + sh_off);

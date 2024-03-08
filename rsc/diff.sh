@@ -121,7 +121,6 @@ multiple_file_diff ${GOOD_FILE}*
 multiple_file_diff ${BAD_FILE}*
 check_test_passed
 
-
 #### EXIT CODE TESTER ####
 test_exit_code() {
     nm ${1} > nm_out 2> /dev/null;
