@@ -13,8 +13,6 @@ GOOD_FILE="rsc/test_file/good_files/"
 BAD_FILE="rsc/test_file/good_files/"
 EXIT_CODE=0
 
-export LC_COLLATE=en_US.utf8
-
 display_color_msg() {
 	COLOR=$1
 	MSG=$2
