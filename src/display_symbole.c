@@ -6,10 +6,11 @@
 */
 static void lst_name_sort(t_list *lst)
 {
-    if (!lst)
-        return ;
     t_list *head = lst;
     t_list *min = NULL;
+    
+	if (!lst)
+        return ;
     while (lst)  {
         if (!min)
             min = lst;
@@ -175,13 +176,15 @@ static void insert_pad(uint8_t pad, char *c)
 */
 static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 {
+	t_list 		*name_lst;
 	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
+
 	if (!strtab) {
 		// ft_printf_fd(1, "bfd plugin: %s: file too short\n", file->name);
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", file->name);
 		return (1);
 	}
-	t_list *name_lst = build_symbole_list(file, strtab);
+	name_lst = build_symbole_list(file, strtab);
 	if (!name_lst) {
 		ft_printf_fd(2, "No symbole found or malloc error\n");
 		return (1); /* need to return value here*/
@@ -212,31 +215,19 @@ int8_t display_file_symbole(t_elf_file *file)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = get_section_header(file);
+	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	
 	if (!section_header) {
 		return (-1);
 	}
-	
-	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
-	char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
-	
-
 	for (uint16_t i = 0; i < max; ++i) {
 		void *s_hptr = (section_header + (sizeof_Sshdr * i));
 		if (get_Shdr_type(s_hptr, file->endian, file->class) == SHT_SYMTAB) { /* 2 hardcode symtab value */
-			// strtab_off = get_Shdr_offset(s_hptr, file->endian, file->class);
-			uint16_t name_idx = get_Shdr_name(s_hptr, file->endian, file->class);
-			if (ft_strcmp(((char *) shstrtab + name_idx), ".symtab") == 0) {
-				file->symtab_size = get_Shdr_size(s_hptr, file->endian, file->class);
-				Elf64_Off symoffset = get_Shdr_offset(s_hptr, file->endian, file->class);
-				file->symtab = file->ptr + symoffset;
-				break;
-			}
+			file->symtab_size = get_Shdr_size(s_hptr, file->endian, file->class);
+			Elf64_Off symoffset = get_Shdr_offset(s_hptr, file->endian, file->class);
+			file->symtab = file->ptr + symoffset;
+			break;
 		}
 	}
-	// if (real_display_symbol(file, sizeof_Sshdr) == -1) {
-	// 	return (-1);
-	// }
-	// return (0);
 	return (real_display_symbol(file, sizeof_Sshdr));
  }

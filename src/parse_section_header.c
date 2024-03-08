@@ -108,7 +108,7 @@ int8_t parse_number_shnum(t_elf_file *file, void *section_header) {
 void *get_section_header(t_elf_file *file) {
 	Elf64_Off sh_off = get_Ehdr_shoff(file->ptr, file->endian);
 	if ((Elf64_Off)file->ptr + sh_off > (Elf64_Off)file->ptr + file->file_size) {
-		ft_printf_fd(2, "Section header table start out of file\n");
+		ft_printf_fd(2, "Section header table start out of memory range\n");
 		return (NULL);
 	}
 	if (parse_number_shnum(file, file->ptr + sh_off) == -1) {
@@ -146,7 +146,10 @@ void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class)
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	void		*section_header = get_section_header(file);
 	if (section_header) {
-		char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class);
+		char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class); /* display function */
+        if (!shstrtab) {
+            return ;
+        }
 		ft_printf_fd(1, RED"Section header table\nSection header strtab:\n"RESET);
 		for (uint16_t i = 0; i < max; ++i) {
 			void *header_ptr = section_header + (sizeof_Sshdr * i);
