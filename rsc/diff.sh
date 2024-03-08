@@ -92,8 +92,7 @@ incorrect_error_test() {
 	elf_file_diff rsc/test_file/mandatory/header_and_prog_copy
 	elf_file_diff rsc/test_file/mandatory/header_copy
 	elf_file_diff rsc/test_file/mandatory/unterminated_string
-	# elf_file_diff rsc/test_file/mandatory/wrong_arch to investigate just don't print
-	# file to short in fd 1
+	elf_file_diff rsc/test_file/mandatory/wrong_arch
 }
 
 
