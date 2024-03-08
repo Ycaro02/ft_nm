@@ -57,16 +57,7 @@ multiple_file_diff() {
 	for file in $@; do
 		echo -e " ${YELLOW}${file}${RESET}"
 	done
-	nm $@ > nm_out 2> /dev/null
-    ./ft_nm $@ > out 2> /dev/null
-    diff out nm_out
-
-	if [ $? -ne 0 ]; then
-		display_double_color_msg ${YELLOW} "Multiple diff: " ${RED} "KO"
-	else
-		display_double_color_msg ${YELLOW} "Multiple diff: " ${GREEN} "OK"
-	fi
-	rm nm_out out
+	elf_file_diff $@
 }
 
 elf32_basic_test() {
