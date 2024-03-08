@@ -16,10 +16,33 @@ EXIT_CODE=0
 FT_NM="./ft_nm"
 V_OUT="valgrind_out"
 VALGRIND_NM="valgrind --log-file=${V_OUT} ${FT_NM}"
+CHECK_LEAK="All heap blocks were freed -- no leaks are possible"
 
 if [ $2 -eq 1 ]; then
 	FT_NM=${VALGRIND_NM}
 fi
+
+check_error_code() {
+	if [ ${3} -eq 1 ]; then
+		if [ ${SAVE_EXIT} -ne 0 ]; then
+				echo -e "${RED}${1} ${2} $RESET"
+		else
+				echo -e "${CYAN}No ${1} ${2} $RESET"
+		fi	
+	else
+		if [ ${SAVE_EXIT} -eq 0 ]; then
+				echo -e "${RED}${1} ${2} $RESET"
+		else
+				echo -e "${CYAN}No ${1} ${2} $RESET"
+		fi
+	fi
+}
+
+check_valgrind_output() {
+	cat ${V_OUT} | grep "${3}" > /dev/null 2> /dev/null
+	SAVE_EXIT=$?
+	check_error_code "${1}" "${2}" "${4}"
+}
 
 
 display_color_msg() {
@@ -45,13 +68,12 @@ cut_bfd_plugin_error() {
 	rm tmp_out
 }
 
-# detect_valgrind_opt() {
-# 	if [ ${VALGRIND_OPT} -eq 1 ]; then
-# 	    ${VALGRIND_NM} ${1} > out 2> /dev/null
-# 	else
-# 	    ${FT_NM} ${1} > out 2> /dev/null
-# 	fi
-# }
+valgrind_check() {
+	check_valgrind_output "Invalid read/write found in" "${1}" "Invalid" 0
+	check_valgrind_output "Conditional jump found in" "${1}" "Conditional" 0 
+	check_valgrind_output "Leaks found in" "${1}" "${CHECK_LEAK}" 1
+}
+
 
 elf_file_diff() {
 
@@ -73,6 +95,11 @@ elf_file_diff() {
 		EXIT_CODE=1
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
+	fi
+
+	if [ -f $V_OUT ]; then
+		valgrind_check ${BIN}
+		rm ${V_OUT}
 	fi
 	rm nm_out out
 }
