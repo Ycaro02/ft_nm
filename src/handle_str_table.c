@@ -1,16 +1,5 @@
 # include "../include/nm.h"
 
-
-/**
- * @brief Check if ptr is in address range
- * @param file elf file
- * @param to_check pointer to check
- * @return 1 if at the end 0 if not
-*/
-static uint8_t check_end_of_file(t_elf_file *file, void *to_check) { 
-	return (to_check >= file->ptr + file->file_size);
-}
-
 /**
  * @brief Check if strtab is valid
  * @param strtab strtab pointer
@@ -54,7 +43,6 @@ void *get_shstrtab(t_elf_file *file, int8_t endian, int8_t is_elf64)
 		ft_printf_fd(2, "Invalid format no valid shstrtab\n");
 		return (NULL);
 	}
-
 	return (shstrtab);
 }
 
@@ -81,23 +69,23 @@ char *get_strtab(t_elf_file *file, uint16_t sizeof_Sshdr, int8_t endian, int8_t 
 		void *sh_ptr = (section_header + (sizeof_Sshdr * i));
 
 		if (get_Shdr_type(sh_ptr, endian, is_elf64) == SHT_STRTAB) {
-			uint16_t name_idx = get_Shdr_name(sh_ptr, endian, is_elf64); /* need to check idx here, get shstrtab len todo that */
+			Elf64_Word name_idx = get_Shdr_name(sh_ptr, endian, is_elf64); /* need to check idx here, get shstrtab len todo that */
 			void *section_name = shstrtab + name_idx;
+
 			if (check_end_of_file(file, section_name)) {
 				ft_printf_fd(2, "Invalid section name addr\n");
 				return (NULL);
-			}
-
-			if (ft_strcmp(((char *) section_name), ".strtab") == 0) {
+			} else if (ft_strcmp(((char *) section_name), ".strtab") == 0) {
 				strtab = ptr + get_Shdr_offset(sh_ptr, endian, is_elf64);
 				if (invalid_strtab(strtab, file->ptr + file->file_size)) {
 					ft_printf_fd(2, "Invalid format no valid strtab\n");
 					return (NULL);
 				}
-				// ft_printf_fd(2, RED"Found strtab addr: [%p], name |%s|, size %u\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
 				break;
 			}
 		}
 	}
 	return (strtab);
 }
+
+// ft_printf_fd(2, RED"Found strtab addr: [%p], name |%s|, size %u\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));

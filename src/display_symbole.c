@@ -130,7 +130,11 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;
 		uint8_t		type = ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
-		
+
+		if (check_end_of_file(file, strtab + name_idx)) {
+			ft_printf_fd(2, "Invalid symbole name addr\n");
+			return (NULL);
+		}
 		if (name && *name && !is_source_file(type)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 		

@@ -10,8 +10,6 @@ int detect_local_endian()
 	/* just check value of lower byte */
 	return ((*((char *)&i) == 1) ? ELFDATA2LSB : ELFDATA2MSB);
 }
-// ft_printf_fd(2, YELLOW"Local arch: little endian, LSB\n"RESET);
-// 	ft_printf_fd(2, YELLOW"Local arch: big endian, MSB\n"RESET);
 
 /** @brief Get section header offset
  *  @param elf_ptr pointer on elf struct
@@ -69,3 +67,12 @@ uint8_t compute_hex_len(unsigned long nbr)
 	return (count);
 }
 
+/**
+ * @brief Check if ptr is in address range
+ * @param file elf file
+ * @param to_check pointer to check
+ * @return 1 if at the end 0 if not
+*/
+uint8_t check_end_of_file(t_elf_file *file, void *to_check) { 
+	return (to_check >= file->ptr + file->file_size);
+}

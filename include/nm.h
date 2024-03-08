@@ -133,6 +133,7 @@ int				call_open(char *str);
 uint16_t 		detect_struct_size(int8_t is_elf64, uint16_t size64, uint16_t size32);
 void			display_sym_value(unsigned long nbr, int fd);
 uint8_t			compute_hex_len(unsigned long nbr);
+uint8_t         check_end_of_file(t_elf_file *file, void *to_check);
 /* test utils */
 void    		test_reverse_byte(void rev_function());
 
