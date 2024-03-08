@@ -177,7 +177,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 {
 	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
 	if (!strtab) {
-		ft_printf_fd(1, "bfd plugin: %s: file too short\n", file->name);
+		// ft_printf_fd(1, "bfd plugin: %s: file too short\n", file->name);
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", file->name);
 		return (1);
 	}

@@ -11,6 +11,7 @@ RESET="\e[0m"
 BIN=$1
 GOOD_FILE="rsc/test_file/good_files/"
 BAD_FILE="rsc/test_file/good_files/"
+EXIT_CODE=0
 
 display_color_msg() {
 	COLOR=$1
@@ -46,6 +47,7 @@ elf_file_diff() {
     diff out nm_out 
 	if [ $? -ne 0 ]; then
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${RED} "KO"
+		EXIT_CODE=1
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
@@ -95,6 +97,13 @@ incorrect_error_test() {
 	elf_file_diff rsc/test_file/mandatory/wrong_arch
 }
 
+check_test_passed() {
+	if [ ${EXIT_CODE} -eq 0 ]; then
+		display_color_msg ${GREEN} "All test passed"
+	else
+		display_color_msg ${RED} "Some test failed"; exit 1
+	fi
+}
 
 basic_diff_test
 correct_error_test
@@ -104,7 +113,7 @@ multiple_file_diff ft_nm sda
 multiple_file_diff ft_nm libft/*.o
 multiple_file_diff ${GOOD_FILE}*
 multiple_file_diff ${BAD_FILE}*
-
+check_test_passed
 
 
 #### EXIT CODE TESTER ####

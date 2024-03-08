@@ -95,7 +95,7 @@ Elf64_Xword get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64)
 void *get_section_header(t_elf_file *file) {
 	Elf64_Off sh_off = get_Ehdr_shoff(file->ptr, file->endian);
 	if ((Elf64_Off)file->ptr + sh_off > (Elf64_Off)file->ptr + file->file_size) {
-		ft_printf_fd(2, "bfd plugin: %s: file too short\n", file->name);
+		// ft_printf_fd(2, "bfd plugin: %s: file too short\n", file->name);
 		ft_printf_fd(2, "Section header table out of file\n");
 		return (NULL);
 	}
