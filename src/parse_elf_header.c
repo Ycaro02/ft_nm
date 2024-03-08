@@ -114,6 +114,7 @@ Elf64_Half get_Ehdr_shstrndx(void *ptr, int8_t endian) {
   return (READ_DATA(((Elf32_Ehdr *) ptr)->e_shstrndx, endian));
 }
 
+/* GETTER END */
 
 /** 
  *	@brief Display program header info
@@ -134,20 +135,6 @@ void display_elf_header(void *elf_struct, int8_t endian)
 	ft_printf_fd(1, YELLOW"shentsize%s%s|%d| "RESET,RESET,GREEN, get_Ehdr_shentsize(elf_struct, endian));
 	ft_printf_fd(1, YELLOW"shnum:%s%s|%d| "RESET,RESET, GREEN, get_Ehdr_shnum(elf_struct, endian));
 	ft_printf_fd(1, YELLOW"shstrndx:%s%s|%d|\n"RESET,RESET, GREEN, get_Ehdr_shstrndx(elf_struct, endian));
-}
-
-/** 
- *	@brief Call open
- *	@param str file name
-*/
-static int call_open(char *str)
-{
-	int fd = open(str, O_RDONLY);
-	if (fd < 0) { /* maybe reject 0 ? */
-		ft_printf_fd(2, "ft_nm: Can't open %s fd %d\n", str, fd);
-		return (-1);
-	}
-	return (fd);
 }
 
 /** 

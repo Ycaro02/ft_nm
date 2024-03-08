@@ -16,15 +16,22 @@ display_color_msg() {
 	echo -e "${COLOR}${MSG}${RESET}"
 }
 
+display_double_color_msg () {
+	COLOR1=$1
+	MSG1=$2
+	COLOR2=$3
+	MSG2=$4
+	echo -e "${COLOR1}${MSG1}${RESET}${COLOR2}${MSG2}${RESET}"
+}
 
 elf_file_diff() {
     nm ${1} > nm_out;
     ./ft_nm ${1} > out
     diff out nm_out 
 	if [ $? -ne 0 ]; then
-		display_color_msg ${RED} "Diff ${1} failed"
+		display_double_color_msg ${YELLOW} "Diff ${1}: " ${RED} "KO"
 	else
-		display_color_msg ${GREEN} "Diff ${1} ok"
+		display_double_color_msg ${YELLOW} "Diff ${1}: " ${GREEN} "OK"
 	fi
 	rm nm_out out
 }

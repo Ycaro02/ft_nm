@@ -24,65 +24,8 @@ static void lst_name_sort(t_list *lst)
 }
 
 /* @brief is source file */
-static int is_source_file(uint8_t type)
-{
+static int is_source_file(uint8_t type) {
 	return ((type == STT_FILE || type == STT_SECTION));
-}
-
-/** 
- *	@brief Display symbole value
- *	@param nbr number to display
- *	@param fd file descriptor
-*/
-static void	display_sym_value(unsigned long nbr, int fd)
-{
-	char	*base_16;
-
-	base_16 = "0123456789abcdef";
-	if (nbr > 15)
-		display_sym_value(nbr / 16, fd);
-	ft_putchar_fd(base_16[nbr % 16], fd);
-}
-
-
-/** 
- *	@brief Get hex len
- *	@param nbr number to compute
- *	@return hex len
-*/
-static uint8_t compute_hex_len(unsigned long nbr)
-{
-	uint8_t count = 0;
-	while (nbr > 15) {
-		nbr /= 16;
-		count++;
-	}
-	return (count);
-}
-
-/** 
- *	@brief Get zero padding: if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if
- * 	@param class 1 for 64 bits 0 for 32 bits
- * 	@param len number len
- * 	@param is_undef 1 for undef 0 otherwise
- * 	@return number of padding
-*/
-static uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
-{
-	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
-}
-
-/** 
- *	@brief Insert pad
- * 	@param pad number of pad to insert
- * 	@param c char to insert
-*/
-static void insert_pad(uint8_t pad, char *c)
-{
-	while (pad > 0) {
-		ft_printf_fd(1, c);
-		--pad;
-	}
 }
 
 /** 
@@ -189,6 +132,31 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 		}
 	}
 	return (name_lst);
+}
+
+/** 
+ *	@brief Get zero padding: if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if
+ * 	@param class 1 for 64 bits 0 for 32 bits
+ * 	@param len number len
+ * 	@param is_undef 1 for undef 0 otherwise
+ * 	@return number of padding
+*/
+static uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
+{
+	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
+}
+
+/** 
+ *	@brief Insert pad
+ * 	@param pad number of pad to insert
+ * 	@param c char to insert
+*/
+static void insert_pad(uint8_t pad, char *c)
+{
+	while (pad > 0) {
+		ft_printf_fd(1, c);
+		--pad;
+	}
 }
 
 /** 

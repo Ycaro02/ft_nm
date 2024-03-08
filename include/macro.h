@@ -36,4 +36,4 @@
 /* if endian = 0 || size data == 1, don't revese, else call reverse endian */
 # define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data))
 
-# endif /* !ELF_ENDIAN_H */
+# endif /* ELF_ENDIAN_H */

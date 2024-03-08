@@ -121,8 +121,10 @@ void			*get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* nm utils */
 int     		detect_local_endian();
+int				call_open(char *str);
 uint16_t 		detect_struct_size(int8_t is_elf64, uint16_t size64, uint16_t size32);
-
+void			display_sym_value(unsigned long nbr, int fd);
+uint8_t			compute_hex_len(unsigned long nbr);
 /* test utils */
 void    		test_reverse_byte(void rev_function());
 
