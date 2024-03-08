@@ -243,7 +243,8 @@ void *parse_elf_header(char *str)
 		return (NULL);
 	}
 	if (fstat(fd, &sb) == -1) {
-		perror("Error fstat:\'"); 
+		ft_printf_fd(2, "ft_nm: '%s", str);
+		perror("'"); 
 		close(fd);
 		return (NULL);
 	}

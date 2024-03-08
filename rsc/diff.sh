@@ -46,11 +46,21 @@ elf_file_diff() {
 multiple_file_diff() {
 	display_color_msg ${CYAN} "Call multiple diff: "
 	for file in $@; do
-		echo -e " ${CYAN}${file}"
+		echo -e " ${YELLOW}${file}${RESET}"
 	done
-	for file in $@; do
-		elf_file_diff ${file}
-	done
+	nm $@ > nm_out;
+    ./ft_nm $@ > out
+    diff out nm_out
+
+	if [ $? -ne 0 ]; then
+		display_double_color_msg ${YELLOW} "Multiple diff: " ${RED} "KO"
+	else
+		display_double_color_msg ${YELLOW} "Multiple diff: " ${GREEN} "OK"
+	fi
+	rm nm_out out
+	# for file in $@; do
+	# 	elf_file_diff ${file}
+	# done
 }
 
 
@@ -76,6 +86,7 @@ basic_diff_test() {
 basic_diff_test
 multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
 multiple_file_diff ft_nm sda
+multiple_file_diff ft_nm libft/*.o
 
 
 #### EXIT CODE TESTER ####

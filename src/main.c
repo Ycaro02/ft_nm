@@ -55,7 +55,7 @@ static int nm(t_nm_context c, int argc, char **argv)
 				}
 				exit_code = display_file_symbole(file);
 				free(file);
-			} else{
+			} else {
 				exit_code = 1;
 			}
 			lst = lst->next;
