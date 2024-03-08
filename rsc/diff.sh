@@ -176,7 +176,11 @@ test_exit_code() {
 	display_color_msg ${YELLOW} "${1}\nReal Exit code:${CYAN}${?}${RESET}"
     ${FT_NM} ${1} > nm_out 2> /dev/null;
 	display_color_msg ${YELLOW} "${1}\nMynm Exit code:${GREEN}${?}${RESET}"
-    rm nm_out
+	if [ -f $V_OUT ]; then
+		valgrind_check ${1}
+		rm ${V_OUT}
+	fi
+	rm nm_out
 }
 
 test_perm_file() {
@@ -204,3 +208,5 @@ exit_code_tester() {
     rm perm_777
 }
 #### END ####
+
+# exit_code_tester
