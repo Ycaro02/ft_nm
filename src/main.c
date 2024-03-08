@@ -1,6 +1,13 @@
 # include "../include/nm.h"
 
-t_elf_file *get_elf_file_context(t_nm_context c, char *path)
+/**
+ * @brief Extracts the file context for an ELF file.
+ * It allocates memory for the structure and sets its fields based on the parsed ELF header.
+ * @param c The t_nm_context structure containing the context information.
+ * @param path The path of the ELF file.
+ * @return A pointer to the t_elf_file structure if successful, NULL otherwise.
+ */
+static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 {
 	t_elf_file *file = ft_calloc(sizeof(t_elf_file), 1);
 
@@ -22,11 +29,20 @@ t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 	return (file);
 }
 
+/**
+ * @brief Performs the nm operation on the given files.
+ * It extracts the file paths from the command line arguments,
+ * creates the file context for each file, and displays the symbols for each file.
+ * @param c The t_nm_context structure containing the context information.
+ * @param argc The number of command line arguments.
+ * @param argv An array of command line arguments.
+ * @return The exit code of the nm operation.
+ */
 static int nm(t_nm_context c, int argc, char **argv)
 {
-	t_list 				*file_lst = extract_file_from_cmd(argc, argv);
-	t_list 				*lst = file_lst;
-	int					exit_code = 0;
+	t_list *file_lst = extract_file_from_cmd(argc, argv);
+	t_list *lst = file_lst;
+	int exit_code = 0;
 
 	if (lst) {
 		while (lst) {
@@ -39,16 +55,24 @@ static int nm(t_nm_context c, int argc, char **argv)
 		}
 	}
 	lst_clear(&file_lst, free);
-	return (exit_code);
+	return exit_code;
 }
 
+/**
+ * @brief The entry point of the program.
+ * This function initializes the t_nm_context structure, detects the local endianess,
+ * and calls the nm function to perform the nm operation on the command line arguments.
+ * @param argc The number of command line arguments.
+ * @param argv An array of command line arguments.
+ * @return The exit code of the program.
+ */
 int main(int argc, char **argv)
 {
-	t_nm_context		context;
-	int					exit_code = 0;
-	
+	t_nm_context context;
+	int exit_code = 0;
+
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
 	exit_code = nm(context, argc, argv);
-	return (exit_code);
+	return exit_code;
 }

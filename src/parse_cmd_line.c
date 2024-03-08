@@ -1,5 +1,11 @@
 #include "../include/nm.h"
 
+/**
+ * @brief Extract file from command line
+ * @param argc number of arguments
+ * @param argv arguments
+ * @return list of files
+ */
 t_list *extract_file_from_cmd(int argc, char **argv)
 {
 	t_list *lst = NULL;
