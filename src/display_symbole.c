@@ -180,7 +180,7 @@ static void insert_pad(uint8_t pad, char *c)
 static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 {
 	t_list 		*name_lst;
-	char 		*strtab = get_strtab(file->ptr, sizeof_Sshdr, file->endian, file->class);
+	char 		*strtab = get_strtab(file, sizeof_Sshdr, file->endian, file->class);
 
 	if (!strtab) {
 		// ft_printf_fd(1, "bfd plugin: %s: file too short\n", file->name);

@@ -146,7 +146,7 @@ void display_section_header_info(void *sh_ptr, int8_t endian, int8_t class)
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	void		*section_header = get_section_header(file);
 	if (section_header) {
-		char 		*shstrtab = get_shstrtab(file->ptr, file->endian, file->class); /* display function */
+		char 		*shstrtab = get_shstrtab(file, file->endian, file->class); /* display function */
         if (!shstrtab) {
             return ;
         }

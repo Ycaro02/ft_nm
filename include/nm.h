@@ -125,9 +125,8 @@ uint8_t			get_Sym_info(void *ptr, int8_t is_elf64);
 Elf64_Section	get_Sym_shndx(void *ptr, int8_t endian, int8_t is_elf64);
 
 /* handle str table */
-char			*get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64);
-void			*get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64);
-
+char			*get_strtab(t_elf_file *file, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64);
+void            *get_shstrtab(t_elf_file *file, int8_t endian, int8_t is_elf64);
 /* nm utils */
 int     		detect_local_endian();
 int				call_open(char *str);

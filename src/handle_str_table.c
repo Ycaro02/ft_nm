@@ -1,5 +1,16 @@
 # include "../include/nm.h"
 
+static uint8_t invalid_strtab(char *strtab, void* end_of_file)
+{
+	while (strtab != end_of_file) {
+		if (*strtab == '\0') {
+			break;
+		}
+		++strtab;
+	}
+	return ((void *)strtab == end_of_file);
+}
+
 /** 
  *	@brief Get section header strtab
  *	@param ptr pointer on elf struct
@@ -7,8 +18,9 @@
  *	@param is_elf64 1 for 64 bits 0 for 32 bits
  *	@return shstrtab pointer
 */
-void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
+void *get_shstrtab(t_elf_file *file, int8_t endian, int8_t is_elf64)
 {
+	void		*ptr = file->ptr;
 	uint16_t	sizeof_Sshdr = detect_struct_size(is_elf64, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	/* section header ptr, base pointer + section header offset */
 	void		*section_header = (ptr + get_Ehdr_shoff(ptr, endian));
@@ -20,6 +32,12 @@ void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
 	}
 	void *section_shstrtab = section_header + (sizeof_Sshdr * shstrtab_idx);
 	void *shstrtab = ptr + get_Shdr_offset(section_shstrtab, endian, is_elf64);
+
+	if (invalid_strtab(shstrtab, file->ptr + file->file_size)) {
+		ft_printf_fd(2, "Invalid format no valid shstrtab\n");
+		return (NULL);
+	}
+
 	return (shstrtab);
 }
 
@@ -31,9 +49,10 @@ void *get_shstrtab(void *ptr, int8_t endian, int8_t is_elf64)
  * 	@param is_elf64 1 for 64 bits 0 for 32 bits
  * 	@return strtab pointer
 */
-char *get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64)
+char *get_strtab(t_elf_file *file, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf64)
 {
-	char		*strtab = NULL,	*shstrtab = get_shstrtab(ptr, endian, is_elf64);
+	void		*ptr = file->ptr;
+	char		*strtab = NULL,	*shstrtab = get_shstrtab(file, endian, is_elf64);
 	void		*section_header = (ptr + get_Ehdr_shoff(ptr, endian));
 	uint16_t	max = get_Ehdr_shnum(ptr, endian);
 
@@ -48,11 +67,11 @@ char *get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf6
 			uint16_t name_idx = get_Shdr_name(sh_ptr, endian, is_elf64); /* need to check idx here, get shstrtab len todo that */
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {
 				strtab = ptr + get_Shdr_offset(sh_ptr, endian, is_elf64);
-				// if (check_invalid_string(strtab)) {
-				// 	ft_printf_fd(2, "Invalid format no valid strtab\n");
-				// 	return (NULL);
-				// } need to give file_size here
-				ft_printf_fd(2, RED"Found strtab addr: [%p], name |%s|, size %u\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
+				if (invalid_strtab(strtab, file->ptr + file->file_size)) {
+					ft_printf_fd(2, "Invalid format no valid strtab\n");
+					return (NULL);
+				}
+				// ft_printf_fd(2, RED"Found strtab addr: [%p], name |%s|, size %u\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
 				break;
 			}
 		}
