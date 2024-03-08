@@ -1,6 +1,4 @@
-*.o
 *.a
-*.so
 bin_test/
 peda-session*
 .gdb_history
