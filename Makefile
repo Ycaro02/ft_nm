@@ -31,6 +31,12 @@ MAKE_LIBFT	=	make -s -C libft
 
 MAKE_LIST	=	make -s -C libft/list
 
+SRCS_BONUS=1
+
+ifeq ($(findstring bonus, ${MAKECMDGOALS}), bonus)
+SRCS_BONUS=2
+endif
+
 all:		${NAME}
 
 %.o : %.c
@@ -53,6 +59,9 @@ dtest:	${NAME}
 
 vtest:	${NAME}
 			@./rsc/diff.sh ${NAME} 1
+
+bonus:	${OBJS}
+	echo ${SRCS_BONUS}
 
 clean:
 			@echo "\033[6;31m ----- Cleaning  ${NAME} obj\t----- \033[0m"
