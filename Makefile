@@ -49,7 +49,10 @@ test :	${NAME}
 			@./${NAME} ${NAME}
 
 dtest:	${NAME}
-			@./rsc/diff.sh ${NAME}
+			@./rsc/diff.sh ${NAME} 0
+
+vtest:	${NAME}
+			@./rsc/diff.sh ${NAME} 1
 
 clean:
 			@echo "\033[6;31m ----- Cleaning  ${NAME} obj\t----- \033[0m"
@@ -65,4 +68,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		all clean fclean re bonus
+.PHONY:		all clean fclean re bonus test dtest vtest

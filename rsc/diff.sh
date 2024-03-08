@@ -13,6 +13,15 @@ GOOD_FILE="rsc/test_file/good_files/"
 BAD_FILE="rsc/test_file/good_files/"
 EXIT_CODE=0
 
+FT_NM="./ft_nm"
+V_OUT="valgrind_out"
+VALGRIND_NM="valgrind --log-file=${V_OUT} ${FT_NM}"
+
+if [ $2 -eq 1 ]; then
+	FT_NM=${VALGRIND_NM}
+fi
+
+
 display_color_msg() {
 	COLOR=$1
 	MSG=$2
@@ -36,13 +45,22 @@ cut_bfd_plugin_error() {
 	rm tmp_out
 }
 
+# detect_valgrind_opt() {
+# 	if [ ${VALGRIND_OPT} -eq 1 ]; then
+# 	    ${VALGRIND_NM} ${1} > out 2> /dev/null
+# 	else
+# 	    ${FT_NM} ${1} > out 2> /dev/null
+# 	fi
+# }
+
 elf_file_diff() {
+
     nm ${1} > nm_out 2> /dev/null;
 
 	cut_bfd_plugin_error
 
-    ./ft_nm ${1} > out 2> /dev/null
-	
+    ${FT_NM} ${1} > out 2> /dev/null
+
 	if [ -z "$1" ]; then
 		BIN="a.out (replace empty string)"
 	else
@@ -121,11 +139,15 @@ multiple_file_diff ${GOOD_FILE}*
 multiple_file_diff ${BAD_FILE}*
 check_test_passed
 
+if [ -f $V_OUT ]; then
+	rm ${V_OUT}
+fi
+
 #### EXIT CODE TESTER ####
 test_exit_code() {
     nm ${1} > nm_out 2> /dev/null;
 	display_color_msg ${YELLOW} "${1}\nReal Exit code:${CYAN}${?}${RESET}"
-    ./ft_nm ${1} > nm_out 2> /dev/null;
+    ${FT_NM} ${1} > nm_out 2> /dev/null;
 	display_color_msg ${YELLOW} "${1}\nMynm Exit code:${GREEN}${?}${RESET}"
     rm nm_out
 }
