@@ -66,7 +66,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 			c += (symbole->bind != STB_GLOBAL) * 32;
 		} else if (shndx == SHN_COMMON) {
 			c = COMMON_SYM;
-		}  else if (shndx < shnum) {
+		}  else if (shndx < shnum) { /* section header index protect here */
 			void *section_header_ptr = get_section_header(file) + (sizeof_Sshdr * shndx);
 			Elf64_Word sh_type = get_Shdr_type(section_header_ptr, file->endian, file->class);
 			Elf64_Xword sh_flag = get_Shdr_flags(section_header_ptr, file->endian, file->class);
@@ -123,6 +123,9 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 	t_list			*name_lst = NULL;
 	Elf64_Xword		struct_sym_size = detect_struct_size(file->class, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
+	/* 	symtabsize need to be verify, maybe do struct size * nb_of symbole, need to find this number ? 
+		same for name_idx, same logic that shstrtab get strtab len and check idx
+	*/
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;

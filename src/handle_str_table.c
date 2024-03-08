@@ -40,12 +40,12 @@ char *get_strtab(void *ptr, uint16_t sizeof_Sshdr, int8_t endian, int8_t is_elf6
 	if (!shstrtab) {
 		return (NULL);
 	}
+	/* safe loop here shnum already verify */
 	for (uint16_t i = 0; i < max; ++i) {
-		/* structure header pointer */
 		void *sh_ptr = (section_header + (sizeof_Sshdr * i));
-		// display_section_header_info(sh_ptr, endian, is_elf64);
-		if (get_Shdr_type(sh_ptr, endian, is_elf64) == SHT_STRTAB) { /* 3 hardcode strtab value */
-			uint16_t name_idx = get_Shdr_name(sh_ptr, endian, is_elf64);
+
+		if (get_Shdr_type(sh_ptr, endian, is_elf64) == SHT_STRTAB) {
+			uint16_t name_idx = get_Shdr_name(sh_ptr, endian, is_elf64); /* need to check idx here, get shstrtab len todo that */
 			if (ft_strcmp(((char *) shstrtab + name_idx), ".strtab") == 0) {
 				// ft_printf_fd(1, RED"Found strtab addr: [%p], |%s|\n"RESET, (shstrtab + name_idx), ((char *) shstrtab + name_idx));
 				strtab = ptr + get_Shdr_offset(sh_ptr, endian, is_elf64);
