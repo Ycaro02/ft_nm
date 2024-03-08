@@ -37,7 +37,7 @@ cut_bfd_plugin_error() {
 }
 
 elf_file_diff() {
-    nm ${1} > nm_out 2> /dev/null;
+    export "LC_COLLATE=en_US.utf8" && nm ${1} > nm_out 2> /dev/null;
 
 	cut_bfd_plugin_error
 
