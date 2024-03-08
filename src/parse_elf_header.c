@@ -192,8 +192,8 @@ static int header_identification_correct(char *str, void *elf_struct)
 {
 	/* check magic number ELFMAG */
 	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
-        ft_printf_fd(2, "field 0 %d\n", ELF_HFIELD(elf_struct, 0));
-		ft_printf_fd(2, "ft_nm: %s: file format not recognized: %s\n", str, ((char *) ((Elf64_Ehdr *) elf_struct)->e_ident));
+        // ft_printf_fd(2, "field 0 %d\n", ELF_HFIELD(elf_struct, 0));
+		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", str);
 		return (FALSE);
 	}
 	/* get class 32 or 64 bits */
