@@ -27,14 +27,19 @@ display_double_color_msg () {
 	echo -e "${COLOR1}${MSG1}${RESET}${COLOR2}${MSG2}${RESET}"
 }
 
-elf_file_diff() {
-    nm ${1} > nm_out 2> /dev/null;
-	
+cut_bfd_plugin_error() {
 	cat nm_out | grep -v "bfd plugin" > tmp_out
 	diff tmp_out nm_out > /dev/null
 	if [ $? -ne 0 ]; then
 		cat tmp_out > nm_out
 	fi
+	rm tmp_out
+}
+
+elf_file_diff() {
+    nm ${1} > nm_out 2> /dev/null;
+
+	cut_bfd_plugin_error
 
     ./ft_nm ${1} > out 2> /dev/null
 	
@@ -51,7 +56,7 @@ elf_file_diff() {
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
-	rm nm_out out tmp_out
+	rm nm_out out
 }
 
 multiple_file_diff() {
@@ -101,7 +106,8 @@ check_test_passed() {
 	if [ ${EXIT_CODE} -eq 0 ]; then
 		display_color_msg ${GREEN} "All test passed"
 	else
-		display_color_msg ${RED} "Some test failed"; exit 1
+		display_color_msg ${RED} "Some test failed"
+		exit 1
 	fi
 }
 
