@@ -111,6 +111,7 @@ check_test_passed() {
 	fi
 }
 
+export "LC_COLLATE=en_US.utf8"
 basic_diff_test
 correct_error_test
 incorrect_error_test
