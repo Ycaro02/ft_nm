@@ -13,8 +13,16 @@ static void lst_name_sort(t_list *lst)
     while (lst)  {
         if (!min)
             min = lst;
-        if (ft_strcmp(((t_sym_tab *) ((t_list *) lst)->content)->sym_name, ((t_sym_tab *) ((t_list *) min)->content)->sym_name) <= 0)
+		t_sym_tab *current = ((t_list *) lst)->content;
+		t_sym_tab *min_sym = ((t_list *) min)->content;
+		int cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
+        if (cmp < 0) {
             min = lst;
+		} else if (cmp == 0) {
+			if (current->value < min_sym->value) {
+				min = lst;
+			}
+		}
         lst = lst->next;
     }
     t_list *tmp = head->content;
@@ -54,6 +62,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 		
 		if (shndx == SHN_ABS) {
 			c = ABS_SYM;
+			c += (symbole->bind != STB_GLOBAL) * 32;
 		} else if (shndx == SHN_COMMON) {
 			c = COMMON_SYM;
 		}  else if (shndx < shnum) {
@@ -98,6 +107,7 @@ static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, El
 	symbole.type =  type;
 	symbole.bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
 	symbole.shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
+	// ft_printf_fd(2, "\nFor %s value: %p\n", symbole.sym_name, symbole.value);
 	return (symbole);
 }
 
@@ -122,9 +132,7 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 		
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
-				if (name_lst) {
-					lst_clear(&name_lst, free);
-				}
+				lst_clear(&name_lst, free);
 				return (NULL); /* need to return return NULL or error here */
 			}
 			*sym_node = fill_sym_node(file, strtab, i, name_idx, type);

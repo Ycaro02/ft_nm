@@ -15,7 +15,7 @@
 /* Symbole char enum */
 enum e_symb_char {
   UNDIFINED_SYM='U',				/* undefined symbole */
-  ABS_SYM='a',      				/* absolute symbole */
+  ABS_SYM='A',      				/* absolute symbole */
   COMMON_SYM='C',   				/* common/shared symbole or file name */
   NO_BITS_SYM='B',					/* No bits symbole */
   ALLOC_WRITE_SYM='D',				/* if symbole section header flag alloc or write */

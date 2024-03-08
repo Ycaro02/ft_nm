@@ -40,7 +40,7 @@ elf_file_diff() {
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
-	# rm nm_out out
+	rm nm_out out
 }
 
 multiple_file_diff() {
@@ -96,13 +96,15 @@ incorrect_error_test() {
 	# file to short in fd 1
 }
 
+GOOD_FILE="rsc/test_file/good_files/"
+
 basic_diff_test
 correct_error_test
 incorrect_error_test
 multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
 multiple_file_diff ft_nm sda
 multiple_file_diff ft_nm libft/*.o
-
+multiple_file_diff ${GOOD_FILE}*
 
 #### EXIT CODE TESTER ####
 test_exit_code() {
