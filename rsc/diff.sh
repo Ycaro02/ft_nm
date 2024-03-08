@@ -27,11 +27,18 @@ display_double_color_msg () {
 elf_file_diff() {
     nm ${1} > nm_out;
     ./ft_nm ${1} > out
+	
+	if [ -z "$1" ]; then
+		BIN="a.out (replace empty string)"
+	else
+		BIN="$1"
+	fi
+
     diff out nm_out 
 	if [ $? -ne 0 ]; then
-		display_double_color_msg ${YELLOW} "Diff ${1}: " ${RED} "KO"
+		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${RED} "KO"
 	else
-		display_double_color_msg ${YELLOW} "Diff ${1}: " ${GREEN} "OK"
+		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
 	rm nm_out out
 }
@@ -62,6 +69,7 @@ basic_diff_test() {
 	elf_file_diff rsc/test_file/mandatory/test_facile
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
+	elf_file_diff
 	elf32_basic_test rsc/main_32.c
 }
 
@@ -69,11 +77,13 @@ basic_diff_test
 multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
 multiple_file_diff ft_nm sda
 
-#### EXIT CODE TESTER ####
 
+#### EXIT CODE TESTER ####
 test_exit_code() {
-    nm ${1} > nm_out 2> /dev/null; 
-	display_color_msg ${YELLOW} "${1}\nExit code:${GREEN}${?}${RESET}"
+    nm ${1} > nm_out 2> /dev/null;
+	display_color_msg ${YELLOW} "${1}\nReal Exit code:${CYAN}${?}${RESET}"
+    ./ft_nm ${1} > nm_out 2> /dev/null;
+	display_color_msg ${YELLOW} "${1}\nMynm Exit code:${GREEN}${?}${RESET}"
     rm nm_out
 }
 
@@ -101,5 +111,4 @@ exit_code_tester() {
 	test_perm_file 777 444
     rm perm_777
 }
-
 #### END ####

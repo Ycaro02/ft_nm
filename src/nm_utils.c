@@ -31,8 +31,10 @@ uint16_t detect_struct_size(int8_t is_elf64, uint16_t size64, uint16_t size32)
 int call_open(char *str)
 {
 	int fd = open(str, O_RDONLY);
+	
 	if (fd < 0) { /* maybe reject 0 ? */
-		ft_printf_fd(2, "ft_nm: Can't open %s fd %d\n", str, fd);
+		ft_printf_fd(2, "ft_nm: '%s", str);
+		perror("'");
 		return (-1);
 	}
 	return (fd);
@@ -45,14 +47,12 @@ int call_open(char *str)
 */
 void	display_sym_value(unsigned long nbr, int fd)
 {
-	char	*base_16;
-
-	base_16 = "0123456789abcdef";
+	char	*base_16 = "0123456789abcdef";
+	
 	if (nbr > 15)
 		display_sym_value(nbr / 16, fd);
 	ft_putchar_fd(base_16[nbr % 16], fd);
 }
-
 
 /** 
  *	@brief Get hex len
