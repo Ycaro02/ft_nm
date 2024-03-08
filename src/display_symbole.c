@@ -223,12 +223,19 @@ int8_t display_file_symbole(t_elf_file *file)
 	if (!section_header) {
 		return (-1);
 	}
+	/* safe loop here shnum already checked */
 	for (uint16_t i = 0; i < max; ++i) {
-		void *s_hptr = (section_header + (sizeof_Sshdr * i));
-		if (get_Shdr_type(s_hptr, file->endian, file->class) == SHT_SYMTAB) { /* 2 hardcode symtab value */
-			file->symtab_size = get_Shdr_size(s_hptr, file->endian, file->class);
-			Elf64_Off symoffset = get_Shdr_offset(s_hptr, file->endian, file->class);
+		void *sh_ptr = section_header + (sizeof_Sshdr * i);
+		if (get_Shdr_type(sh_ptr, file->endian, file->class) == SHT_SYMTAB) {
+			file->symtab_size = get_Shdr_size(sh_ptr, file->endian, file->class);
+			Elf64_Off symoffset = get_Shdr_offset(sh_ptr, file->endian, file->class); /* this offset need to be check */
 			file->symtab = file->ptr + symoffset;
+			void *end_file = file->ptr + file->file_size; 
+
+			if (file->symtab >= end_file || file->symtab + file->symtab_size >= end_file) {
+				ft_printf_fd(2, "Error file symtab\n");
+				return (1);
+			}
 			break;
 		}
 	}

@@ -44,17 +44,17 @@ static int nm(t_nm_context c, int argc, char **argv)
 	t_list	*file_lst = extract_file_from_cmd(argc, argv);
 	t_list	*lst = file_lst;
 	int 	exit_code = 0;
-	int8_t	display_file_header = (ft_lstsize(file_lst) > 1);
+	int8_t	file_header = ft_lstsize(file_lst) > 1;
 
 	if (lst) {
 		while (lst) {
-			t_elf_file *file = get_elf_file_context(c, lst->content);
-			if (file) {
-				if (display_file_header) {
-					ft_printf_fd(1, "\n%s:\n", file->name);
+			t_elf_file *elf_file = get_elf_file_context(c, lst->content);
+			if (elf_file) {
+				if (file_header) {
+					ft_printf_fd(1, "\n%s:\n", elf_file->name);
 				}
-				exit_code = display_file_symbole(file);
-				free(file);
+				exit_code = display_file_symbole(elf_file);
+				free(elf_file);
 			} else {
 				exit_code = 1;
 			}
