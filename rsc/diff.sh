@@ -25,8 +25,8 @@ display_double_color_msg () {
 }
 
 elf_file_diff() {
-    nm ${1} > nm_out;
-    ./ft_nm ${1} > out
+    nm ${1} > nm_out 2> /dev/null;
+    ./ft_nm ${1} > out 2> /dev/null
 	
 	if [ -z "$1" ]; then
 		BIN="a.out (replace empty string)"
@@ -40,7 +40,7 @@ elf_file_diff() {
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
-	rm nm_out out
+	# rm nm_out out
 }
 
 multiple_file_diff() {
@@ -48,8 +48,8 @@ multiple_file_diff() {
 	for file in $@; do
 		echo -e " ${YELLOW}${file}${RESET}"
 	done
-	nm $@ > nm_out;
-    ./ft_nm $@ > out
+	nm $@ > nm_out 2> /dev/null
+    ./ft_nm $@ > out 2> /dev/null
     diff out nm_out
 
 	if [ $? -ne 0 ]; then
@@ -58,11 +58,7 @@ multiple_file_diff() {
 		display_double_color_msg ${YELLOW} "Multiple diff: " ${GREEN} "OK"
 	fi
 	rm nm_out out
-	# for file in $@; do
-	# 	elf_file_diff ${file}
-	# done
 }
-
 
 elf32_basic_test() {
     NAME32=${1}.out
@@ -83,7 +79,26 @@ basic_diff_test() {
 	elf32_basic_test rsc/main_32.c
 }
 
+correct_error_test() {
+	display_color_msg ${CYAN} "Correct error test: "
+	elf_file_diff rsc/test_file/mandatory/error_header
+	elf_file_diff rsc/test_file/mandatory/header_offset_error
+}
+
+incorrect_error_test() {
+	display_color_msg ${CYAN} "Incorrect error test: "
+	elf_file_diff rsc/test_file/mandatory/header
+	elf_file_diff rsc/test_file/mandatory/header_and_prog
+	elf_file_diff rsc/test_file/mandatory/header_and_prog_copy
+	elf_file_diff rsc/test_file/mandatory/header_copy
+	elf_file_diff rsc/test_file/mandatory/unterminated_string
+	# elf_file_diff rsc/test_file/mandatory/wrong_arch to investigate just don't print
+	# file to short in fd 1
+}
+
 basic_diff_test
+correct_error_test
+incorrect_error_test
 multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
 multiple_file_diff ft_nm sda
 multiple_file_diff ft_nm libft/*.o
