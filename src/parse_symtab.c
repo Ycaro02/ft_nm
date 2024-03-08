@@ -57,9 +57,7 @@ Elf64_Xword get_Sym_size(void *ptr, int8_t endian, int8_t is_elf64) {
     return (READ_DATA(((Elf32_Sym *) ptr)->st_size, endian));
 }
 
-/** 
- * @brief disaplay symbole information with getter call
-*/
+/* @brief disaplay symbole information with getter call */
 void display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64) {
     ft_printf_fd(1, YELLOW"S name:%s%s|%d| "RESET, RESET, GREEN, get_Sym_name(sym_ptr, endian, is_elf64));
     ft_printf_fd(1, YELLOW"S info:%s%s|%d| "RESET, RESET, GREEN, get_Sym_info(sym_ptr, is_elf64));

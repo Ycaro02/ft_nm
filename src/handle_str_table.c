@@ -1,9 +1,22 @@
 # include "../include/nm.h"
 
+
+/**
+ * @brief Check if ptr is in address range
+ * @param file elf file
+ * @param to_check pointer to check
+ * @return 1 if at the end 0 if not
+*/
 static uint8_t check_end_of_file(t_elf_file *file, void *to_check) { 
 	return (to_check >= file->ptr + file->file_size);
 }
 
+/**
+ * @brief Check if strtab is valid
+ * @param strtab strtab pointer
+ * @param end_of_file end of file pointer
+ * @return 1 if invalid 0 if valid
+*/
 static uint8_t invalid_strtab(char *strtab, void* end_of_file)
 {
 	while (strtab != end_of_file) {

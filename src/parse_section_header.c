@@ -91,6 +91,12 @@ Elf64_Xword get_Shdr_entsize(void *ptr, int8_t endian, int8_t is_elf64)
     return (READ_DATA(((Elf32_Shdr *) ptr)->sh_entsize, endian));
 }
 
+/**
+ * @brief parse number of section header
+ * @param file elf file
+ * @param section_header section header ptr
+ * @return 0 if success, -1 if error
+*/
 int8_t parse_number_shnum(t_elf_file *file, void *section_header) {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	uint16_t	shnum = get_Ehdr_shnum(file->ptr, file->endian);
