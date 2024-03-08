@@ -13,6 +13,8 @@ GOOD_FILE="rsc/test_file/good_files/"
 BAD_FILE="rsc/test_file/good_files/"
 EXIT_CODE=0
 
+export LC_COLLATE=en_US.utf8
+
 display_color_msg() {
 	COLOR=$1
 	MSG=$2
@@ -37,7 +39,7 @@ cut_bfd_plugin_error() {
 }
 
 elf_file_diff() {
-    export "LC_COLLATE=en_US.utf8" && nm ${1} > nm_out 2> /dev/null;
+    nm ${1} > nm_out 2> /dev/null;
 
 	cut_bfd_plugin_error
 
