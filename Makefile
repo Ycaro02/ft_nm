@@ -2,6 +2,8 @@ CC		= gcc
 
 CFLAGS	= -Wall -Wextra -Werror -O3 -g
 
+NAME	=	ft_nm
+
 SRCS	=	src/main.c\
 			src/parse_elf_header.c\
 			src/nm_utils.c\
@@ -13,28 +15,29 @@ SRCS	=	src/main.c\
 			src/parse_cmd_line.c\
 			
 
+SRCS_BONUS	=	src/bonus.c
+
 LIBFT	= 	libft/libft.a
 
-LIST = libft/list/linked_list.a
+LIST	= 	libft/list/linked_list.a
 
 OBJS = $(SRCS:.c=.o)
 
-RM	= rm -f
+OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
-NAME	= ft_nm
+LIBFT	=	libft/libft.a
 
-LIBFT	= libft/libft.a
-
-# CALL_TESTER="make -s -C tester"
+RM		= 	rm -f
 
 MAKE_LIBFT	=	make -s -C libft
 
 MAKE_LIST	=	make -s -C libft/list
 
-SRCS_BONUS=1
+TESTER		=	./rsc/diff.sh 
+
 
 ifeq ($(findstring bonus, ${MAKECMDGOALS}), bonus)
-SRCS_BONUS=2
+SRCS += ${SRCS_BONUS}
 endif
 
 all:		${NAME}
@@ -55,17 +58,16 @@ test :	${NAME}
 			@./${NAME} ${NAME}
 
 dtest:	${NAME}
-			@./rsc/diff.sh ${NAME} 0
+			@${TESTER} ${NAME} 0
 
 vtest:	${NAME}
-			@./rsc/diff.sh ${NAME} 1
+			@${TESTER} ${NAME} 1
 
-bonus:	${OBJS}
-	echo ${SRCS_BONUS}
+bonus:	${NAME}
 
 clean:
 			@echo "\033[6;31m ----- Cleaning  ${NAME} obj\t----- \033[0m"
-			@${RM} ${OBJS}
+			@${RM} ${OBJS} ${OBJS_BONUS}
 			@${MAKE_LIBFT} clean
 			@${MAKE_LIST} clean
 			@echo "\033[6;33m ----- Cleaning  ${NAME} done\t----- \033[0m"
