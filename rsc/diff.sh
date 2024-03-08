@@ -36,6 +36,17 @@ elf_file_diff() {
 	rm nm_out out
 }
 
+multiple_file_diff() {
+	display_color_msg ${CYAN} "Call multiple diff: "
+	for file in $@; do
+		echo -e " ${CYAN}${file}"
+	done
+	for file in $@; do
+		elf_file_diff ${file}
+	done
+}
+
+
 elf32_basic_test() {
     NAME32=${1}.out
     gcc -m32 ${1} -o ${NAME32}
@@ -55,8 +66,8 @@ basic_diff_test() {
 }
 
 basic_diff_test
-
-
+multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
+multiple_file_diff ft_nm sda
 
 #### EXIT CODE TESTER ####
 

@@ -23,6 +23,7 @@ static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 	}
 	/* maybe just store this in flag ?? */
 	/* get bool endian 0 is same endian */
+	file->name = path;
 	file->endian = ELF_HFIELD(file->ptr, EI_DATA) - c.l_endian; 
 	/* get bool class */
 	file->class = IS_ELF64(file->ptr);
@@ -40,14 +41,18 @@ static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
  */
 static int nm(t_nm_context c, int argc, char **argv)
 {
-	t_list *file_lst = extract_file_from_cmd(argc, argv);
-	t_list *lst = file_lst;
-	int exit_code = 0;
+	t_list	*file_lst = extract_file_from_cmd(argc, argv);
+	t_list	*lst = file_lst;
+	int 	exit_code = 0;
+	int8_t	display_file_header = (ft_lstsize(file_lst) > 1);
 
 	if (lst) {
 		while (lst) {
 			t_elf_file *file = get_elf_file_context(c, lst->content);
 			if (file) {
+				if (display_file_header) {
+					ft_printf_fd(1, "\n%s:\n", file->name);
+				}
 				exit_code = display_file_symbole(file);
 				free(file);
 			}
