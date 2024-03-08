@@ -128,6 +128,9 @@ uint8_t			compute_hex_len(unsigned long nbr);
 /* test utils */
 void    		test_reverse_byte(void rev_function());
 
+/* parse cmd line */
+t_list *extract_file_from_cmd(int argc, char **argv);
+
 /* Display data function */
 void			display_all_section_header(t_elf_file *file);
 void			display_all_program_header(t_elf_file *file);

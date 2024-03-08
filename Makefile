@@ -10,6 +10,7 @@ SRCS	=	src/main.c\
 			src/parse_symtab.c\
 			src/display_symbole.c\
 			src/handle_str_table.c\
+			src/parse_cmd_line.c\
 			
 
 LIBFT	= 	libft/libft.a

@@ -22,25 +22,33 @@ t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 	return (file);
 }
 
+static int nm(t_nm_context c, int argc, char **argv)
+{
+	t_list 				*file_lst = extract_file_from_cmd(argc, argv);
+	t_list 				*lst = file_lst;
+	int					exit_code = 0;
+
+	if (lst) {
+		while (lst) {
+			t_elf_file *file = get_elf_file_context(c, lst->content);
+			if (file) {
+				exit_code = display_file_symbole(file);
+				free(file);
+			}
+			lst = lst->next;
+		}
+	}
+	lst_clear(&file_lst, free);
+	return (exit_code);
+}
+
 int main(int argc, char **argv)
 {
 	t_nm_context		context;
-	char 			    *path = "a.out";
 	int					exit_code = 0;
 	
 	context.flag = 0;
 	context.l_endian = detect_local_endian();
-	// ft_printf_fd(2, YELLOW"Local endian = %u\n"RESET, context.l_endian);
-	if (argc > 1) {
-		path = argv[1];
-	}
-	t_elf_file *file = get_elf_file_context(context, path);
-	if (file) {
-		// display_elf_header(file->ptr, file->endian);
-		// display_all_program_header(file);
-		exit_code = display_file_symbole(file);
-		free(file);
-	}
-	// test_macro(elf_struct, endian);
+	exit_code = nm(context, argc, argv);
 	return (exit_code);
 }
