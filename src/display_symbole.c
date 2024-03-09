@@ -35,6 +35,7 @@ static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 {
     t_list *head = lst;
     t_list *min = NULL;
+    t_list *tmp = head->content;
     
 	if (!lst)
         return ;
@@ -42,7 +43,6 @@ static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 		min = update_min(lst, min, reverse_opt);
 		lst = lst->next;
     }
-    t_list *tmp = head->content;
     head->content = min->content;
     min->content = tmp;
     lst_name_sort(head->next, reverse_opt);
