@@ -19,11 +19,11 @@ all:		$(NAME)
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	lib $(OBJS) $(OBJ_DIR)
+$(NAME):	$(LIBFT) $(OBJS) $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
-lib:
+$(LIBFT):
 	@${DISPLAY_ASCII_ART}
 	@printf "$(CYAN)Compiling lib$(RESET)\n"
 	@$(MAKE_LIBFT)
@@ -52,8 +52,6 @@ ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
 	@$(RM) $(OBJ_DIR)
 	@printf "$(RED)Clean $(NAME)$(RESET)\n"
 endif
-	@$(MAKE_LIBFT) clean
-	@$(MAKE_LIST) clean
 
 fclean:		clean
 	@$(MAKE_LIBFT) fclean
