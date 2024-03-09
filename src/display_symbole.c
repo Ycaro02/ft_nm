@@ -65,6 +65,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 	uint8_t c = UNDIFINED_SYM;
 	Elf64_Section shndx = symbole->shndx;
 
+
 	if (symbole->bind == STB_WEAK) {
 		if (symbole->type == STT_OBJECT) {
 			c = 'V';
@@ -152,9 +153,13 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag)
 			return (NULL);
 		}
 
-		/* (shndx == SHN_UNDEF) */
+		uint8_t bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
+		
+		if (has_flag(flag, G_OPTION) && bind != STB_GLOBAL) {
+			if (bind != STB_WEAK)
+				continue;
+		}
 
-		// (void)flag;
 		if (has_flag(flag, U_OPTION) && get_Sym_shndx((file->symtab + i), file->endian, file->class) != SHN_UNDEF)
 			continue ;
 

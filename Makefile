@@ -55,10 +55,8 @@ endif
 	@$(RM) nm_out out valgrind_out
 
 fclean:		clean
-ifeq ($(shell [ -d $(NAME) ] && echo 0 || echo 1), 0)
+	@printf "$(RED)Clean $(NAME)/lib$(RESET)\n"
 	@$(RM) $(NAME)
-	@printf "$(RED)Clean $(NAME)$(RESET)\n"
-endif
 	@$(MAKE_LIBFT) fclean
 	@$(MAKE_LIST) fclean
 

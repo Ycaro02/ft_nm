@@ -8,9 +8,6 @@ PE_FILE="rsc/test_file/pe_file/"
 
 EXIT_CODE=0
 
-
-
-
 if [ -z $4 ]; then
 	NM_FLAGS=""
 	FT_NM_FLAGS=""
