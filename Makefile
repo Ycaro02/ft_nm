@@ -29,6 +29,8 @@ OBJS = $(SRCS:.c=.o)
 
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
+OBJS_MAIN_BONUS = $(MAIN_BONUS:.c=.o)
+
 LIBFT	=	libft/libft.a
 
 RM		= 	rm -f
@@ -39,49 +41,49 @@ MAKE_LIST	=	make -s -C libft/list
 
 TESTER		=	./rsc/diff.sh 
 
-ifeq ($(findstring bonus, ${MAKECMDGOALS}), bonus)
-SRCS += ${SRCS_BONUS}
-SRCS += ${MAIN_BONUS}
+ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
+SRCS += $(SRCS_BONUS)
+SRCS += $(MAIN_BONUS)
 else
-SRCS += ${MAIN_MANDATORY}
+SRCS += $(MAIN_MANDATORY)
 endif
 
-all:		${NAME}
+all:		$(NAME)
 
 %.o : %.c
-	@$(CC) ${CFLAGS} -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-${NAME}:	${OBJS}
+$(NAME):	$(OBJS)
 			@echo "\033[6;36m ----- Compiling lib\t\t----- \033[0m"
-			@${MAKE_LIBFT}
-			@${MAKE_LIST}
+			@$(MAKE_LIBFT)
+			@$(MAKE_LIST)
 			@echo "\033[6;32m ----- Compiling lib done\t----- \033[0m"
-			@ echo "\033[6;36m ----- Compiling ${NAME} project  ----- \033[0m"
-			@${CC} ${CFLAGS} -o ${NAME} $(OBJS) ${LIBFT} ${LIST}
-			@echo "\033[6;32m ----- Compiling ${NAME} done     ----- \033[0m"
+			@ echo "\033[6;36m ----- Compiling $(NAME) project  ----- \033[0m"
+			@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
+			@echo "\033[6;32m ----- Compiling $(NAME) done     ----- \033[0m"
 
-test :	${NAME}
-			@./${NAME} ${NAME}
+test :	$(NAME)
+			@./$(NAME) $(NAME)
 
-dtest:	${NAME}
-			@${TESTER} ${NAME} 0
+dtest:	$(NAME)
+			@$(TESTER) $(NAME) 0
 
-vtest:	${NAME}
-			@${TESTER} ${NAME} 1
+vtest:	$(NAME)
+			@$(TESTER) $(NAME) 1
 
-bonus:	${NAME}
+bonus:	$(NAME)
 
 clean:
-			@echo "\033[6;31m ----- Cleaning  ${NAME} obj\t----- \033[0m"
-			@${RM} ${OBJS} ${OBJS_BONUS}
-			@${MAKE_LIBFT} clean
-			@${MAKE_LIST} clean
-			@echo "\033[6;33m ----- Cleaning  ${NAME} done\t----- \033[0m"
+			@echo "\033[6;31m ----- Cleaning  $(NAME) obj\t----- \033[0m"
+			@$(RM) $(OBJS) $(OBJS_BONUS) $(OBJS_MAIN_BONUS)
+			@$(MAKE_LIBFT) clean
+			@$(MAKE_LIST) clean
+			@echo "\033[6;33m ----- Cleaning  $(NAME) done\t----- \033[0m"
 
 fclean:		clean
-			@${MAKE_LIBFT} fclean
-			@${MAKE_LIST} fclean
-			@${RM} ${NAME}
+			@$(MAKE_LIBFT) fclean
+			@$(MAKE_LIST) fclean
+			@$(RM) $(NAME)
 
 re:			fclean all
 
