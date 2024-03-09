@@ -44,6 +44,13 @@ dtest:	$(NAME)
 vtest:	$(NAME)
 	@$(TESTER) $(NAME) 1
 
+dtest_p:	$(NAME)
+	@$(TESTER) $(NAME) 0 "--no-sort" "-p"
+
+vtest_p:	$(NAME)
+	@$(TESTER) $(NAME) 1 "--no-sort" "-p"
+
+
 bonus:	$(NAME)
 
 clean:

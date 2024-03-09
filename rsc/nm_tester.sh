@@ -8,8 +8,21 @@ PE_FILE="rsc/test_file/pe_file/"
 
 EXIT_CODE=0
 
-NM="nm"
-FT_NM="./ft_nm"
+
+
+
+if [ -z $4 ]; then
+	NM_FLAGS=""
+	FT_NM_FLAGS=""
+else
+	make bonus > /dev/null
+	NM_FLAGS=" $3"
+	FT_NM_FLAGS=" $4"
+fi
+
+NM="nm${NM_FLAGS}"
+FT_NM="./ft_nm${FT_NM_FLAGS}"
+
 
 source rsc/sh/color.sh
 source rsc/sh/valgrind_test.sh
@@ -47,10 +60,10 @@ empty_string_protect() {
 do_diff() {
 	diff $1 $2
 	if [ $? -ne 0 ]; then
-		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${RED} "KO"
+		display_double_color_msg ${YELLOW} "Diff ${NM} ${BIN}: " ${RED} "KO"
 		EXIT_CODE=1
 	else
-		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
+		display_double_color_msg ${YELLOW} "Diff ${NM} ${BIN}: " ${GREEN} "OK"
 	fi
 }
 
@@ -122,6 +135,8 @@ do_test() {
 	multiple_file_diff ${GOOD_FILE}*
 	multiple_file_diff ${BAD_FILE}*
 	check_test_passed
+
+
 	# exit_code_tester
 
 	if [ -f $V_OUT ]; then

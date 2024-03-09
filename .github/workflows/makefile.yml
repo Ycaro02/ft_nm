@@ -28,5 +28,8 @@ jobs:
     - name: Run valgrind tests
       run: make vtest
 
+    - name: Run valgrind tests bonus -p
+      run: make vtest_p
+
     - name: clean
       run: make fclean
