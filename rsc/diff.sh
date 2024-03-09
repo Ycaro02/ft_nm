@@ -5,7 +5,17 @@ RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
 BLUE="\e[34m"
+MAGENTA="\e[35m"
 CYAN="\e[36m"
+LIGHT_GRAY="\e[37m"
+GRAY="\e[90m"
+LIGHT_RED="\e[91m"
+LIGHT_GREEN="\e[92m"
+LIGHT_YELLOW="\e[93m"
+LIGHT_BLUE="\e[94m"
+LIGHT_MAGENTA="\e[95m"
+LIGHT_CYAN="\e[96m"
+WHITE="\e[97m"
 RESET="\e[0m"
 
 BIN=$1
@@ -26,9 +36,20 @@ CHECK_LEAK="All heap blocks were freed -- no leaks are possible"
 FD_LEAK="FILE DESCRIPTORS: 4 open (3 std) at exit."
 VERIFY_FD="$(pwd)/${V_OUT}"
 
+VALGRIND_CHECK=0
+
 if [ $2 -eq 1 ]; then
 	FT_NM=${VALGRIND_NM}
 fi
+
+check_valgrind_test_passed() {
+	if [ ${VALGRIND_CHECK} -eq 0 ]; then
+		display_color_msg ${LIGHT_MAGENTA} "Valgrind test ${RESET}${GREEN}OK${RESET}"
+	else
+		display_color_msg ${RED} "Valgrind test failed"
+		exit 1
+	fi
+}
 
 check_fd_leak() {
 	FD=0
@@ -44,8 +65,7 @@ check_fd_leak() {
 		SAVE_EXIT=$?
 		if [ ${SAVE_EXIT} -ne 0 ]; then
 			echo -e "${RED}Fd leak ${1} $RESET"
-		else
-			echo -e "${CYAN}No Fd leak ${1} $RESET"
+			VALGRIND_CHECK=1
 		fi
 	fi
 }
@@ -54,14 +74,12 @@ check_error_code() {
 	if [ ${3} -eq 1 ]; then
 		if [ ${SAVE_EXIT} -ne 0 ]; then
 				echo -e "${RED}${1} ${2} $RESET"
-		else
-				echo -e "${CYAN}No ${1} ${2} $RESET"
+				VALGRIND_CHECK=1
 		fi	
 	else
 		if [ ${SAVE_EXIT} -eq 0 ]; then
 				echo -e "${RED}${1} ${2} $RESET"
-		else
-				echo -e "${CYAN}No ${1} ${2} $RESET"
+				VALGRIND_CHECK=1
 		fi
 	fi
 }
@@ -131,13 +149,14 @@ elf_file_diff() {
 	do_diff out nm_out
 	if [ -f $V_OUT ]; then
 		valgrind_check ${BIN}
+		check_valgrind_test_passed
 		rm ${V_OUT}
 	fi
 	rm nm_out out
 }
 
 exec_file_onebyone() {
-	display_color_msg ${CYAN} "Exec file ony by one in dir"
+	display_color_msg ${CYAN} "Exec file one by one in dir"
 	for file in $@; do
 		elf_file_diff ${file}
 	done
@@ -162,12 +181,12 @@ basic_diff_test() {
 	elf_file_diff ${BIN}
 	elf_file_diff rsc/libft_malloc.so
 	elf_file_diff libft/ft_atoi.o
-	elf_file_diff rsc/debug_sym.o
+	elf_file_diff rsc/test_file/debug_sym.o
 	elf_file_diff rsc/test_file/mandatory/test_facile
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test
 	elf_file_diff rsc/test_file/mandatory/not_so_easy_test_32-bit
 	elf_file_diff
-	elf32_basic_test rsc/main_32.c
+	elf32_basic_test rsc/test_file/main_32.c
 }
 
 check_test_passed() {
@@ -184,7 +203,7 @@ do_test() {
 	exec_file_onebyone ${MANDATORY_FILE}*
 	exec_file_onebyone ${PE_FILE}*
 	exec_file_onebyone ${TEST_BAD_FILE}*
-	multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
+	multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/test_file/debug_sym.o
 	multiple_file_diff ft_nm sda
 	multiple_file_diff ft_nm libft/*.o
 	multiple_file_diff ${GOOD_FILE}*
