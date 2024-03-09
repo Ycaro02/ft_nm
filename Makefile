@@ -4,8 +4,11 @@ CFLAGS	= -Wall -Wextra -Werror -O3 -g
 
 NAME	=	ft_nm
 
-SRCS	=	src/main.c\
-			src/parse_elf_header.c\
+MAIN_MANDATORY	=	src/main.c
+
+MAIN_BONUS	=	src/main_bonus.c
+
+SRCS	=	src/parse_elf_header.c\
 			src/nm_utils.c\
 			src/parse_program_header.c\
 			src/parse_section_header.c\
@@ -13,8 +16,6 @@ SRCS	=	src/main.c\
 			src/display_symbole.c\
 			src/handle_str_table.c\
 			src/parse_cmd_line.c\
-			src/handle_flag.c\
-			
 
 SRCS_BONUS	=	src/bonus.c\
 				src/handle_flag.c\
@@ -41,6 +42,9 @@ TESTER		=	./rsc/diff.sh
 
 ifeq ($(findstring bonus, ${MAKECMDGOALS}), bonus)
 SRCS += ${SRCS_BONUS}
+SRCS += ${MAIN_BONUS}
+else
+SRCS += ${MAIN_MANDATORY}
 endif
 
 all:		${NAME}
