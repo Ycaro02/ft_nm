@@ -74,12 +74,21 @@ typedef struct s_elf_file {
 /* struct stat typedef */
 typedef struct stat t_stat;
 
+
+/* parse flag */
+int             parse_flag(int argc, char **argv);
+
+/* handle flag */
+void            set_flag(int *flags, int flag_val);
+void            unset_flag(int *flags, int flag_val);
+int8_t          has_flag(int flags, int flag_val);
+int8_t          flag_already_present(int flags, int flag_val);
 /* parse elf_header */
 void			*parse_elf_header(char *str, Elf64_Off *len);
 void			display_elf_header(void *elf_struct, int8_t endian);
 
 /* program header */
-int8_t			display_file_symbole(t_elf_file *file);
+int8_t          display_file_symbole(t_elf_file *file, uint8_t nm_flag);
 
 /* elf header getter */
 Elf64_Half		get_Ehdr_type(void *ptr, int8_t endian);

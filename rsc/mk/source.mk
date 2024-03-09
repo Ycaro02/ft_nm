@@ -10,9 +10,10 @@ SRCS			=	parse_elf_header.c\
 					display_symbole.c\
 					handle_str_table.c\
 					parse_cmd_line.c\
+					handle_flag.c\
 
 SRCS_BONUS		=	main_bonus.c\
-					handle_flag.c\
+					parse_flag.c\
 
 MAKE_LIBFT		=	make -s -C libft
 

@@ -213,7 +213,7 @@ static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_
  * 	@param sizeof_Sshdr size of section header
  * 	@return 0 if success otherwise -1
 */
-static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
+static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_t nm_flag)
 {
 	t_list 		*name_lst;
 	char 		*strtab = get_strtab(file, sizeof_Sshdr, file->endian, file->class);
@@ -228,7 +228,14 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 		ft_printf_fd(2, "No symbole found or malloc error\n");
 		return (1); /* need to return value here*/
 	}
-	lst_name_sort(name_lst);
+	if (!has_flag(nm_flag, P_OPTION)) {
+		ft_printf_fd(2, "hey\n");
+		lst_name_sort(name_lst);
+		if (has_flag(nm_flag, R_OPTION)) {
+			reverse_lst(&name_lst);
+		}
+	}
+
 	display_sym_loop(name_lst, file, sizeof_Sshdr);
 	lst_clear(&name_lst, free);
 	return (0);
@@ -239,7 +246,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
  *	@brief Display file symbole
  *	@param file pointer on file struct
 */
-int8_t display_file_symbole(t_elf_file *file)
+int8_t display_file_symbole(t_elf_file *file, uint8_t nm_flag)
  {
 	uint16_t	sizeof_Sshdr = detect_struct_size(file->class, sizeof(Elf64_Shdr), sizeof(Elf32_Shdr)); 
 	void		*section_header = get_section_header(file);
@@ -266,5 +273,5 @@ int8_t display_file_symbole(t_elf_file *file)
 			break;
 		}
 	}
-	return (real_display_symbol(file, sizeof_Sshdr));
+	return (real_display_symbol(file, sizeof_Sshdr, nm_flag));
  }

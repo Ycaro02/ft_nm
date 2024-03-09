@@ -52,7 +52,7 @@ static int nm(t_nm_context c, int argc, char **argv)
 			if (file_header) {
 				ft_printf_fd(1, "\n%s:\n", elf_file->name);
 			}
-			exit_code = display_file_symbole(elf_file);
+			exit_code = display_file_symbole(elf_file, c.flag);
 			free(elf_file);
 		} else {
 			exit_code = 1;

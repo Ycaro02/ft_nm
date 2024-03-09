@@ -7,6 +7,8 @@ TEST_BAD_FILE="rsc/test_file/test_bad_file/"
 PE_FILE="rsc/test_file/pe_file/"
 
 EXIT_CODE=0
+
+NM="nm"
 FT_NM="./ft_nm"
 
 source rsc/sh/color.sh
@@ -54,7 +56,7 @@ do_diff() {
 
 elf_file_diff() {
 	empty_string_protect "$@"
-    nm ${BIN} > nm_out 2> /dev/null;
+    ${NM} ${BIN} > nm_out 2> /dev/null;
 	# remove bfd plugin error, nm display it on fd 1 idk why
 	cut_bfd_plugin_error
     ${FT_NM} ${BIN} > out 2> /dev/null
