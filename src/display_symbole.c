@@ -1,5 +1,32 @@
 #include "../include/nm.h"
 
+
+static t_list *update_min(t_list *lst, t_list *min, uint8_t reverse_opt)
+{
+	t_sym_tab	*min_sym, *current = ((t_list *) lst)->content;
+	int 		cmp;
+
+	if (!min)
+		min = lst;
+	
+	min_sym = ((t_list *) min)->content;
+	cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
+	
+	if (reverse_opt) {
+		if (cmp > 0)
+			min = lst;
+		
+	} else {
+		if (cmp < 0)
+			min = lst;
+	} 
+	if (cmp == 0) {
+		if (current->value < min_sym->value)
+			min = lst;
+	}
+	return (min);
+}
+
 /** 
  *	@brief Get symbol name
  * 	@param symbole struct list
@@ -12,24 +39,7 @@ static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 	if (!lst)
         return ;
     while (lst)  {
-        if (!min)
-            min = lst;
-		t_sym_tab	*current = ((t_list *) lst)->content;
-		t_sym_tab	*min_sym = ((t_list *) min)->content;
-		int 		cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
-        
-		if (reverse_opt) {
-			if (cmp > 0)
-				min = lst;
-			
-		} else {
-			if (cmp < 0)
-				min = lst;
-		} 
-		if (cmp == 0) {
-			if (current->value < min_sym->value)
-				min = lst;
-		}
+		min = update_min(lst, min, reverse_opt);
 		lst = lst->next;
     }
     t_list *tmp = head->content;

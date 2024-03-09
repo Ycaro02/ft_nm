@@ -5,6 +5,7 @@
 
 
 /* OPT DETAILs
+	TODO:
 	-a, debug-syms
            Display all symbols, even debugger-only symbols; normally these are not listed.
 
@@ -15,6 +16,7 @@
 	Display only undefined symbols (those external to each object file).
 	By default both defined and undefined symbols are displayed.
 
+	DONE:
 	-r, reverse-sort
 	Reverse the order of the sort (whether numeric or alphabetic);
 	let the last come first.
