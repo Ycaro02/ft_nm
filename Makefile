@@ -35,6 +35,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
+
+# TEST RULE
 test :	$(NAME)
 	@./$(NAME) $(NAME)
 
@@ -45,11 +47,16 @@ vtest:	$(NAME)
 	@$(TESTER) $(NAME) 1
 
 dtest_p:	$(NAME)
-	@$(TESTER) $(NAME) 0 "--no-sort" "-p"
+	@$(TESTER) $(NAME) 0 "-p" "-p"
 
 vtest_p:	$(NAME)
 	@$(TESTER) $(NAME) 1 "--no-sort" "-p"
 
+dtest_r:	$(NAME)
+	@$(TESTER) $(NAME) 0 "-r" "-r"
+
+vtest_r:	$(NAME)
+	@$(TESTER) $(NAME) 1 "-r" "-r"
 
 bonus:	$(NAME)
 

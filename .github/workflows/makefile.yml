@@ -19,9 +19,6 @@ jobs:
     - name: Run make
       run: make
 
-    - name: Run tests
-      run: make test dtest vtest
-
     - name: Run basic diff tests
       run: make dtest vtest
 
@@ -30,6 +27,9 @@ jobs:
 
     - name: Run valgrind tests bonus -p
       run: make vtest_p
+
+    - name: Run valgrind tests bonus -r
+      run: make vtest_r
 
     - name: clean
       run: make fclean

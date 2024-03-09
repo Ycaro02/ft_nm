@@ -4,7 +4,7 @@
  *	@brief Get symbol name
  * 	@param symbole struct list
 */
-static void lst_name_sort(t_list *lst)
+static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 {
     t_list *head = lst;
     t_list *min = NULL;
@@ -14,22 +14,28 @@ static void lst_name_sort(t_list *lst)
     while (lst)  {
         if (!min)
             min = lst;
-		t_sym_tab *current = ((t_list *) lst)->content;
-		t_sym_tab *min_sym = ((t_list *) min)->content;
-		int cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
-        if (cmp < 0) {
-            min = lst;
-		} else if (cmp == 0) {
-			if (current->value < min_sym->value) {
+		t_sym_tab	*current = ((t_list *) lst)->content;
+		t_sym_tab	*min_sym = ((t_list *) min)->content;
+		int 		cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
+        
+		if (reverse_opt) {
+			if (cmp > 0)
 				min = lst;
-			}
+			
+		} else {
+			if (cmp < 0)
+				min = lst;
+		} 
+		if (cmp == 0) {
+			if (current->value < min_sym->value)
+				min = lst;
 		}
-        lst = lst->next;
+		lst = lst->next;
     }
     t_list *tmp = head->content;
     head->content = min->content;
     min->content = tmp;
-    lst_name_sort(head->next);
+    lst_name_sort(head->next, reverse_opt);
 }
 
 /* @brief is source file */
@@ -228,13 +234,15 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_
 		ft_printf_fd(2, "No symbole found or malloc error\n");
 		return (1); /* need to return value here*/
 	}
+
+	uint8_t reverse = has_flag(nm_flag, R_OPTION);
+
 	if (!has_flag(nm_flag, P_OPTION)) {
-		ft_printf_fd(2, "hey\n");
-		lst_name_sort(name_lst);
-		if (has_flag(nm_flag, R_OPTION)) {
-			reverse_lst(&name_lst);
-		}
+		lst_name_sort(name_lst, reverse);
 	}
+	// if (reverse) {
+	// 	reverse_lst(&name_lst);
+	// }
 
 	display_sym_loop(name_lst, file, sizeof_Sshdr);
 	lst_clear(&name_lst, free);
