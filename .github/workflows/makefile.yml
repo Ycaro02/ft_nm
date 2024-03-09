@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencie for 32 bits compilation
+    - name: Install valgrind and dependencie for 32 bits compilation
       run: sudo apt update && sudo apt install libc6-dev-i386 valgrind -y
     
     - name: Run make
@@ -21,6 +21,12 @@ jobs:
 
     - name: Run tests
       run: make test dtest vtest
+
+    - name: Run basic diff tests
+      run: make dtest vtest
+
+    - name: Run valgrind tests
+      run: make vtest
 
     - name: clean
       run: make fclean
