@@ -1,34 +1,29 @@
+OBJ_DIR			= obj
+SRC_DIR 		= src
 MAIN_MANDATORY	=	main.c
 
-MAIN_BONUS	=	main_bonus.c
+SRCS			=	parse_elf_header.c\
+					nm_utils.c\
+					parse_program_header.c\
+					parse_section_header.c\
+					parse_symtab.c\
+					display_symbole.c\
+					handle_str_table.c\
+					parse_cmd_line.c\
 
-OBJ_DIR = obj
+SRCS_BONUS		=	main_bonus.c\
+					handle_flag.c\
 
-SRC_DIR = src
+MAKE_LIBFT		=	make -s -C libft
 
-SRCS	=	parse_elf_header.c\
-			nm_utils.c\
-			parse_program_header.c\
-			parse_section_header.c\
-			parse_symtab.c\
-			display_symbole.c\
-			handle_str_table.c\
-			parse_cmd_line.c\
+MAKE_LIST		=	make -s -C libft/list
 
-SRCS_BONUS	=	bonus.c\
-				handle_flag.c\
+LIBFT			= 	libft/libft.a
 
+LIST			= 	libft/list/linked_list.a
 
-MAKE_LIBFT	=	make -s -C libft
+OBJS 			= $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
-MAKE_LIST	=	make -s -C libft/list
+OBJS_BONUS		= $(addprefix $(OBJ_DIR)/, $(SRCS_BONUS:.c=.o))
 
-LIBFT	= 	libft/libft.a
-
-LIST	= 	libft/list/linked_list.a
-
-OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
-
-OBJS_BONUS = $(addprefix $(OBJ_DIR)/, $(SRCS_BONUS:.c=.o))
-
-OBJS_MAIN_BONUS = $(addprefix $(OBJ_DIR)/, $(MAIN_BONUS:.c=.o))
+OBJS_MAIN_BONUS	= $(addprefix $(OBJ_DIR)/, $(MAIN_BONUS:.c=.o))

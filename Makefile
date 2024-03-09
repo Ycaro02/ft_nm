@@ -9,7 +9,6 @@ TESTER	=	./rsc/nm_tester.sh
 
 ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
 SRCS += $(SRCS_BONUS)
-SRCS += $(MAIN_BONUS)
 else
 SRCS += $(MAIN_MANDATORY)
 endif
