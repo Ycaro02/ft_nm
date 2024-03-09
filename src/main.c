@@ -12,7 +12,7 @@ static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 	t_elf_file *file = ft_calloc(sizeof(t_elf_file), 1);
 
 	if (!file) {
-		ft_printf_fd(2, "Alloc error get nm file\n");
+		ft_printf_fd(2, "Alloc error get_elf_file_context\n");
 		return (NULL);
 	}
 
@@ -46,20 +46,18 @@ static int nm(t_nm_context c, int argc, char **argv)
 	int 	exit_code = 0;
 	int8_t	file_header = ft_lstsize(file_lst) > 1;
 
-	if (lst) {
-		while (lst) {
-			t_elf_file *elf_file = get_elf_file_context(c, lst->content);
-			if (elf_file) {
-				if (file_header) {
-					ft_printf_fd(1, "\n%s:\n", (char *)lst->content);
-				}
-				exit_code = display_file_symbole(elf_file);
-				free(elf_file);
-			} else {
-				exit_code = 1;
+	while (lst) {
+		t_elf_file *elf_file = get_elf_file_context(c, lst->content);
+		if (elf_file) {
+			if (file_header) {
+				ft_printf_fd(1, "\n%s:\n", elf_file->name);
 			}
-			lst = lst->next;
+			exit_code = display_file_symbole(elf_file);
+			free(elf_file);
+		} else {
+			exit_code = 1;
 		}
+		lst = lst->next;
 	}
 	lst_clear(&file_lst, free);
 	return (exit_code);
