@@ -58,7 +58,8 @@ int parse_flag(int argc, char **argv, int8_t *reject_all)
                     tmp_value =  get_flag_value(argv[i][j]);
                     if (tmp_value == -1) {
                         ft_printf_fd(2, "%s: invalid option -- %c\nTry ./%s --help for more information\n",  argv[0], argv[i][j],  argv[0]);
-                        return (-1);
+                        *reject_all = -1;
+                        return (0);
                     }
                     if (flag_already_present(flags, tmp_value) == FALSE)
                         set_flag(&flags, tmp_value);
