@@ -114,6 +114,7 @@ do_test() {
 	exec_file_onebyone ${PE_FILE}*
 	exec_file_onebyone ${TEST_BAD_FILE}*
 	multiple_file_diff ft_nm rsc/test_file/libft_malloc.so libft/ft_atoi.o rsc/test_file/debug_sym.o
+	multiple_file_diff ft_nm rsc/test_file/libft_malloc.so libft/ft_atoi.o dasdas ft_nm
 	multiple_file_diff ft_nm sda
 	multiple_file_diff ft_nm libft/*.o
 	multiple_file_diff ${GOOD_FILE}*
