@@ -11,6 +11,12 @@ RESET="\e[0m"
 BIN=$1
 GOOD_FILE="rsc/test_file/good_files/"
 BAD_FILE="rsc/test_file/bad_files/"
+MANDATORY_FILE="rsc/test_file/mandatory/"
+
+TEST_BAD_FILE="rsc/test_file/test_bad_file/"
+PE_FILE="rsc/test_file/pe_file/"
+
+
 EXIT_CODE=0
 
 FT_NM="./ft_nm"
@@ -19,8 +25,6 @@ VALGRIND_NM="valgrind --log-file=${V_OUT} --track-fds=yes ${FT_NM}"
 CHECK_LEAK="All heap blocks were freed -- no leaks are possible"
 FD_LEAK="FILE DESCRIPTORS: 4 open (3 std) at exit."
 VERIFY_FD="$(pwd)/${V_OUT}"
-
-# echo ${VERIFY_FD}
 
 if [ $2 -eq 1 ]; then
 	FT_NM=${VALGRIND_NM}
@@ -100,28 +104,31 @@ valgrind_check() {
 }
 
 
-elf_file_diff() {
-
-    nm "$@" > nm_out 2> /dev/null;
-
-	cut_bfd_plugin_error
-
-    ${FT_NM} "$@" > out 2> /dev/null
-
-	if [ -z "$1" ]; then
+empty_string_protect() {
+	if [ -z $1 ]; then
 		BIN="a.out (replace empty string)"
 	else
 		BIN="$@"
 	fi
+}
 
-    diff out nm_out 
+do_diff() {
+	diff $1 $2
 	if [ $? -ne 0 ]; then
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${RED} "KO"
 		EXIT_CODE=1
 	else
 		display_double_color_msg ${YELLOW} "Diff ${BIN}: " ${GREEN} "OK"
 	fi
+}
 
+elf_file_diff() {
+	empty_string_protect "$@"
+    nm ${BIN} > nm_out 2> /dev/null;
+	# remove bfd plugin error, nm display it on fd 1 idk why
+	cut_bfd_plugin_error
+    ${FT_NM} ${BIN} > out 2> /dev/null
+	do_diff out nm_out
 	if [ -f $V_OUT ]; then
 		valgrind_check ${BIN}
 		rm ${V_OUT}
@@ -129,11 +136,18 @@ elf_file_diff() {
 	rm nm_out out
 }
 
-multiple_file_diff() {
-	display_color_msg ${CYAN} "Call multiple diff: "
+exec_file_onebyone() {
+	display_color_msg ${CYAN} "Exec file ony by one in dir"
 	for file in $@; do
-		echo -e " ${YELLOW}${file}${RESET}"
+		elf_file_diff ${file}
 	done
+}
+
+multiple_file_diff() {
+	display_color_msg ${CYAN} "Call multiple diff"
+	# for file in $@; do
+	# 	echo -e " ${YELLOW}${file}${RESET}"
+	# done
 	elf_file_diff "$@"
 }
 
@@ -156,22 +170,6 @@ basic_diff_test() {
 	elf32_basic_test rsc/main_32.c
 }
 
-correct_error_test() {
-	display_color_msg ${CYAN} "Correct error test: "
-	elf_file_diff rsc/test_file/mandatory/error_header
-	elf_file_diff rsc/test_file/mandatory/header_offset_error
-}
-
-incorrect_error_test() {
-	display_color_msg ${CYAN} "Incorrect error test: "
-	elf_file_diff rsc/test_file/mandatory/header
-	elf_file_diff rsc/test_file/mandatory/header_and_prog
-	elf_file_diff rsc/test_file/mandatory/header_and_prog_copy
-	elf_file_diff rsc/test_file/mandatory/header_copy
-	elf_file_diff rsc/test_file/mandatory/unterminated_string
-	elf_file_diff rsc/test_file/mandatory/wrong_arch
-}
-
 check_test_passed() {
 	if [ ${EXIT_CODE} -eq 0 ]; then
 		display_color_msg ${GREEN} "All test passed"
@@ -181,19 +179,25 @@ check_test_passed() {
 	fi
 }
 
-basic_diff_test
-correct_error_test
-incorrect_error_test
-multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
-multiple_file_diff ft_nm sda
-multiple_file_diff ft_nm libft/*.o
-multiple_file_diff ${GOOD_FILE}*
-multiple_file_diff ${BAD_FILE}*
-check_test_passed
+do_test() {
+	basic_diff_test
+	exec_file_onebyone ${MANDATORY_FILE}*
+	exec_file_onebyone ${PE_FILE}*
+	exec_file_onebyone ${TEST_BAD_FILE}*
+	multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/debug_sym.o
+	multiple_file_diff ft_nm sda
+	multiple_file_diff ft_nm libft/*.o
+	multiple_file_diff ${GOOD_FILE}*
+	multiple_file_diff ${BAD_FILE}*
+	check_test_passed
 
-if [ -f $V_OUT ]; then
-	rm ${V_OUT}
-fi
+	if [ -f $V_OUT ]; then
+		rm ${V_OUT}
+	fi
+}
+
+do_test
+
 
 #### EXIT CODE TESTER ####
 test_exit_code() {

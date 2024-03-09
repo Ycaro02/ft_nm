@@ -183,22 +183,17 @@ static int detect_os_abi(uint8_t os_abi)
 	return (-1);
 }
 
-# define PEMAG  "MZ"
-# define SPEMAG  3
 /**
  *	@brief Parse header identification field
  *	@param str file name to check
  *	@param elf_struct pointer on elf header struct
 */
-static int header_identification_correct(char *str, void *elf_struct, int8_t file_header)
+static int header_identification_correct(char *str, void *elf_struct)
 {
 	/* check magic number ELFMAG */
 	if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), ELFMAG, SELFMAG) != 0) {
         // ft_printf_fd(2, "field 0 %d\n", ELF_HFIELD(elf_struct, 0));
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", str);
-		if (ft_strncmp(((char *) ((Elf64_Ehdr *) elf_struct)->e_ident), PEMAG, SPEMAG) == 0 && file_header) {
-			ft_printf_fd(1, "\n%s:\n", str);
-		}
 		return (FALSE);
 	}
 	/* get class 32 or 64 bits */
@@ -238,7 +233,7 @@ static int header_identification_correct(char *str, void *elf_struct, int8_t fil
  *	@param str file name
  *	@return pointer on elf struct or NULL in case of error
 */
-void *parse_elf_header(char *str, Elf64_Off *len, int8_t file_header)
+void *parse_elf_header(char *str, Elf64_Off *len)
 {
 	void	*elf_struct = NULL;
 	t_stat 	sb;
@@ -260,7 +255,7 @@ void *parse_elf_header(char *str, Elf64_Off *len, int8_t file_header)
 		return (NULL);
 	}
 	close(fd); /* now we had data in void * we can close fd */
-	if (header_identification_correct(str, elf_struct, file_header) == FALSE) {
+	if (header_identification_correct(str, elf_struct) == FALSE) {
 		munmap(elf_struct, sb.st_size);
 		return (NULL);
 	}
