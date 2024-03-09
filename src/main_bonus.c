@@ -12,7 +12,7 @@ static t_elf_file *get_elf_file_context(t_nm_context c, char *path)
 	t_elf_file *file = ft_calloc(sizeof(t_elf_file), 1);
 
 	if (!file) {
-		ft_printf_fd(2, "Alloc error get nm file\n");
+		ft_printf_fd(2, "Alloc error get_elf_file_context\n");
 		return (NULL);
 	}
 

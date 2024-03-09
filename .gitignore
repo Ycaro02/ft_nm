@@ -1,6 +1,4 @@
-*.o
 *.a
-bin_test/
 peda-session*
 .gdb_history
 ft_nm
