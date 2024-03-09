@@ -6,6 +6,7 @@ CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror -O3 -g
 RM		=	rm -rf
 TESTER	=	./rsc/nm_tester.sh 
+DISPLAY_ASCII_ART = ./rsc/mk/ascii.sh
 
 ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
 SRCS += $(SRCS_BONUS)
@@ -23,6 +24,7 @@ $(NAME):	lib $(OBJS) $(OBJ_DIR)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
 lib:
+	@${DISPLAY_ASCII_ART}
 	@printf "$(CYAN)Compiling lib$(RESET)\n"
 	@$(MAKE_LIBFT)
 	@$(MAKE_LIST)
