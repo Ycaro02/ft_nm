@@ -10,10 +10,10 @@
 	-a, debug-syms
            Display all symbols, even debugger-only symbols; normally these are not listed.
 
+	DONE:
+
 	-g, extern-only
     Display only external symbols.
-
-	DONE:
 
 	-u, undefined-only
 	Display only undefined symbols (those external to each object file).
