@@ -1,45 +1,15 @@
-CC		= gcc
-
-CFLAGS	= -Wall -Wextra -Werror -O3 -g
+include rsc/mk/color.mk
+include rsc/mk/source.mk
 
 NAME	=	ft_nm
 
-MAIN_MANDATORY	=	src/main.c
+CC		=	gcc
 
-MAIN_BONUS	=	src/main_bonus.c
+CFLAGS	=	-Wall -Wextra -Werror -O3 -g
 
-SRCS	=	src/parse_elf_header.c\
-			src/nm_utils.c\
-			src/parse_program_header.c\
-			src/parse_section_header.c\
-			src/parse_symtab.c\
-			src/display_symbole.c\
-			src/handle_str_table.c\
-			src/parse_cmd_line.c\
+RM		=	rm -rf
 
-SRCS_BONUS	=	src/bonus.c\
-				src/handle_flag.c\
-
-
-LIBFT	= 	libft/libft.a
-
-LIST	= 	libft/list/linked_list.a
-
-OBJS = $(SRCS:.c=.o)
-
-OBJS_BONUS = $(SRCS_BONUS:.c=.o)
-
-OBJS_MAIN_BONUS = $(MAIN_BONUS:.c=.o)
-
-LIBFT	=	libft/libft.a
-
-RM		= 	rm -f
-
-MAKE_LIBFT	=	make -s -C libft
-
-MAKE_LIST	=	make -s -C libft/list
-
-TESTER		=	./rsc/diff.sh 
+TESTER	=	./rsc/nm_tester.sh 
 
 ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
 SRCS += $(SRCS_BONUS)
@@ -53,14 +23,21 @@ all:		$(NAME)
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(OBJS)
-			@echo "\033[6;36m ----- Compiling lib\t\t----- \033[0m"
+$(NAME):	lib $(OBJS) $(OBJ_DIR)
+
+			@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
+			@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
+
+lib:
+			@printf "$(CYAN)Compiling lib$(RESET)\n"
 			@$(MAKE_LIBFT)
 			@$(MAKE_LIST)
-			@echo "\033[6;32m ----- Compiling lib done\t----- \033[0m"
-			@ echo "\033[6;36m ----- Compiling $(NAME) project  ----- \033[0m"
-			@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
-			@echo "\033[6;32m ----- Compiling $(NAME) done     ----- \033[0m"
+			@printf "$(GREEN)Compiling lib done$(RESET)\n"
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+			@printf "$(YELLOW)Compile $<$(RESET)\n"
+			@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
+			@$(CC) -o $@ -c $< $(CFLAGS)
 
 test :	$(NAME)
 			@./$(NAME) $(NAME)
@@ -74,11 +51,13 @@ vtest:	$(NAME)
 bonus:	$(NAME)
 
 clean:
-			@echo "\033[6;31m ----- Cleaning  $(NAME) obj\t----- \033[0m"
-			@$(RM) $(OBJS) $(OBJS_BONUS) $(OBJS_MAIN_BONUS)
+ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
+			@printf "$(RED)Clean $(OBJ_DIR)$(RESET)\n"
+			@$(RM) $(OBJ_DIR)
 			@$(MAKE_LIBFT) clean
 			@$(MAKE_LIST) clean
-			@echo "\033[6;33m ----- Cleaning  $(NAME) done\t----- \033[0m"
+			@printf "$(RED)Clean $(NAME)$(RESET)\n"
+endif
 
 fclean:		clean
 			@$(MAKE_LIBFT) fclean
@@ -87,4 +66,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		all clean fclean re bonus test dtest vtest
+.PHONY:		all clean fclean re bonus test dtest vtest lib
