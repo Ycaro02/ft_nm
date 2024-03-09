@@ -1,3 +1,5 @@
+*.a
 peda-session*
 .gdb_history
+ft_nm
 .vscode
