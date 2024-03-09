@@ -179,7 +179,7 @@ elf32_basic_test() {
 
 basic_diff_test() {
 	elf_file_diff ${BIN}
-	elf_file_diff rsc/libft_malloc.so
+	elf_file_diff rsc/test_file/libft_malloc.so
 	elf_file_diff libft/ft_atoi.o
 	elf_file_diff rsc/test_file/debug_sym.o
 	elf_file_diff rsc/test_file/mandatory/test_facile
@@ -203,7 +203,7 @@ do_test() {
 	exec_file_onebyone ${MANDATORY_FILE}*
 	exec_file_onebyone ${PE_FILE}*
 	exec_file_onebyone ${TEST_BAD_FILE}*
-	multiple_file_diff ft_nm rsc/libft_malloc.so libft/ft_atoi.o rsc/test_file/debug_sym.o
+	multiple_file_diff ft_nm rsc/test_file/libft_malloc.so libft/ft_atoi.o rsc/test_file/debug_sym.o
 	multiple_file_diff ft_nm sda
 	multiple_file_diff ft_nm libft/*.o
 	multiple_file_diff ${GOOD_FILE}*
