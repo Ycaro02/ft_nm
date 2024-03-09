@@ -39,7 +39,6 @@ MAKE_LIST	=	make -s -C libft/list
 
 TESTER		=	./rsc/diff.sh 
 
-
 ifeq ($(findstring bonus, ${MAKECMDGOALS}), bonus)
 SRCS += ${SRCS_BONUS}
 SRCS += ${MAIN_BONUS}

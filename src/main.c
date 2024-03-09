@@ -51,7 +51,7 @@ static int nm(t_nm_context c, int argc, char **argv)
 			t_elf_file *elf_file = get_elf_file_context(c, lst->content);
 			if (elf_file) {
 				if (file_header) {
-					ft_printf_fd(1, "\n%s:\n", elf_file->name);
+					ft_printf_fd(1, "\n%s:\n", (char *)lst->content);
 				}
 				exit_code = display_file_symbole(elf_file);
 				free(elf_file);

@@ -10,7 +10,7 @@ RESET="\e[0m"
 
 BIN=$1
 GOOD_FILE="rsc/test_file/good_files/"
-BAD_FILE="rsc/test_file/good_files/"
+BAD_FILE="rsc/test_file/bad_files/"
 EXIT_CODE=0
 
 FT_NM="./ft_nm"
@@ -102,16 +102,16 @@ valgrind_check() {
 
 elf_file_diff() {
 
-    nm ${1} > nm_out 2> /dev/null;
+    nm "$@" > nm_out 2> /dev/null;
 
 	cut_bfd_plugin_error
 
-    ${FT_NM} ${1} > out 2> /dev/null
+    ${FT_NM} "$@" > out 2> /dev/null
 
 	if [ -z "$1" ]; then
 		BIN="a.out (replace empty string)"
 	else
-		BIN="$1"
+		BIN="$@"
 	fi
 
     diff out nm_out 
@@ -134,7 +134,7 @@ multiple_file_diff() {
 	for file in $@; do
 		echo -e " ${YELLOW}${file}${RESET}"
 	done
-	elf_file_diff $@
+	elf_file_diff "$@"
 }
 
 elf32_basic_test() {
