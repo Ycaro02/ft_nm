@@ -58,6 +58,10 @@ dtest_r:	$(NAME)
 vtest_r:	$(NAME)
 	@$(TESTER) $(NAME) 1 "-r" "-r"
 
+vtest_rp:	$(NAME)
+	@$(TESTER) $(NAME) 1 "-rp" "-rp"
+
+
 bonus:	$(NAME)
 
 clean:
