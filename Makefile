@@ -62,4 +62,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		all clean fclean re bonus test dtest vtest lib
+.PHONY:		all clean fclean re

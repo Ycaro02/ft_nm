@@ -76,7 +76,7 @@ typedef struct stat t_stat;
 
 
 /* parse flag */
-int             parse_flag(int argc, char **argv);
+int             parse_flag(int argc, char **argv, int8_t *reject_flag);
 
 /* handle flag */
 void            set_flag(int *flags, int flag_val);
@@ -156,12 +156,6 @@ void			display_all_program_header(t_elf_file *file);
 void			display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
 void			display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
 
-/* BONUS */
-/* handle flag*/
-int 			parse_flag(int argc, char **argv);
-int8_t			has_flag(int flags, int flag_val);
 
-/* bonus.c */
-void            display_koala();
 
 # endif /* FT_NM_HEADER */

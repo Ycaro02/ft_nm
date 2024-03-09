@@ -75,8 +75,9 @@ int main(int argc, char **argv)
 {
 	t_nm_context	context;
 	int 			exit_code = 0;
+	int8_t			reject_flag = 0;
 
-	context.flag = parse_flag(argc, argv);
+	context.flag = parse_flag(argc, argv, &reject_flag);
 	context.l_endian = detect_local_endian();
 	exit_code = nm(context, argc, argv);
 	return exit_code;

@@ -1,5 +1,7 @@
 OBJ_DIR			= obj
+
 SRC_DIR 		= src
+
 MAIN_MANDATORY	=	main.c
 
 SRCS			=	parse_elf_header.c\
@@ -11,9 +13,9 @@ SRCS			=	parse_elf_header.c\
 					handle_str_table.c\
 					parse_cmd_line.c\
 					handle_flag.c\
+					parse_flag.c\
 
 SRCS_BONUS		=	main_bonus.c\
-					parse_flag.c\
 
 MAKE_LIBFT		=	make -s -C libft
 

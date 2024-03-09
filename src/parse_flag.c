@@ -31,19 +31,25 @@ static int get_flag_value(char c)
     return (flag);
 }
 
-/** parse_flag
+/** 
+ * @brief parse_flag
  * Parse user input to get flag
 */
-int parse_flag(int argc, char **argv)
+int parse_flag(int argc, char **argv, int8_t *reject_all)
 {
     int i = 1, flags = 0, tmp_value = 0;
 
     while (i < argc) {
         if (argv[i][0] == '-') {
-            if (!argv[i][1]) {   /* special case ugly */
-                ft_printf_fd(2, "%s: cannot access %s: No such file or directoryn", argv[0], argv[i]); // special case
+            if (*reject_all) {
+                ft_printf_fd(2, "%s: invalid option -- %s\nTry to compile %s with 'make bonus'\n",  argv[0], argv[0], argv[i]);
+                *reject_all = -1;
+                return (0);
             }
-            else if (argv[i][1] == '-' && argv[i][2] == '\0') {
+            if (!argv[i][1]) {   /* special case ugly */
+                ft_printf_fd(2, "%s: cannot access %s: No such file or directoryn", argv[0], argv[i]);
+            }
+            else if (argv[i][1] == '-' && argv[i][2] == '\0') { /* again special case to skip '--' */
                 ++i;
                 continue;
             }
@@ -51,7 +57,7 @@ int parse_flag(int argc, char **argv)
                 for (int j = 1; argv[i][j]; ++j) {
                     tmp_value =  get_flag_value(argv[i][j]);
                     if (tmp_value == -1) {
-                        ft_printf_fd(2, "%s: invalid option -- %cnTry ./%s --help for more information\n",  argv[0], argv[i][j],  argv[0]);
+                        ft_printf_fd(2, "%s: invalid option -- %c\nTry ./%s --help for more information\n",  argv[0], argv[i][j],  argv[0]);
                         return (-1);
                     }
                     if (flag_already_present(flags, tmp_value) == FALSE)
@@ -61,7 +67,6 @@ int parse_flag(int argc, char **argv)
         }
         ++i;
     }
-    // flags = manage_bonus_flag(flags);
     display_flags(flags);
 	return (flags);
 }
