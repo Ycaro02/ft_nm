@@ -7,6 +7,7 @@
 # include <sys/stat.h>					/* fstat */
 # include <stdlib.h>					/* exit NULL */
 # include <stdio.h>						/* Perror */
+# include "handle_flag.h"				/* handle flags */
 # include "../libft/basic_define.h" 	/* Color */
 # include "macro.h"						/* macro */
 # include "../libft/libft.h" 			/* libft */
@@ -22,13 +23,13 @@ enum e_symb_char {
   FUNCTION_SYM='T', 				/* function symbole */
   OBJECT_SYM='R',					/* data object sym like variable */
   DEBUG_SYM='n',					/* debug symbole */
-//   DATA_SYM='D',     				/* data object */
-//   IFUNC_SYM='I',    				/* indirect function, real adress know at run time */
-//   LOOS_SYM='O',     				/* specific os */
-//   LOPROC_SYM='P',   				/* specific procesor */
-//   NUM_SYM='N',      				/* defined number symbole*/
-//   SECTIONB_SYM='B', 				/* specific section data */
 };
+
+/****************************************************************************/
+/*																			*/
+/*								STRUCTURES									*/
+/*																			*/
+/****************************************************************************/
 
 /**
  * nm execution context
@@ -145,6 +146,11 @@ void			display_all_section_header(t_elf_file *file);
 void			display_all_program_header(t_elf_file *file);
 void			display_symbol_info(void *sym_ptr, int8_t endian, int8_t is_elf64);
 void			display_section_header_info(void *sh_ptr, int8_t endian, int8_t class);
+
+/* BONUS */
+/* handle flag*/
+int 			parse_flag(int argc, char **argv);
+int8_t			has_flag(int flags, int flag_val);
 
 /* bonus.c */
 void            display_koala();

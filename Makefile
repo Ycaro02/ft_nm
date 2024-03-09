@@ -13,9 +13,12 @@ SRCS	=	src/main.c\
 			src/display_symbole.c\
 			src/handle_str_table.c\
 			src/parse_cmd_line.c\
+			src/handle_flag.c\
 			
 
-SRCS_BONUS	=	src/bonus.c
+SRCS_BONUS	=	src/bonus.c\
+				src/handle_flag.c\
+
 
 LIBFT	= 	libft/libft.a
 

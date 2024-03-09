@@ -75,10 +75,10 @@ static int nm(t_nm_context c, int argc, char **argv)
  */
 int main(int argc, char **argv)
 {
-	t_nm_context context;
-	int exit_code = 0;
+	t_nm_context	context;
+	int 			exit_code = 0;
 
-	context.flag = 0;
+	context.flag = parse_flag(argc, argv);
 	context.l_endian = detect_local_endian();
 	exit_code = nm(context, argc, argv);
 	return exit_code;
