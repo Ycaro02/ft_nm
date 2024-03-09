@@ -43,24 +43,8 @@ test :	$(NAME)
 dtest:	$(NAME)
 	@$(TESTER) $(NAME) 0
 
-vtest:	$(NAME)
-	@$(TESTER) $(NAME) 1
-
-dtest_p:	$(NAME)
-	@$(TESTER) $(NAME) 0 "-p" "-p"
-
-vtest_p:	$(NAME)
-	@$(TESTER) $(NAME) 1 "--no-sort" "-p"
-
-dtest_r:	$(NAME)
-	@$(TESTER) $(NAME) 0 "-r" "-r"
-
-vtest_r:	$(NAME)
-	@$(TESTER) $(NAME) 1 "-r" "-r"
-
-vtest_rp:	$(NAME)
-	@$(TESTER) $(NAME) 1 "-rp" "-rp"
-
+all_test:
+	@./rsc/call_tester.sh
 
 bonus:	$(NAME)
 

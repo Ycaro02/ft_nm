@@ -20,20 +20,10 @@ jobs:
       run: make
 
     - name: Run basic diff tests
-      run: make dtest vtest
-
-    - name: Run valgrind tests
-      run: make vtest
-
-    - name: Run valgrind tests bonus -p
-      run: make vtest_p
-
-    - name: Run valgrind tests bonus -r
-      run: make vtest_r
-
-    - name: Run valgrind tests bonus -rp
-      run: make vtest_rp
-  
+      run: make dtest
+        
+    - name: Call tester all test
+      run: make all_test
 
     - name: clean
       run: make fclean

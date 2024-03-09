@@ -34,8 +34,7 @@ static t_list *update_min(t_list *lst, t_list *min, uint8_t reverse_opt)
 static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 {
     t_list *head = lst;
-    t_list *min = NULL;
-    t_list *tmp = head->content;
+    t_list *min = NULL, *tmp;
     
 	if (!lst)
         return ;
@@ -43,6 +42,7 @@ static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
 		min = update_min(lst, min, reverse_opt);
 		lst = lst->next;
     }
+    tmp = head->content;
     head->content = min->content;
     min->content = tmp;
     lst_name_sort(head->next, reverse_opt);
@@ -134,7 +134,7 @@ static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, El
  * 	@param strtab pointer on string table
  * 	@return list of symbole
 */
-static t_list *build_symbole_list(t_elf_file *file, char *strtab)
+static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag)
 {
 	t_list			*name_lst = NULL;
 	Elf64_Xword		struct_sym_size = detect_struct_size(file->class, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
@@ -151,6 +151,13 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 			ft_printf_fd(2, "Invalid symbole name addr\n");
 			return (NULL);
 		}
+
+		/* (shndx == SHN_UNDEF) */
+
+		// (void)flag;
+		if (has_flag(flag, U_OPTION) && get_Sym_shndx((file->symtab + i), file->endian, file->class) != SHN_UNDEF)
+			continue ;
+
 		if (name && *name && !is_source_file(type)) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 		
@@ -239,7 +246,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", file->name);
 		return (1);
 	}
-	name_lst = build_symbole_list(file, strtab);
+	name_lst = build_symbole_list(file, strtab, nm_flag);
 	if (!name_lst) {
 		ft_printf_fd(2, "No symbole found or malloc error\n");
 		return (1); /* need to return value here*/
