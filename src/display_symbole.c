@@ -123,14 +123,14 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 	t_list			*name_lst = NULL;
 	Elf64_Xword		struct_sym_size = detect_struct_size(file->class, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
 
-	/* 	symtabsize need to be verify, maybe do struct size * nb_of symbole, need to find this number ? 
+	/* 	symtabsize range checked in display_file_symbole
 		same for name_idx, same logic that shstrtab get strtab len and check idx
 	*/
 	for (Elf64_Xword i = 0; i < file->symtab_size; i += struct_sym_size) {
 		Elf64_Word 	name_idx = get_Sym_name((file->symtab + i), file->endian, file->class);
 		const char	*name = strtab + name_idx;
 		uint8_t		type = ELF32_ST_TYPE(get_Sym_info((file->symtab + i), file->class));
-
+		/* Protect name idx here */
 		if (check_end_of_file(file, strtab + name_idx)) {
 			ft_printf_fd(2, "Invalid symbole name addr\n");
 			return (NULL);
@@ -151,6 +151,15 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 }
 
 /** 
+ *	@brief Get padding from class
+ * 	@param class 1 for 64 bits 0 for 32 bits
+ * 	@return number of padding char to insert
+*/
+static uint8_t padding_from_class(int8_t class) {
+	return (class ? 16 : 8);
+}
+
+/** 
  *	@brief Get zero padding: if elf 64, 16 digit else 8 - number len, all multiply by len != 0 to avoid protect if
  * 	@param class 1 for 64 bits 0 for 32 bits
  * 	@param len number len
@@ -159,7 +168,7 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab)
 */
 static uint8_t get_zero_padding(int8_t class, uint8_t len, int8_t is_undef)
 {
-	return (((class == 1 ? 16 : 8) - (len + 1)) * (is_undef));
+	return ((padding_from_class(class) - (len + 1)) * (is_undef));
 }
 
 /** 
@@ -172,6 +181,29 @@ static void insert_pad(uint8_t pad, char *c)
 	while (pad > 0) {
 		ft_printf_fd(1, c);
 		--pad;
+	}
+}
+
+/**
+ *	@brief Display symbole loop
+ *	@param name_lst list of symbole
+ *	@param file pointer on file struct
+ *	@param sizeof_Sshdr size of section header
+*/
+static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_Sshdr)
+{
+	for (t_list *current = name_lst; current; current = current->next) {
+		t_sym_tab	*symbole = (t_sym_tab *) ((t_list *) current)->content;
+		uint8_t		pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
+		uint8_t 	symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
+		
+		if (pad > 0) {
+			insert_pad(pad, "0");
+			display_sym_value(symbole->value, 1);
+		} else {
+			insert_pad(padding_from_class(file->class), " ");
+		}
+		ft_printf_fd(1, " %c %s\n", symbole_char, (char *) symbole->sym_name);
 	}
 }
 
@@ -197,18 +229,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr)
 		return (1); /* need to return value here*/
 	}
 	lst_name_sort(name_lst);
-	for (t_list *current = name_lst; current; current = current->next) {
-		t_sym_tab *symbole = (t_sym_tab *) ((t_list *) current)->content;
-		uint8_t pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
-		if (pad > 0) {
-			insert_pad(pad, "0");
-			display_sym_value(symbole->value, 1);
-		} else {
-			insert_pad(file->class == 1 ? 16 : 8, " "); /* replace this hardcode shit */
-		}
-		uint8_t symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
-		ft_printf_fd(1, " %c %s\n",symbole_char, (char *) symbole->sym_name);
-	}
+	display_sym_loop(name_lst, file, sizeof_Sshdr);
 	lst_clear(&name_lst, free);
 	return (0);
 
@@ -225,17 +246,19 @@ int8_t display_file_symbole(t_elf_file *file)
 	uint16_t	max = get_Ehdr_shnum(file->ptr, file->endian);
 	
 	if (!section_header) {
-		return (-1);
+		return (1);
 	}
 	/* safe loop here shnum already checked */
 	for (uint16_t i = 0; i < max; ++i) {
 		void *sh_ptr = section_header + (sizeof_Sshdr * i);
+		/* Get symtab here */
 		if (get_Shdr_type(sh_ptr, file->endian, file->class) == SHT_SYMTAB) {
+			Elf64_Off	symoffset = get_Shdr_offset(sh_ptr, file->endian, file->class); 
+			void		*end_file = file->ptr + file->file_size; 
+			
 			file->symtab_size = get_Shdr_size(sh_ptr, file->endian, file->class);
-			Elf64_Off symoffset = get_Shdr_offset(sh_ptr, file->endian, file->class); /* this offset need to be check */
 			file->symtab = file->ptr + symoffset;
-			void *end_file = file->ptr + file->file_size; 
-
+			/* check symbole table range start (offset) end (offset + size) */
 			if (file->symtab >= end_file || file->symtab + file->symtab_size >= end_file) {
 				ft_printf_fd(2, "Error file symtab\n");
 				return (1);
