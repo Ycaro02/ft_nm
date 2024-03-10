@@ -25,7 +25,7 @@ $(NAME):	$(LIBFT) $(OBJS) $(OBJ_DIR)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
 $(LIBFT):
-	@${DISPLAY_ASCII_ART}
+	@${DISPLAY_ASCII_ART} ${NAME}
 	@printf "$(CYAN)Compiling lib$(RESET)\n"
 	@$(MAKE_LIBFT)
 	@$(MAKE_LIST)

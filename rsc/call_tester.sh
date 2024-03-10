@@ -3,6 +3,8 @@
 TESTER="rsc/nm_tester.sh" 
 NAME="ft_nm"
 
+./rsc/mk/ascii.sh "tester"
+
 
 ${TESTER} ${NAME} 1
 
