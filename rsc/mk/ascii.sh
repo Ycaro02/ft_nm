@@ -26,7 +26,7 @@ ascii_nm() {
 	# echo -e " ${LIGHT_CYAN}                             ${RESET}"
 
 	# ANSI Regular
-	echo -e "  ${LIGHT_CYAN}                        ${RESET}"
+	echo -e ""
 	echo -e "  ${LIGHT_CYAN}███    ██    ███    ███ ${RESET}"
 	echo -e "  ${LIGHT_CYAN}████   ██    ████  ████ ${RESET}"
 	echo -e "  ${LIGHT_CYAN}██ ██  ██    ██ ████ ██ ${RESET}"
@@ -35,20 +35,34 @@ ascii_nm() {
 }
 
 
+ascii_nmbonus() {
+	echo -e ""
+	echo -e "  ${LIGHT_MAGENTA}███    ██    ███    ███     ██████   ██████  ███    ██ ██    ██ ███████ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}████   ██    ████  ████     ██   ██ ██    ██ ████   ██ ██    ██ ██      ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██ ██  ██    ██ ████ ██     ██████  ██    ██ ██ ██  ██ ██    ██ ███████ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██  ██ ██    ██  ██  ██     ██   ██ ██    ██ ██  ██ ██ ██    ██      ██ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██   ████    ██      ██     ██████   ██████  ██   ████  ██████  ███████ ${RESET}\n"
 
+}
 
 
 ascii_nmtester() {
 	echo -e ""
-	echo -e "${LIGHT_MAGENTA}███    ██    ███    ███    ████████    ███████    ███████    ████████    ███████    ██████  ${RESET}"
-	echo -e "${LIGHT_MAGENTA}████   ██    ████  ████       ██       ██         ██            ██       ██         ██   ██ ${RESET}"
-	echo -e "${LIGHT_MAGENTA}██ ██  ██    ██ ████ ██       ██       █████      ███████       ██       █████      ██████  ${RESET}"
-	echo -e "${LIGHT_MAGENTA}██  ██ ██    ██  ██  ██       ██       ██              ██       ██       ██         ██   ██ ${RESET}"
-	echo -e "${LIGHT_MAGENTA}██   ████    ██      ██       ██       ███████    ███████       ██       ███████    ██   ██ ${RESET}\n"
+	echo -e "  ${LIGHT_RED}███    ██    ███    ███    ████████    ███████    ███████    ████████    ███████    ██████  ${RESET}"
+	echo -e "  ${LIGHT_RED}████   ██    ████  ████       ██       ██         ██            ██       ██         ██   ██ ${RESET}"
+	echo -e "  ${LIGHT_RED}██ ██  ██    ██ ████ ██       ██       █████      ███████       ██       █████      ██████  ${RESET}"
+	echo -e "  ${LIGHT_RED}██  ██ ██    ██  ██  ██       ██       ██              ██       ██       ██         ██   ██ ${RESET}"
+	echo -e "  ${LIGHT_RED}██   ████    ██      ██       ██       ███████    ███████       ██       ███████    ██   ██ ${RESET}\n"
 }
 
 if [ "$1" == "ft_nm" ]; then
 	ascii_nm
-else
+fi
+
+if [ "$1" == "tester" ]; then
 	ascii_nmtester
+fi
+
+if [ "$1" == "bonus" ]; then
+	ascii_nmbonus
 fi

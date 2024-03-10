@@ -46,6 +46,7 @@ all_test:	bonus
 	@$(CALL_TESTER)
 
 bonus:	$(NAME)
+	@${DISPLAY_ASCII_ART} "bonus"
 
 clean:
 ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
