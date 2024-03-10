@@ -1,13 +1,13 @@
 include rsc/mk/color.mk
 include rsc/mk/source.mk
 
-NAME	=	ft_nm
-CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror -O3 -g
-RM		=	rm -rf
-TESTER	=	./rsc/nm_tester.sh 
-CALL_TESTER = ./rsc/call_tester.sh
-DISPLAY_ASCII_ART = ./rsc/mk/ascii.sh
+NAME		=	ft_nm
+CC			=	gcc
+CFLAGS		=	-Wall -Wextra -Werror -O3 -g
+RM			=	rm -rf
+TESTER		=	./rsc/nm_tester.sh 
+CALL_TESTER =	./rsc/call_tester.sh
+ASCII_ART	=	./rsc/mk/ascii.sh
 
 ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
 SRCS += $(SRCS_BONUS)
@@ -25,7 +25,7 @@ $(NAME):	$(LIBFT) $(OBJS) $(OBJ_DIR)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
 $(LIBFT):
-	@${DISPLAY_ASCII_ART} ${NAME}
+	@$(ASCII_ART) $(NAME)
 	@printf "$(CYAN)Compiling lib$(RESET)\n"
 	@$(MAKE_LIBFT)
 	@$(MAKE_LIST)
@@ -46,7 +46,7 @@ all_test:	bonus
 	@$(CALL_TESTER)
 
 bonus:	$(NAME)
-	@${DISPLAY_ASCII_ART} "bonus"
+	@$(ASCII_ART) "bonus"
 
 clean:
 ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
