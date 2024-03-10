@@ -19,22 +19,5 @@ jobs:
     - name: Run test rule, clone the tester and run the tests
       run: make run_test
 
-    - name: Run basic test
-      run : ./ft_nmTester/call_tester.sh 0
-
-    - name: Run valgrind basic test
-      run : ./ft_nmTester/call_tester.sh 1
-
-    - name: Run bonus test
-      run : ./ft_nmTester/call_tester.sh 0 1
-
-    - name: Run valgrind bonus test
-      run : ./ft_nmTester/call_tester.sh 1 1
-
-    - name: Run valgrind verbose bonus test
-      run : ./ft_nmTester/call_tester.sh 1 1 1
-
-
-
     - name: clean
       run: make fclean
