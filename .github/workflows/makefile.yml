@@ -16,16 +16,8 @@ jobs:
     - name: Install valgrind and dependencie for 32 bits compilation
       run: sudo apt update && sudo apt install libc6-dev-i386 valgrind -y
     
-        #- name: Run make
-        #run: make
-
-        #- name: Run basic diff tests
-        #run: make dtest
-        
-        # - name: Call tester all test
-        #run: make all_test
-    - name: Clone tester
-      run: git clone https://github.com/Ycaro02/ft_nmTester.git
+    - name: Run test rule, clone the tester and run the tests
+      run: make run_test
 
     - name: Run basic test
       run : ./ft_nmTester/call_tester.sh 0
@@ -41,6 +33,8 @@ jobs:
 
     - name: Run valgrind verbose bonus test
       run : ./ft_nmTester/call_tester.sh 1 1 1
+
+
 
     - name: clean
       run: make fclean

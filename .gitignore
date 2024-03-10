@@ -1,4 +1,6 @@
 *.a
+*.o
+*.so
 peda-session*
 .gdb_history
 ft_nm

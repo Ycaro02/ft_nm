@@ -30,3 +30,12 @@ OBJS 			= $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 OBJS_BONUS		= $(addprefix $(OBJ_DIR)/, $(SRCS_BONUS:.c=.o))
 
 OBJS_MAIN_BONUS	= $(addprefix $(OBJ_DIR)/, $(MAIN_BONUS:.c=.o))
+
+RUN_TESTER	= ./rsc/sh/run_tester.sh
+
+TESTER_OUT_FILES =	nm_out\
+					out\
+					valgrind_out\
+					tester_logs\
+
+RM			=	rm -rf

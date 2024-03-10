@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "*.def": "source.def",
-        "linked_list.h": "c"
-    }
-}
