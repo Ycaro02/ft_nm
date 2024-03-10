@@ -16,14 +16,17 @@ jobs:
     - name: Install valgrind and dependencie for 32 bits compilation
       run: sudo apt update && sudo apt install libc6-dev-i386 valgrind -y
     
-    - name: Run make
-      run: make
+        #- name: Run make
+        #run: make
 
-    - name: Run basic diff tests
-      run: make dtest
+        #- name: Run basic diff tests
+        #run: make dtest
         
-    - name: Call tester all test
-      run: make all_test
+        # - name: Call tester all test
+        #run: make all_test
 
-    - name: clean
-      run: make fclean
+        #- name: clean
+      #run: make fclean
+
+    - name: Try tester
+      run: gcl git@github.com:Ycaro02/ft_nmTester.git && ./ft_nmTester/call_tester.sh 0 2
