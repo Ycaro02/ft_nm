@@ -117,10 +117,10 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
  * 	@param type symbole type
  * 	@return symbole node struct
 */
-static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, Elf64_Word name_idx, uint8_t type)
+static t_sym_tab fill_sym_node(t_elf_file *file, const char *name, Elf64_Xword i, uint8_t type)
 {
 	t_sym_tab symbole;
-	symbole.sym_name = strtab + name_idx;
+	symbole.sym_name = (char *)name;
 	symbole.value = get_Sym_value((file->symtab + i), file->endian, file->class);
 	symbole.type =  type;
 	symbole.bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
@@ -135,7 +135,7 @@ static t_sym_tab fill_sym_node(t_elf_file *file, char *strtab, Elf64_Xword i, El
  * 	@param strtab pointer on string table
  * 	@return list of symbole
 */
-static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag)
+static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag, int16_t sizeof_Sshdr)
 {
 	t_list			*name_lst = NULL;
 	Elf64_Xword		struct_sym_size = detect_struct_size(file->class, sizeof(Elf64_Sym), sizeof(Elf32_Sym));
@@ -155,15 +155,38 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag)
 
 		uint8_t bind = ELF32_ST_BIND(get_Sym_info((file->symtab + i), file->class));
 		
+		Elf64_Section sym_shndx = get_Sym_shndx((file->symtab + i), file->endian, file->class);
+
 		if (has_flag(flag, G_OPTION) && bind != STB_GLOBAL) {
 			if (bind != STB_WEAK)
 				continue;
 		}
-
-		if (has_flag(flag, U_OPTION) && get_Sym_shndx((file->symtab + i), file->endian, file->class) != SHN_UNDEF)
+		if (has_flag(flag, U_OPTION) && sym_shndx != SHN_UNDEF) {
 			continue ;
+		}
+		// ft_printf_fd(2, "name: %s\n", name);
+		if (!has_flag(flag, A_OPTION) && is_source_file(type)) {
+			continue;
+		}
 
-		if (name && *name && !is_source_file(type)) {
+		if (is_source_file(type)) {
+			char *shstrtab = get_shstrtab(file, file->endian, file->class);
+			if (type == STT_SECTION){
+				// ft_printf_fd(2, RED"name: %s\n"RESET, "yo is section");
+				void *sh_ptr = get_section_header(file);
+				sh_ptr += (sizeof_Sshdr * sym_shndx);
+				name_idx = get_Shdr_name(sh_ptr, file->endian, file->class);
+				name = shstrtab + name_idx;
+				// ft_printf_fd(2, YELLOW"name: %s\n"RESET, name);
+				if (check_end_of_file(file, shstrtab + name_idx)) {
+					ft_printf_fd(2, "Invalid symbole name addr (section header name)\n");
+					continue ;
+				}
+			}
+		}
+		// ft_printf_fd(2, CYAN"name: %s\n"RESET, name);
+
+		if (name && *name) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 		
 			if (!sym_node) {
@@ -171,7 +194,7 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag)
 				lst_clear(&name_lst, free);
 				return (NULL); /* need to return return NULL or error here */
 			}
-			*sym_node = fill_sym_node(file, strtab, i, name_idx, type);
+			*sym_node = fill_sym_node(file, name, i, type);
 			ft_lstadd_back(&name_lst, ft_lstnew(sym_node));
 		}
 	}
@@ -218,13 +241,17 @@ static void insert_pad(uint8_t pad, char *c)
  *	@param file pointer on file struct
  *	@param sizeof_Sshdr size of section header
 */
-static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_Sshdr)
+static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_Sshdr, uint8_t flag)
 {
 	for (t_list *current = name_lst; current; current = current->next) {
 		t_sym_tab	*symbole = (t_sym_tab *) ((t_list *) current)->content;
 		uint8_t		pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
 		uint8_t 	symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
-		
+
+		if (has_flag(flag, A_OPTION) && symbole->type == STT_SECTION && symbole_char == DEBUG_SYM) {
+			symbole_char -= 32; /* go uppercase */
+		}
+
 		if (pad > 0) {
 			insert_pad(pad, "0");
 			display_sym_value(symbole->value, 1);
@@ -251,7 +278,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_
 		ft_printf_fd(2, "ft_nm: %s: file format not recognized\n", file->name);
 		return (1);
 	}
-	name_lst = build_symbole_list(file, strtab, nm_flag);
+	name_lst = build_symbole_list(file, strtab, nm_flag, sizeof_Sshdr);
 	if (!name_lst) {
 		ft_printf_fd(2, "No symbole found or malloc error\n");
 		return (1); /* need to return value here*/
@@ -266,7 +293,7 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_
 	// 	reverse_lst(&name_lst);
 	// }
 
-	display_sym_loop(name_lst, file, sizeof_Sshdr);
+	display_sym_loop(name_lst, file, sizeof_Sshdr, nm_flag);
 	lst_clear(&name_lst, free);
 	return (0);
 
