@@ -37,11 +37,11 @@ ascii_nm() {
 
 ascii_nmbonus() {
 	echo -e ""
-	echo -e "  ${LIGHT_MAGENTA}███    ██    ███    ███     ██████   ██████  ███    ██ ██    ██ ███████ ${RESET}"
-	echo -e "  ${LIGHT_MAGENTA}████   ██    ████  ████     ██   ██ ██    ██ ████   ██ ██    ██ ██      ${RESET}"
-	echo -e "  ${LIGHT_MAGENTA}██ ██  ██    ██ ████ ██     ██████  ██    ██ ██ ██  ██ ██    ██ ███████ ${RESET}"
-	echo -e "  ${LIGHT_MAGENTA}██  ██ ██    ██  ██  ██     ██   ██ ██    ██ ██  ██ ██ ██    ██      ██ ${RESET}"
-	echo -e "  ${LIGHT_MAGENTA}██   ████    ██      ██     ██████   ██████  ██   ████  ██████  ███████ ${RESET}\n"
+	echo -e "  ${LIGHT_MAGENTA}███    ██    ███    ███     ██████    ██████   ███    ██  ██    ██  ███████ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}████   ██    ████  ████     ██   ██  ██    ██  ████   ██  ██    ██  ██      ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██ ██  ██    ██ ████ ██     ██████   ██    ██  ██ ██  ██  ██    ██  ███████ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██  ██ ██    ██  ██  ██     ██   ██  ██    ██  ██  ██ ██  ██    ██       ██ ${RESET}"
+	echo -e "  ${LIGHT_MAGENTA}██   ████    ██      ██     ██████    ██████   ██   ████   ██████   ███████ ${RESET}\n"
 
 }
 

@@ -52,12 +52,12 @@ clean:
 ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
 	@$(RM) $(OBJ_DIR)
 	@printf "$(RED)Clean $(OBJ_DIR)/test output$(RESET)\n"
-endif
 	@$(RM) nm_out out valgrind_out
+endif
 
 fclean:		clean
 	@printf "$(RED)Clean $(NAME)/lib$(RESET)\n"
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) nm_out out valgrind_out
 	@$(MAKE_LIBFT) fclean
 	@$(MAKE_LIST) fclean
 
