@@ -93,9 +93,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 			Elf64_Word sh_type = get_Shdr_type(section_header_ptr, file->endian, file->class);
 			Elf64_Xword sh_flag = get_Shdr_flags(section_header_ptr, file->endian, file->class);
 
-			if (sh_type == SHT_GROUP) {
-				c = 'n';
-			} else if (sh_type == SHT_NOBITS) {
+		 	if (sh_type == SHT_NOBITS) {
 				c = NO_BITS_SYM; /* b */
 			} else if (sh_flag == (SHF_ALLOC | SHF_WRITE)) {
 				c = ALLOC_WRITE_SYM; /* d */
@@ -103,10 +101,14 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 				c = FUNCTION_SYM; /* T */
 			} else if (sh_flag & SHF_ALLOC && !(sh_flag & SHF_WRITE)) { /* obh sym R r*/
 				c = OBJECT_SYM;
-			} else if (symbole->type == STT_SECTION) {
+			} else if (sh_type == SHT_GROUP || sh_type == SHT_PROGBITS \
+				|| ft_strncmp(symbole->sym_name, ".SUNW_signature", ft_strlen(".SUNW_signature")) == 0) {
+				c = 'n';
+			} 
+			if (symbole->type == STT_SECTION \
+				&& ft_strncmp(symbole->sym_name, ".debug", ft_strlen(".debug")) == 0) {
 				return ('N');
 			} 
-
 			if ((c >= 'A' && c <= 'Z') && (c != UNDIFINED_SYM && symbole->bind != STB_GLOBAL)) {
 				c += 32;
 			}

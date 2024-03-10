@@ -42,13 +42,11 @@ test :	$(NAME)
 dtest:	$(NAME)
 	@$(TESTER) $(NAME) 0
 
-all_test:	bonus
+all_test:	$(NAME) bonus
 	@$(CALL_TESTER)
 
 bonus:	$(NAME)
-ifeq ($(shell [ -f $(NAME) ] && echo 1 || echo 0), 0)
 	@$(ASCII_ART) "bonus"
-endif
 
 clean:
 ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
