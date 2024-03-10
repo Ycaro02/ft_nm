@@ -9,7 +9,10 @@ TESTER		=	./rsc/nm_tester.sh
 CALL_TESTER =	./rsc/call_tester.sh
 ASCII_ART	=	./rsc/mk/ascii.sh
 
+ASCII_NAME		=	${NAME}
+
 ifeq ($(findstring bonus, $(MAKECMDGOALS)), bonus)
+ASCII_NAME	= "bonus"
 SRCS += $(SRCS_BONUS)
 else
 SRCS += $(MAIN_MANDATORY)
@@ -20,20 +23,17 @@ all:		$(NAME)
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(LIBFT) $(OBJS) $(OBJ_DIR)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
-	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
-
-$(LIBFT):
-	@$(ASCII_ART) $(NAME)
-	@printf "$(CYAN)Compiling lib$(RESET)\n"
+$(NAME):	$(OBJS) $(OBJ_DIR)
+	@printf "$(CYAN)Compiling lib...$(RESET)\n"
 	@$(MAKE_LIBFT)
 	@$(MAKE_LIST)
 	@printf "$(GREEN)Compiling lib done$(RESET)\n"
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
+	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@([ ! -d ${OBJ_DIR} ] && ${ASCII_ART} ${ASCII_NAME} && mkdir ${OBJ_DIR}) || printf ""
 	@printf "$(YELLOW)Compile $<$(RESET)\n"
-	@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
 test :	$(NAME)
@@ -42,14 +42,19 @@ test :	$(NAME)
 dtest:	$(NAME)
 	@$(TESTER) $(NAME) 0
 
-all_test:	$(NAME) bonus
+all_test:	bonus
 	@$(CALL_TESTER)
 
-bonus:	$(NAME)
-	@$(ASCII_ART) "bonus"
+bonus: clear_mandatory ${NAME}
+
+clear_mandatory:
+ifeq ($(shell [ -f ${OBJ_DIR}/main.o ] && echo 0 || echo 1), 0)
+	@printf "$(RED)Clean mandatory obj $(RESET)\n"
+	@rm -rf ${OBJ_DIR}
+endif
 
 clean:
-ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
+ifeq ($(shell [ -d ${OBJ_DIR} ] && echo 0 || echo 1), 0)
 	@$(RM) $(OBJ_DIR)
 	@printf "$(RED)Clean $(OBJ_DIR)/test output$(RESET)\n"
 	@$(RM) nm_out out valgrind_out
