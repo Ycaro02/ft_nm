@@ -24,9 +24,20 @@ jobs:
         
         # - name: Call tester all test
         #run: make all_test
+    - name: Clone tester
+      run: git clone https://github.com/Ycaro02/ft_nmTester.git
 
-        #- name: clean
-      #run: make fclean
+    - name: Run basic test
+      run : ./ft_nmTester/call_tester.sh 0
 
-    - name: Try tester
-      run: git clone https://github.com/Ycaro02/ft_nmTester.git && ./ft_nmTester/call_tester.sh 0 2
+    - name: Run valgrind basic test
+      run : ./ft_nmTester/call_tester.sh 1
+
+    - name: Run bonus test
+      run : ./ft_nmTester/call_tester.sh 0 1
+
+    - name: Run valgrind bonus test
+      run : ./ft_nmTester/call_tester.sh 1 1
+
+    - name: clean
+      run: make fclean
