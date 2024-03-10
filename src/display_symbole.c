@@ -66,6 +66,11 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 	Elf64_Section shndx = symbole->shndx;
 
 
+	// if (!symbole->sym_name || symbole->sym_name[0] == '0') {
+	// 	ft_printf_fd(2, RED"a replace bad file\n"RESET);
+	// 	return ('a');
+	// }
+
 	if (symbole->bind == STB_WEAK) {
 		if (symbole->type == STT_OBJECT) {
 			c = 'V';
@@ -75,7 +80,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 		c += (shndx == SHN_UNDEF) * 32;
 	} else if (symbole->bind == STB_GNU_UNIQUE) {
 		c = UNDIFINED_SYM + 32;
-	} else if (shndx != SHN_UNDEF) {
+	} else {
 		Elf64_Half shnum = get_Ehdr_shnum(file->ptr, file->endian);
 		
 		if (shndx == SHN_ABS) {
@@ -88,7 +93,9 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 			Elf64_Word sh_type = get_Shdr_type(section_header_ptr, file->endian, file->class);
 			Elf64_Xword sh_flag = get_Shdr_flags(section_header_ptr, file->endian, file->class);
 
-			if (sh_type == SHT_NOBITS) {
+			if (sh_type == SHT_GROUP) {
+				c = 'n';
+			} else if (sh_type == SHT_NOBITS) {
 				c = NO_BITS_SYM; /* b */
 			} else if (sh_flag == (SHF_ALLOC | SHF_WRITE)) {
 				c = ALLOC_WRITE_SYM; /* d */
@@ -96,10 +103,10 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 				c = FUNCTION_SYM; /* T */
 			} else if (sh_flag & SHF_ALLOC && !(sh_flag & SHF_WRITE)) { /* obh sym R r*/
 				c = OBJECT_SYM;
-			}
-			else if (sh_type & SHT_GROUP) {
-				c = DEBUG_SYM;
-			}
+			} else if (symbole->type == STT_SECTION) {
+				return ('N');
+			} 
+
 			if ((c >= 'A' && c <= 'Z') && (c != UNDIFINED_SYM && symbole->bind != STB_GLOBAL)) {
 				c += 32;
 			}
@@ -184,11 +191,13 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag, 
 				}
 			}
 		}
-		// ft_printf_fd(2, CYAN"name: %s\n"RESET, name);
-
-		if (name && *name) {
-			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
+		// ft_printf_fd(2, RED"before name: %s, %d\n"RESET, name, name[0]);
 		
+	
+		// ft_printf_fd(2, CYAN"name: %p: %s, char[0] %d, char[1] %d\nCond %d\n"RESET, name, name, name[0], name[1], (has_flag(flag, A_OPTION) || name[0] != 0));
+
+		if ((has_flag(flag, A_OPTION) && sym_shndx != SHN_UNDEF)|| name[0] != 0) {
+			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
 				lst_clear(&name_lst, free);
@@ -248,9 +257,11 @@ static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_
 		uint8_t		pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
 		uint8_t 	symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
 
-		if (has_flag(flag, A_OPTION) && symbole->type == STT_SECTION && symbole_char == DEBUG_SYM) {
-			symbole_char -= 32; /* go uppercase */
-		}
+		// if (has_flag(flag, A_OPTION) && symbole_char == DEBUG_SYM) {
+		// 	if (symbole->bind == STB_GLOBAL)
+		// 		symbole_char -= 32; /* go uppercase */
+		// }
+		(void)flag;
 
 		if (pad > 0) {
 			insert_pad(pad, "0");

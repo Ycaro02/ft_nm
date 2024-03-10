@@ -46,7 +46,9 @@ all_test:	bonus
 	@$(CALL_TESTER)
 
 bonus:	$(NAME)
+ifeq ($(shell [ -f $(NAME) ] && echo 1 || echo 0), 0)
 	@$(ASCII_ART) "bonus"
+endif
 
 clean:
 ifeq ($(shell [ -d $(OBJ_DIR) ] && echo 0 || echo 1), 0)
@@ -63,4 +65,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		all clean fclean re
+.PHONY:		all clean fclean re bonus
