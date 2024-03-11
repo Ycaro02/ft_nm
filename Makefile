@@ -22,24 +22,24 @@ all:		$(NAME)
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME):	$(OBJS) $(OBJ_DIR)
-	@printf "$(CYAN)Compiling lib...$(RESET)\n"
+$(NAME):	$(OBJ_DIR) $(OBJS)
+	@printf "$(CYAN)Compiling libft...$(RESET)\n"
 	@$(MAKE_LIBFT)
+	@printf "$(CYAN)Compiling lib...$(RESET)\n"
 	@$(MAKE_LIST)
 	@printf "$(GREEN)Compiling lib done$(RESET)\n"
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LIST)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
+$(OBJ_DIR):
+	@mkdir ${OBJ_DIR} && ${ASCII_ART} ${ASCII_NAME} && printf "$(CYAN)Create $(OBJ_DIR) dir$(RESET)\n"
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@([ ! -d ${OBJ_DIR} ] && ${ASCII_ART} ${ASCII_NAME} && mkdir ${OBJ_DIR}) || printf ""
 	@printf "$(YELLOW)Compile $<$(RESET)\n"
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
 test :	$(NAME)
 	@./$(NAME) $(NAME)
-
-dtest:	$(NAME)
-	@$(TESTER) $(NAME) 0
 
 bonus: clear_mandatory ${NAME}
 
