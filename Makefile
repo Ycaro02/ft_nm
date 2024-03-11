@@ -32,7 +32,8 @@ $(NAME):	$(OBJ_DIR) $(OBJS)
 	@printf "$(GREEN)Compiling $(NAME) done$(RESET)\n"
 
 $(OBJ_DIR):
-	@mkdir ${OBJ_DIR} && ${ASCII_ART} ${ASCII_NAME} && printf "$(CYAN)Create $(OBJ_DIR) dir$(RESET)\n"
+	@mkdir ${OBJ_DIR}
+	@${ASCII_ART} ${ASCII_NAME}
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@printf "$(YELLOW)Compile $<$(RESET)\n"
