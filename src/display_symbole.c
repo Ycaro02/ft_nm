@@ -1,6 +1,12 @@
 #include "../include/nm.h"
 
-
+/**
+ *	@brief Update t_list node to accordate sort
+ *	@param lst list node
+ *	@param min min node
+ *	@param reverse_opt reverse option
+ *	@return min node
+*/
 static t_list *update_min(t_list *lst, t_list *min, uint8_t reverse_opt)
 {
 	t_sym_tab	*min_sym, *current = ((t_list *) lst)->content;
@@ -64,12 +70,6 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 {
 	uint8_t c = UNDIFINED_SYM;
 	Elf64_Section shndx = symbole->shndx;
-
-
-	// if (!symbole->sym_name || symbole->sym_name[0] == '0') {
-	// 	ft_printf_fd(2, RED"a replace bad file\n"RESET);
-	// 	return ('a');
-	// }
 
 	if (symbole->bind == STB_WEAK) {
 		if (symbole->type == STT_OBJECT) {
@@ -198,7 +198,7 @@ static t_list *build_symbole_list(t_elf_file *file, char *strtab, uint8_t flag, 
 	
 		// ft_printf_fd(2, CYAN"name: %p: %s, char[0] %d, char[1] %d\nCond %d\n"RESET, name, name, name[0], name[1], (has_flag(flag, A_OPTION) || name[0] != 0));
 
-		if ((has_flag(flag, A_OPTION) && sym_shndx != SHN_UNDEF)|| name[0] != 0) {
+		if ((has_flag(flag, A_OPTION) && sym_shndx != SHN_UNDEF) || name[0] != 0) {
 			t_sym_tab *sym_node = ft_calloc(sizeof(t_sym_tab), 1);
 			if (!sym_node) {
 				ft_printf_fd(1, RED"ft_nm: Alloc error display symb\n"RESET);
