@@ -34,6 +34,6 @@
 /* if size == 2 swap 16 bits, else: if size == 4 swap 32 bit, else swap 64*/
 # define REVERSE_ENDIAN(x, size)	size == 2 ? SWAP_BYTE_16(x) : ((size == 4 ? SWAP_BYTE_32(x) : SWAP_BYTE_64(x)))
 /* if endian = 0 || size data == 1, don't revese, else call reverse endian */
-# define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(endian, sizeof(data))
+# define READ_DATA(data, endian)	(endian == 0 || sizeof(data) == 1) ? data : REVERSE_ENDIAN(data, sizeof(data))
 
 # endif /* ELF_ENDIAN_H */

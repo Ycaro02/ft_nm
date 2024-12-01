@@ -4,13 +4,10 @@
 # include <sys/types.h>
 
 
-/* OPT DETAILs
-	TODO:
+/* OPT DETAILS
 
 	-a, debug-syms
-           Display all symbols, even debugger-only symbols; normally these are not listed.
-
-	DONE:
+	Display all symbols, even debugger-only symbols; normally these are not listed.
 
 	-g, extern-only
     Display only external symbols.
