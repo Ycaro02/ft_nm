@@ -6,7 +6,6 @@ MAIN_MANDATORY	=	main.c
 
 SRCS			=	parse_elf_header.c\
 					nm_utils.c\
-					parse_program_header.c\
 					parse_section_header.c\
 					parse_symtab.c\
 					display_symbole.c\
@@ -14,6 +13,7 @@ SRCS			=	parse_elf_header.c\
 					parse_cmd_line.c\
 					handle_flag.c\
 					parse_flag.c\
+# parse_program_header.c
 
 SRCS_BONUS		=	main_bonus.c\
 

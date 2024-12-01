@@ -1,4 +1,5 @@
 # include "../include/nm.h"
+# include "../include/elf_getter.h"
 
 /**
  * @brief Extracts the file context for an ELF file.
