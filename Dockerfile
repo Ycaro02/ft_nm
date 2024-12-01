@@ -22,3 +22,6 @@ RUN git clone https://github.com/Ycaro02/ft_nmTester.git
 	# docker build -t ft_nm .
 # Run the image with zsh as the entrypoint with:
 	# docker run -it ft_nm zsh
+
+# Run the image with all verbose test (without valgrind)
+	# docker run -it ft_nm ./ft_nmTester/call_tester.sh 0 1 1
