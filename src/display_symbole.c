@@ -8,52 +8,52 @@
  *	@param reverse_opt reverse option
  *	@return min node
 */
-static t_list *update_min(t_list *lst, t_list *min, uint8_t reverse_opt)
-{
-	t_sym_tab	*min_sym, *current = ((t_list *) lst)->content;
-	int 		cmp;
+// static t_list *update_min(t_list *lst, t_list *min, uint8_t reverse_opt)
+// {
+// 	t_sym_tab	*min_sym, *current = ((t_list *) lst)->content;
+// 	int 		cmp;
 
-	if (!min)
-		min = lst;
+// 	if (!min)
+// 		min = lst;
 	
-	min_sym = ((t_list *) min)->content;
-	cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
+// 	min_sym = ((t_list *) min)->content;
+// 	cmp = ft_strcmp(current->sym_name, min_sym->sym_name);
 	
-	if (reverse_opt) {
-		if (cmp > 0)
-			min = lst;
+// 	if (reverse_opt) {
+// 		if (cmp > 0)
+// 			min = lst;
 		
-	} else {
-		if (cmp < 0)
-			min = lst;
-	} 
-	if (cmp == 0) {
-		if (current->value < min_sym->value)
-			min = lst;
-	}
-	return (min);
-}
+// 	} else {
+// 		if (cmp < 0)
+// 			min = lst;
+// 	} 
+// 	if (cmp == 0) {
+// 		if (current->value < min_sym->value)
+// 			min = lst;
+// 	}
+// 	return (min);
+// }
 
 /** 
  *	@brief Get symbol name
  * 	@param symbole struct list
 */
-static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
-{
-    t_list *head = lst;
-    t_list *min = NULL, *tmp;
+// static void lst_name_sort(t_list *lst, uint8_t reverse_opt)
+// {
+//     t_list *head = lst;
+//     t_list *min = NULL, *tmp;
     
-	if (!lst)
-        return ;
-    while (lst)  {
-		min = update_min(lst, min, reverse_opt);
-		lst = lst->next;
-    }
-    tmp = head->content;
-    head->content = min->content;
-    min->content = tmp;
-    lst_name_sort(head->next, reverse_opt);
-}
+// 	if (!lst)
+//         return ;
+//     while (lst)  {
+// 		min = update_min(lst, min, reverse_opt);
+// 		lst = lst->next;
+//     }
+//     tmp = head->content;
+//     head->content = min->content;
+//     min->content = tmp;
+//     lst_name_sort(head->next, reverse_opt);
+// }
 
 /* @brief is source file */
 static int is_source_file(uint8_t type) {

@@ -13,6 +13,8 @@ SRCS			=	parse_elf_header.c\
 					parse_cmd_line.c\
 					handle_flag.c\
 					parse_flag.c\
+					special_sort.c\
+					
 # parse_program_header.c
 
 SRCS_BONUS		=	main_bonus.c\

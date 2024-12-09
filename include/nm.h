@@ -75,6 +75,10 @@ typedef struct s_elf_file {
 typedef struct stat t_stat;
 
 
+// special sort
+void lst_name_sort(t_list *lst, uint8_t reverse_opt);
+
+
 /* parse flag */
 int             parse_flag(int argc, char **argv, int8_t *reject_flag);
 
