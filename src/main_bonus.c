@@ -78,7 +78,10 @@ int main(int argc, char **argv)
 	int8_t			reject_flag = 0;
 
 	context.flag = parse_flag(argc, argv, &reject_flag);
-	if (reject_flag == -1) {
+	if (has_flag(context.flag, H_OPTION)) {
+		ft_printf_fd(1, "%s", HELP_STRING);
+		return (0);
+	} else if (reject_flag == -1) {
 		return (1);
 	}
 	context.l_endian = detect_local_endian();
