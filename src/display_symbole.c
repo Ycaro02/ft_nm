@@ -253,18 +253,12 @@ static void insert_pad(uint8_t pad, char *c)
  *	@param file pointer on file struct
  *	@param sizeof_Sshdr size of section header
 */
-static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_Sshdr, uint8_t flag)
+static void display_sym_loop(t_list *name_lst, t_elf_file *file, int16_t sizeof_Sshdr)
 {
 	for (t_list *current = name_lst; current; current = current->next) {
 		t_sym_tab	*symbole = (t_sym_tab *) ((t_list *) current)->content;
 		uint8_t		pad = get_zero_padding(file->class, compute_hex_len(symbole->value), symbole->shndx != SHN_UNDEF);
 		uint8_t 	symbole_char = get_symbole_char(file, symbole, sizeof_Sshdr);
-
-		// if (has_flag(flag, A_OPTION) && symbole_char == DEBUG_SYM) {
-		// 	if (symbole->bind == STB_GLOBAL)
-		// 		symbole_char -= 32; /* go uppercase */
-		// }
-		(void)flag;
 
 		if (pad > 0) {
 			insert_pad(pad, "0");
@@ -303,11 +297,8 @@ static int8_t real_display_symbol(t_elf_file *file, int16_t sizeof_Sshdr, uint8_
 	if (!has_flag(nm_flag, P_OPTION)) {
 		lst_name_sort(name_lst, reverse);
 	}
-	// if (reverse) {
-	// 	reverse_lst(&name_lst);
-	// }
 
-	display_sym_loop(name_lst, file, sizeof_Sshdr, nm_flag);
+	display_sym_loop(name_lst, file, sizeof_Sshdr);
 	lst_clear(&name_lst, free);
 	return (0);
 
