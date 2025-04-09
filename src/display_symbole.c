@@ -98,7 +98,7 @@ static uint8_t get_symbole_char(t_elf_file *file, t_sym_tab *symbole, int16_t si
 				c = NO_BITS_SYM; /* b */
 			} else if (sh_flag == (SHF_ALLOC | SHF_WRITE)) {
 				c = ALLOC_WRITE_SYM; /* d */
-			} else if (sh_type == SHT_PROGBITS && sh_flag == (SHF_ALLOC | SHF_EXECINSTR)) {
+			} else if (sh_type == SHT_PROGBITS && ( sh_flag == (SHF_ALLOC | SHF_EXECINSTR) || sh_flag == (SHF_ALLOC | SHF_EXECINSTR | SHF_GROUP))) {
 				c = FUNCTION_SYM; /* T */
 			} else if (sh_flag & SHF_ALLOC && !(sh_flag & SHF_WRITE)) { /* obh sym R r*/
 				c = OBJECT_SYM;
