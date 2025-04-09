@@ -63,17 +63,8 @@ typedef struct s_elf_file {
     int8_t			endian; 		/* bool endian 0 for same endian otherwise reverse */
 } t_elf_file;
 
-/*
-    shoff in elf header, section header offset DONE
-    shnum in elf header, section header number DONE
-        maybe store this value and compare all section index when we need to user it
-    shstrtabdx in elf header, section header str tab index DONE
-    shstrtab checked return NULL if no found, return must to ce check DONE
-*/
-
 /* struct stat typedef */
 typedef struct stat t_stat;
-
 
 /* parse flag */
 int             parse_flag(int argc, char **argv, int8_t *reject_flag);
