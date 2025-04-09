@@ -4,7 +4,7 @@ FROM ubuntu:22.04
 RUN apt update && apt install -y make gcc git vim zsh curl valgrind
 
 # Get oh-my-zsh for a better terminal experience
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN apt update && apt install -y make gcc git vim zsh curl valgrind libc6-dev-i386 wget
 
 # Create a home dir for the app
 RUN mkdir -p /home/nfour/app
