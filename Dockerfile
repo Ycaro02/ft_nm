@@ -1,10 +1,10 @@
 FROM ubuntu:22.04
 
 # Install dependencies
-RUN apt update && apt install -y make gcc git vim zsh curl valgrind
+RUN apt update && apt install -y make gcc git vim zsh curl valgrind libc6-dev-i386 wget
 
 # Get oh-my-zsh for a better terminal experience
-RUN apt update && apt install -y make gcc git vim zsh curl valgrind libc6-dev-i386 wget
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # Create a home dir for the app
 RUN mkdir -p /home/nfour/app
